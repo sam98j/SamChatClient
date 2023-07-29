@@ -1,0 +1,46 @@
+// styles on mobile device
+@media (max-width: 500px) {
+    .login {
+        form {
+            padding: 40px !important;
+            display: flex;
+            width: 100% !important;
+            flex-direction: column;
+            gap: 15px;
+            // formSubmitionBtn styles
+            .formSubmitionBtn {
+                margin-top: 50px;
+                width: 100px;
+            }
+            // formHeader styles
+            .formHeader {
+                // background-color: blue;
+                text-align: center;
+                // logo section
+                h1 {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-bottom: 20px;
+                }
+                // font-size: 2rem;
+            }
+            // Submtion btnArea styles
+            .btnArea {
+                // background-color: blue;
+                display: flex;
+                align-items: flex-end;
+                a {
+                    color: dodgerblue;
+                    display: block !important;
+                    flex-grow: 1;
+                    text-align: right;
+                }
+            }
+        }
+        // vector area 
+        .vectorSection {
+            display: none !important;
+        }
+    }
+}

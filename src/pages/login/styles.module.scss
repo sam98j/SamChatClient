@@ -1,0 +1,99 @@
+@import "./stylesmobile";
+
+
+.login {
+    // background: linear-gradient(to bottom, dodgerblue, blue);
+    height: 100vh !important;
+    display: flex;
+    // styling the login form
+    form {
+        border: 1px solid white;
+        background-color: white;
+        width: 40%;
+        height: 100%;
+        padding: 90px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        // formHeader
+        .formHeader {
+            // app name
+            h1 {
+                border-bottom: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                gap: 5px;
+                font-size: 1.2rem;
+                font-weight: bolder;
+                img {
+                    height: 30px;
+                    width: 30px;
+                }
+            }
+            // login to your account
+            h2 {
+                font-size: 1.5rem;
+                font-weight: bolder;
+                text-align: center;
+            }
+            p {
+                text-align: center;
+            }
+        }
+        // form input styles
+        .FormControl {
+            color: gray;
+            position: relative;
+            input {
+                padding-left: 40px;
+            }
+            i {
+                position: absolute;
+                z-index: 1;
+                left: 10px;
+                top: 10px;
+            }
+        }
+        // area Container
+        .areaContainer {
+            margin: 10px 0 20px 0;
+            display: flex;
+            // checkbox (remember me)
+            .checkBox {
+                flex-grow: 1;
+            }
+            a {
+                color: dodgerblue;
+            }
+        }
+        // formSubmitionBtn
+        .formSubmitionBtn {
+            margin-top: 10px;
+            width: 100%;
+        }
+        // createAccountLink
+        .createAccountLink {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            a {
+                color: dodgerblue;
+            }
+        }
+    }
+    // vector Section Styles
+    .vectorSection {
+        width: 60%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        // img styles
+        img {
+            width: 70%;
+            height: 70%;
+        }
+    }
+}

@@ -1,0 +1,20 @@
+/* @font-face {
+  font-family: 'effraregular' !important; 
+  src: url('../../public/efrraweb/alfont_com_alfont_com_effra_rg-webfont.woff');
+  src: url('../../public/efrraweb/alfont_com_alfont_com_effra_rg-webfont.woff2');
+  font-weight: normal;
+} */
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
+  font-family: 'effra' !important;
+}
+
+a {
+  display: block !important;
+  box-sizing: border-box;
+}
+
