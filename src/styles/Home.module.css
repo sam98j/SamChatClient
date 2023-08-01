@@ -1,6 +1,10 @@
 /* @font-face {
     font-family: 'effra' !important; 
-    src: url('../../assets/efrraweb/alfont_com_alfont_com_effra_md-1-webfont.woff');
-    src: url('../../assets/efrraweb/alfont_com_alfont_com_effra_md-1-webfont.woff2');
+    src: url('../../public/efrraweb/alfont_com_alfont_com_effra_md-1-webfont.woff');
+    src: url('../../public/efrraweb/alfont_com_alfont_com_effra_md-1-webfont.woff2');
     font-weight: normal;
 } */
+
+.home {
+   font-family: "effra"; 
+}

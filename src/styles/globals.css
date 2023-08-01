@@ -10,7 +10,11 @@
   padding: 0;
   margin: 0;
   text-decoration: none;
+}
+
+body {
   font-family: 'effra' !important;
+  font-weight: normal;
 }
 
 a {
