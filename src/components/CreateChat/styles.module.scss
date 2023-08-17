@@ -1,0 +1,48 @@
+.create_chat_container {
+    &[is-opened="true"] {
+        height: 100dvh;
+    }
+    height: 0dvh;
+    background-color: rgba(99, 99, 99, 0.445);
+    backdrop-filter: blur(5px);
+    position: absolute;
+    overflow: hidden;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    // close modal
+    // new chat modal
+    .create_chat {
+        background-color: rgb(255, 255, 255);
+        border-radius: 20px 20px 0 0;
+        padding: 20px;
+        height: 70%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        border-top: 1px solid lightgray;
+        &::before {
+            content: "";
+            width: 50px;
+            height: 5px;
+            background-color: gray;
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            border-radius: 5px;
+            transform: translate(-50%);
+        }
+        // loader icon
+        .loader_icon {
+            @keyframes rotate {
+                from {transform: rotate(0);}
+                to {transform: rotate(360deg);}
+            }
+            animation-name: rotate;
+            animation-duration: 1s;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+        }
+    }
+}

@@ -1,0 +1,22 @@
+@import "./stylesmodile";
+
+.home {
+    /* padding: 10px; */
+    font-family: 'effra' !important;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    .imgContainer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 5rem;
+        flex-direction: column;
+        img {
+            width: 15rem;
+            height: 15rem;
+            margin-bottom: 10px;
+        }
+    }
+}

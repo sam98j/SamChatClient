@@ -1,3 +1,12 @@
 {
-    "app_name": "مرحبا بك"
+    "app_name": "سام شات",
+    "login_with_oauth": "قم باختيار طريقة تسجيل الدخول",
+    "welcome_text": "مرحبا بك في سام شات",
+    "email_input_msg": "لن نقوم ابدا بمشاركة بريدك الالكتروني مع اي احد",
+    "remember_me_btn_text": "تذكرني",
+    "forget_password_link_text": "هل نسيت كلمة السر الخاصة بك ؟",
+    "login_btn_text": "تسجيل الدخول لحسابك",
+    "dont_have_account_msg": "ليس لديك حساب ؟",
+    "create_account_link_text": "قم بإنشاء حساب",
+    "copy": "جميع الحقوق محفوظة سام شات"
 }

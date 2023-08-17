@@ -1,0 +1,28 @@
+.appHeader {
+    height: 50px;
+    padding: 1.25rem;
+    // usr status
+    .usr_status {
+        .typing {
+            display: none;
+            color: green;
+        }
+        .online {
+            color: gray;
+        }
+        &[is-typing="true"] {
+            .typing {
+                display: block;
+            }
+            .online {
+                display: none;
+            }
+        }
+        &[is-online="true"] {
+            .online {
+                color: green;
+            }
+        }
+    }
+    // the screen name
+}

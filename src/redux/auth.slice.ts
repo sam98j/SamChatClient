@@ -1,4 +1,5 @@
 import { loginUser } from '@/apis/auth.api';
+import { getUserChats } from '@/apis/chats.api';
 import {createSlice} from '@reduxjs/toolkit';
 import type {PayloadAction} from '@reduxjs/toolkit';
 
@@ -9,12 +10,14 @@ export interface LoggedInUserData {
     email: string,
     avatar: string,
     name: string,
+    usrname?: string,
+    chatId?: string
 }
 
 
 // state slice shape
 export interface AuthState {
-    currentUser: LoggedInUserData | null | undefined,
+    currentUser: string | null | undefined,
     apiResMessage: {err: boolean, msg: string} | null
 }
 
@@ -42,14 +45,17 @@ export const authSlice = createSlice({
             const {access_token, user} = action.payload as LogUserInSuccData;
             (function storeUserAccessToken(){
                 // store the user access token in the localstorage
-                localStorage.setItem('access_token', JSON.stringify(access_token))
+                localStorage.setItem('access_token', `Bearer ${access_token}`)
             })()
-            state.currentUser =  user,
+            state.currentUser =  user._id,
             state.apiResMessage = {err: false, msg: 'You Successfyl Logged In ...'}
         })
         builder.addCase(loginUser.rejected,  (state, action) => {
             state.currentUser =  undefined;
             state.apiResMessage = {err: true, msg: "Some thing Went Wrong, Check You email or password"}
+        })
+        builder.addCase(getUserChats.fulfilled, (state, action) => {
+            state.currentUser = action.payload.userId
         })
     },
 })

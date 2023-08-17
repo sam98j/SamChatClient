@@ -54,7 +54,7 @@ const Login: React.FC<any> = () => {
   useEffect(() => {
     // check if the current user is logged in
     if (currentUser) {
-      router.push("/");
+      router.push("/chats");
       return;
     }
   }, [currentUser]);
@@ -73,10 +73,10 @@ const Login: React.FC<any> = () => {
           <div className={styles.formHeader}>
             {/* form Header */}
             <h1>
-              <Image src={Logo} alt="logo" /> SamChat
+              <Image src={Logo} alt="logo" /> {t("app_name")}
             </h1>
-            <h2>{t("app_name")}</h2>
-            <p>welcome back! select method to log in</p>
+            <h2>{t("welcome_text")}</h2>
+            <p>{t("login_with_oauth")}</p>
           </div>
           {/* email input */}
           <FormControl className={styles.FormControl}>
@@ -91,7 +91,7 @@ const Login: React.FC<any> = () => {
               name="email"
               onChange={handleInputChange}
             />
-            <FormHelperText>We'll never share your email.</FormHelperText>
+            <FormHelperText>{t("email_input_msg")}</FormHelperText>
           </FormControl>
           {/* password input */}
           <FormControl className={styles.FormControl}>
@@ -107,8 +107,10 @@ const Login: React.FC<any> = () => {
             />
           </FormControl>
           <div className={styles.areaContainer}>
-            <Checkbox className={styles.checkBox}>Remember Me</Checkbox>
-            <a href="">Forget Your Password ?</a>
+            <Checkbox className={styles.checkBox}>
+              {t("remember_me_btn_text")}
+            </Checkbox>
+            <a href="">{t("forget_password_link_text")}</a>
           </div>
           {/* submit btn */}
           <div className={styles.btnArea}>
@@ -118,9 +120,9 @@ const Login: React.FC<any> = () => {
               type="submit"
             >
               {currentUser ? (
-                <p>Log In</p>
+                <p>{t("login_btn_text")}</p>
               ) : currentUser === undefined ? (
-                <p>Login</p>
+                <p>{t("login_btn_text")}</p>
               ) : (
                 <Spinner
                   thickness="2px"
@@ -133,7 +135,8 @@ const Login: React.FC<any> = () => {
             </Button>
           </div>
           <p className={styles.createAccountLink}>
-            Don't hava an account? <a href="">Create an account</a>
+            {t("dont_have_account_msg")}{" "}
+            <a href="">{t("create_account_link_text")}</a>
           </p>
           {/* bottom area */}
           <div className="">

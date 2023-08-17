@@ -18,7 +18,9 @@ body {
 }
 
 a {
-  display: block !important;
   box-sizing: border-box;
 }
 
+html[lang="ar"] {
+  direction: rtl;
+}
