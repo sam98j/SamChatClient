@@ -36,6 +36,8 @@ const ChatMassage: React.FC<{
           status: MessageStatus.READED,
         })
       );
+      // check if message is readed
+      if (status === MessageStatus.READED) return;
       markMsgAsReaded(messageData._id, senderId);
     }
   }, []);

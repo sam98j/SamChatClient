@@ -5,11 +5,8 @@ import type {PayloadAction} from '@reduxjs/toolkit';
 
 // Single Chat
 export interface SingleChat {
-    chatId: string;
-    chatWith: {
-        usrid: string;
-        usrname: string
-    };
+    usrid: string;
+    usrname: string
     lastMessage: {
         date: string;
         text: string
@@ -55,6 +52,8 @@ export const chatSlice = createSlice({
         setMessageStatus: (state, action: PayloadAction<{msgId: string, status: MessageStatus}>) => {
             // get index of the message
             const msgIndex = state.chatMessages.findIndex((msg) => msg._id === action.payload.msgId);
+            // if msg dosnot exist termenate the process
+            if(msgIndex === -1) return
             state.chatMessages[msgIndex].status = action.payload.status
         }
     },

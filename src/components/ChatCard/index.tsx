@@ -1,16 +1,23 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Avatar, Box, Heading, Text } from "@chakra-ui/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { usePathname, useSearchParams } from "next/navigation";
 import { SingleChat, setOpenedChat } from "@/redux/chats.slice";
 import { useDispatch } from "react-redux";
+import useChatsApi from "./getData.hook";
 
 const ChatCard: React.FC<{ avataruri: string; chat: SingleChat }> = ({
   avataruri,
   chat,
 }) => {
   const searchParams = useSearchParams();
+  const [previewData, setPreveiwData] = useState<{
+    date: string;
+    lastMsgText: string;
+    unReadedMsgs: number;
+  }>();
+  const { fetchChatPreviewData } = useChatsApi();
   // store dispatch function
   const dispatch = useDispatch();
   const createQueryString = useCallback(
@@ -22,13 +29,21 @@ const ChatCard: React.FC<{ avataruri: string; chat: SingleChat }> = ({
     },
     [searchParams]
   );
+  // componet did mount
+  useEffect(() => {
+    (async () => {
+      const data = await fetchChatPreviewData(chat.usrid);
+      if (!data) return;
+      setPreveiwData({
+        ...data,
+      });
+    })();
+  }, []);
   return (
     <Link
-      href={`/chat?${createQueryString("id", chat.chatWith.usrid)}`}
+      href={`/chat?${createQueryString("id", chat.usrid)}`}
       onClick={() =>
-        dispatch(
-          setOpenedChat({ id: chat.chatId, usrname: chat.chatWith.usrname })
-        )
+        dispatch(setOpenedChat({ id: chat.usrid, usrname: chat.usrname }))
       }
     >
       <Box
@@ -38,27 +53,29 @@ const ChatCard: React.FC<{ avataruri: string; chat: SingleChat }> = ({
         border={""}
       >
         <Avatar name="Hosam Alden" src={avataruri} />
-        <Box>
+        <Box flexGrow={"1"}>
           <Heading size={"sm"} marginBottom={"5px"} textColor={"messenger.500"}>
-            {chat.chatWith.usrname}
+            {chat.usrname}
           </Heading>
-          <Text textColor={"gray.500"}>
-            Lorem, ipsum dolor sit amet consectetur adipisicing eli
-          </Text>
+          <Text textColor={"gray.500"}>{previewData?.lastMsgText}</Text>
         </Box>
         <Box>
-          <Text width={"fit-content"}>10:30AM</Text>
-          <Text
-            bgColor={"messenger.500"}
-            textColor={"white"}
-            width={"1.25rem"}
-            height={"1.25rem"}
-            borderRadius={"50%"}
-            textAlign={"center"}
-            marginLeft={"auto"}
-          >
-            6
-          </Text>
+          <Text width={"fit-content"}>{previewData?.date}</Text>
+          {previewData?.unReadedMsgs === 0 ? (
+            ""
+          ) : (
+            <Text
+              bgColor={"messenger.500"}
+              textColor={"white"}
+              width={"1.25rem"}
+              height={"1.25rem"}
+              borderRadius={"50%"}
+              textAlign={"center"}
+              marginLeft={"auto"}
+            >
+              {previewData?.unReadedMsgs}
+            </Text>
+          )}
         </Box>
       </Box>
     </Link>

@@ -117,11 +117,11 @@ const Chat = () => {
     // check for chat opened
     if (openedChat) {
       // load chat messages
-      dispatch(getChatMessages(openedChat.id!) as any);
+      dispatch(getChatMessages(parmas.get("id")!) as any);
     }
     // // open websocket connection
     const socket = io("http://localhost:2000/", {
-      query: { client_id: currentUsr, chatId: openedChat?.id },
+      query: { client_id: currentUsr },
     });
     // chatusr_start_typing
     socket.on("chatusr_typing_status", (status) =>
@@ -129,11 +129,14 @@ const Chat = () => {
     );
     // receive msg
     socket.on("message", (message: ChatMessage) => {
-      //
       socket.emit("message_delevered", {
         msgId: message._id,
         senderId: message.senderId,
       });
+      // check if the msg releated to current chat
+      if (message.senderId !== openedChat?.id) {
+        return;
+      }
       dispatch(addMessageToChat(message));
       playReceiveMessageSound();
     });

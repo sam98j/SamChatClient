@@ -22,12 +22,11 @@ export const getUserChats = createAsyncThunk('getUserChats', async (bearerToken:
     // there is no error
     return resp
 })
-
 // get chat's messages with specific usr
-export const getChatMessages = createAsyncThunk('getChatMessages', async(chatId: string, thunkAPI) => {
+export const getChatMessages = createAsyncThunk('getChatMessages', async(chatUsrId: string, thunkAPI) => {
     // access token
     const access_token = localStorage.getItem("access_token")
-    const response = await fetch(`http://localhost:2000/messages/getchatmessages/${chatId}`, {
+    const response = await fetch(`http://localhost:2000/messages/getchatmessages/${chatUsrId}`, {
         method: "GET",
         headers: {
             authorization: access_token

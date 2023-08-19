@@ -16,7 +16,7 @@ const NewChatUser: React.FC<{
     <Link
       href={`/chat?id=${usr._id}`}
       onClick={() =>
-        dispatch(setOpenedChat({ id: usr.chatId!, usrname: usr.name! }))
+        dispatch(setOpenedChat({ id: usr._id!, usrname: usr.name! }))
       }
     >
       <Box
