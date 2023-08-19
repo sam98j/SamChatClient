@@ -1,5 +1,5 @@
 import { getChatMessages, getUserChats, getUsrOnlineStatus } from '@/apis/chats.api';
-import { ChatMessage } from '@/pages/chat/chat.interface';
+import { ChatMessage, MessageStatus } from '@/pages/chat/chat.interface';
 import {createSlice} from '@reduxjs/toolkit';
 import type {PayloadAction} from '@reduxjs/toolkit';
 
@@ -50,7 +50,13 @@ export const chatSlice = createSlice({
         // change chat user typing state
         setChatUsrTyping: (state, action: PayloadAction<boolean>) => {state.isChatUsrTyping = action.payload},
         // set chat usr status
-        setChatUsrStatus: (state, action: PayloadAction<string>) => {state.chatUsrStatus = action.payload}
+        setChatUsrStatus: (state, action: PayloadAction<string>) => {state.chatUsrStatus = action.payload},
+        // change message status
+        setMessageStatus: (state, action: PayloadAction<{msgId: string, status: MessageStatus}>) => {
+            // get index of the message
+            const msgIndex = state.chatMessages.findIndex((msg) => msg._id === action.payload.msgId);
+            state.chatMessages[msgIndex].status = action.payload.status
+        }
     },
     extraReducers: (builder) =>{
         builder.addCase(getUserChats.fulfilled,  (state, action) => {
@@ -66,6 +72,6 @@ export const chatSlice = createSlice({
         builder.addCase(getUsrOnlineStatus.fulfilled, (state, action: PayloadAction<string>) => {state.chatUsrStatus = action.payload})
     },
 })
-export const {setOpenedChat, addMessageToChat, setChatUsrTyping, setChatUsrStatus} = chatSlice.actions
+export const {setOpenedChat, addMessageToChat, setChatUsrTyping, setChatUsrStatus, setMessageStatus} = chatSlice.actions
 // export the reducer function
 export default chatSlice.reducer;

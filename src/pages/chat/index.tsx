@@ -14,19 +14,20 @@ import { BsMic } from "react-icons/bs";
 import { BiSticker } from "react-icons/bi";
 import { IoSend } from "react-icons/io5";
 import { Icon } from "@chakra-ui/icons";
-import { Socket, connect } from "socket.io-client";
+import { Socket, io } from "socket.io-client";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import NextImage from "next/image";
 import NoMessageDrow from "../../../assets/vectors/undraw_new_message_re_fp03.svg";
 import { useSearchParams } from "next/navigation";
 import { v4 as uuid } from "uuid";
-import { ChatMessage } from "./chat.interface";
+import { ChatMessage, MessageStatus } from "./chat.interface";
 import { useDispatch } from "react-redux";
 import {
   addMessageToChat,
   setChatUsrStatus,
   setChatUsrTyping,
+  setMessageStatus,
   setOpenedChat,
 } from "@/redux/chats.slice";
 import { getChatMessages, getUsrOnlineStatus } from "@/apis/chats.api";
@@ -89,18 +90,22 @@ const Chat = () => {
       senderId: currentUsr,
       text: state.msgText,
       date: new Date().toString(),
-      isReaded: false,
+      status: null,
     } as ChatMessage;
     dispatch(addMessageToChat(message));
     // send message with web sockets
     state.opened_socket?.emit("send_msg", message);
-    playSentMessageSound();
     // clear the input
     setState({
       ...state,
       msgText: "",
     });
   };
+  // mark maessage as readed
+  const markMessageAsReaded = (msgId: string, senderId: string) => {
+    state.opened_socket?.emit("message_readed", { msgId, senderId });
+  };
+  // scroll to the bottom of the view
   useEffect(() => {
     // scroll view to the end after send msg
     chatRef.current?.scrollTo(0, chatRef.current.scrollHeight);
@@ -115,7 +120,7 @@ const Chat = () => {
       dispatch(getChatMessages(openedChat.id!) as any);
     }
     // // open websocket connection
-    const socket = connect("http://localhost:2000/", {
+    const socket = io("http://localhost:2000/", {
       query: { client_id: currentUsr, chatId: openedChat?.id },
     });
     // chatusr_start_typing
@@ -123,7 +128,12 @@ const Chat = () => {
       dispatch(setChatUsrTyping(status))
     );
     // receive msg
-    socket.on("message", (message) => {
+    socket.on("message", (message: ChatMessage) => {
+      //
+      socket.emit("message_delevered", {
+        msgId: message._id,
+        senderId: message.senderId,
+      });
       dispatch(addMessageToChat(message));
       playReceiveMessageSound();
     });
@@ -135,6 +145,17 @@ const Chat = () => {
     });
     // on new chat create
     socket.on("chat_created", (chatId) => dispatch(setOpenedChat(chatId)));
+    // receive message status
+    socket.on(
+      "message_status",
+      (data: { msgId: string; status: MessageStatus }) => {
+        dispatch(setMessageStatus(data));
+        // check for message sent status
+        if (data.status === MessageStatus.SENT) {
+          playSentMessageSound();
+        }
+      }
+    );
     setState({
       ...state,
       opened_socket: socket,
@@ -143,7 +164,7 @@ const Chat = () => {
     return function cleanUp() {
       dispatch(setOpenedChat(undefined));
     };
-  }, [openedChat]);
+  }, []);
   // dummy messages
   return (
     <>
@@ -154,7 +175,11 @@ const Chat = () => {
         {/* chat messages */}
         {chatMessages.length ? (
           chatMessages.map((msg) => (
-            <ChatMassage messageData={msg} key={Math.random()} />
+            <ChatMassage
+              messageData={msg}
+              key={Math.random()}
+              markMsgAsReaded={markMessageAsReaded}
+            />
           ))
         ) : (
           <Box className={styles.imgContainer}>
