@@ -43,7 +43,7 @@ function App({ Component, pageProps }: AppProps) {
           }}
         >
           {user ? <AppHeader /> : ""}
-          {user ? <Component {...pageProps} /> : ""}
+          <Component {...pageProps} />
           <CreateChat />
         </div>
       </Provider>
