@@ -6,6 +6,7 @@ import { RootState } from "@/redux/store";
 import Image from "next/image";
 import noMassgeVector from "../../../assets/vectors/undraw_begin_chat_re_v0lw.svg";
 import { Box, Text } from "@chakra-ui/react";
+import BottomBar from "@/components/BottomBar";
 
 export default function Home() {
   // get user chats
@@ -20,19 +21,21 @@ export default function Home() {
       </Head>
       <div className={styles.home}>
         {/* render chats */}
-
-        {chats?.length === 0 ? (
-          <Box className={styles.imgContainer}>
-            <Image src={noMassgeVector} alt="no chats" />
-            <Text textColor={"gray"} fontSize={"1.5rem"}>
-              No Chats Yet!
-            </Text>
-          </Box>
-        ) : (
-          chats?.map((chat) => (
-            <ChatCard key={String(Math.random())} avataruri="" chat={chat} />
-          ))
-        )}
+        <Box>
+          {chats?.length === 0 ? (
+            <Box className={styles.imgContainer}>
+              <Image src={noMassgeVector} alt="no chats" />
+              <Text textColor={"gray"} fontSize={"1.5rem"}>
+                No Chats Yet!
+              </Text>
+            </Box>
+          ) : (
+            chats?.map((chat) => (
+              <ChatCard key={String(Math.random())} avataruri="" chat={chat} />
+            ))
+          )}
+        </Box>
+        <BottomBar />
       </div>
     </>
   );

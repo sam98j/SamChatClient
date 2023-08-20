@@ -42,8 +42,8 @@ function App({ Component, pageProps }: AppProps) {
             overflow: "hidden",
           }}
         >
-          <AppHeader />
-          <Component {...pageProps} />
+          {user ? <AppHeader /> : ""}
+          {user ? <Component {...pageProps} /> : ""}
           <CreateChat />
         </div>
       </Provider>
