@@ -1,10 +1,10 @@
-import { ChatMassageData } from "@/interfaces/chats.interface";
-import { ChatMessage } from "@/pages/chat/chat.interface";
+import { ChatMessage } from "@/interfaces/chat.interface";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL
 // login User Api
 export const getUserChats = createAsyncThunk('getUserChats', async (bearerToken: string | null, thunkAPI) => {
-    const response = await fetch("http://localhost:2000/messages/chats", {
+    const response = await fetch(`${apiUrl}/messages/chats`, {
         method: "GET",
         headers: {
             authorization: bearerToken
@@ -26,7 +26,7 @@ export const getUserChats = createAsyncThunk('getUserChats', async (bearerToken:
 export const getChatMessages = createAsyncThunk('getChatMessages', async(chatUsrId: string, thunkAPI) => {
     // access token
     const access_token = localStorage.getItem("access_token")
-    const response = await fetch(`http://localhost:2000/messages/getchatmessages/${chatUsrId}`, {
+    const response = await fetch(`${apiUrl}/messages/getchatmessages/${chatUsrId}`, {
         method: "GET",
         headers: {
             authorization: access_token
@@ -49,7 +49,7 @@ export const getUsrOnlineStatus = createAsyncThunk('getUsrOnlineStatus', async(u
     // access token
     const access_token = localStorage.getItem("access_token");
     // get request
-    const response = await fetch(`http://localhost:2000/users/get_online_status/${usrId}`, {
+    const response = await fetch(`${apiUrl}/users/get_online_status/${usrId}`, {
         method: "GET",
         headers: {authorization: access_token!}
     })

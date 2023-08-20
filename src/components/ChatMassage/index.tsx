@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./styles.module.scss";
-import { ChatMessage, MessageStatus } from "@/pages/chat/chat.interface";
+import { ChatMessage, MessageStatus } from "@/interfaces/chat.interface";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { Icon } from "@chakra-ui/icons";

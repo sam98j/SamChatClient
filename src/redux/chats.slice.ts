@@ -1,5 +1,5 @@
 import { getChatMessages, getUserChats, getUsrOnlineStatus } from '@/apis/chats.api';
-import { ChatMessage, MessageStatus } from '@/pages/chat/chat.interface';
+import { ChatMessage, MessageStatus } from '@/interfaces/chat.interface';
 import {createSlice} from '@reduxjs/toolkit';
 import type {PayloadAction} from '@reduxjs/toolkit';
 

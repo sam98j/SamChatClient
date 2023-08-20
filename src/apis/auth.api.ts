@@ -2,7 +2,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 // login User Api
 export const loginUser = createAsyncThunk('loginUser', async (userCred: {email: string, password: string}, thunkAPI) => {
-    const response = await fetch("http://localhost:2000/auth/login", {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL
+    const response = await fetch(`${apiUrl}/auth/login`, {
         method: "POST",
         headers: {
             "Content-Type": "Application/json",

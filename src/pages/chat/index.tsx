@@ -21,7 +21,7 @@ import NextImage from "next/image";
 import NoMessageDrow from "../../../assets/vectors/undraw_new_message_re_fp03.svg";
 import { useSearchParams } from "next/navigation";
 import { v4 as uuid } from "uuid";
-import { ChatMessage, MessageStatus } from "./chat.interface";
+import { ChatMessage, MessageStatus } from "../../interfaces/chat.interface";
 import { useDispatch } from "react-redux";
 import {
   addMessageToChat,
@@ -32,7 +32,10 @@ import {
 } from "@/redux/chats.slice";
 import { getChatMessages, getUsrOnlineStatus } from "@/apis/chats.api";
 import ChatMassage from "@/components/ChatMassage";
-import { playReceiveMessageSound, playSentMessageSound } from "./chat.utils";
+import {
+  playReceiveMessageSound,
+  playSentMessageSound,
+} from "../../utils/chat.util";
 
 interface ChatInterface {
   msgText: string;
