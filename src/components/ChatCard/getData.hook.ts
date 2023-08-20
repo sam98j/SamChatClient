@@ -2,9 +2,10 @@ import React from 'react'
 
 const useChatsApi = () => {
     const fetchChatPreviewData = async (chatUsrId: string): Promise<{date: string, lastMsgText: string, unReadedMsgs: number} | null> => {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL
         // access token
         const access_token = localStorage.getItem("access_token")!
-        const apiRes = await fetch(`http://localhost:2000/messages/getchatpreviewdata/${chatUsrId}`, {
+        const apiRes = await fetch(`${apiUrl}/messages/getchatpreviewdata/${chatUsrId}`, {
             method: "GET", headers: {authorization: access_token}
         });
         // check for server err
