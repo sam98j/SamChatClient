@@ -43,6 +43,7 @@ interface ChatInterface {
 }
 
 const Chat = () => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   // redux store dispatch function
   const dispatch = useDispatch();
   // use ref
@@ -123,7 +124,7 @@ const Chat = () => {
       dispatch(getChatMessages(parmas.get("id")!) as any);
     }
     // // open websocket connection
-    const socket = io("http://localhost:2000/", {
+    const socket = io(`${apiUrl}`, {
       query: { client_id: currentUsr },
     });
     // chatusr_start_typing
