@@ -24,5 +24,17 @@
             }
         }
     }
+    .screen_name {
+        height: 0px;
+    }
     // the screen name
+    &[is-chat-open="false"] {
+        .screen_name {
+            text-align: center;
+            height: initial;
+        }
+        .usr_status {
+            display: none;
+        }
+    }
 }

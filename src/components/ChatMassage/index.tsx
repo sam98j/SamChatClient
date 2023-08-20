@@ -16,7 +16,10 @@ const ChatMassage: React.FC<{
 }> = ({ messageData, markMsgAsReaded }) => {
   // redux dispatch function
   const dispatch = useDispatch();
-  const { text, senderId, status } = messageData;
+  const { text, senderId, status, date } = messageData;
+  // msg time
+  let msgTime: Date | string = new Date(date);
+  msgTime = `${msgTime.getHours()}:${msgTime.getMinutes()}`;
   // fetch data from redux store
   const currentUsr = useSelector((state: RootState) => state.auth.currentUser);
   // get data from redux store
@@ -47,12 +50,15 @@ const ChatMassage: React.FC<{
       sended-by-me={`${String(state.sendedByme)}`}
       message-status={String(status)}
     >
-      <Text>{text}</Text>
+      <Text marginBottom={"10px"}>{text}</Text>
+      <Text color={"gray"} className={styles.msg_time}>
+        {msgTime}
+      </Text>
       {/* when status is null show clock icon */}
       <Icon
         as={HiOutlineClock}
         position={"absolute"}
-        bottom={"7px"}
+        bottom={"0px"}
         right={"8px"}
         color={"gray"}
         boxSize={"4"}
@@ -61,7 +67,7 @@ const ChatMassage: React.FC<{
       <Icon
         as={BiCheck}
         position={"absolute"}
-        bottom={"7px"}
+        bottom={"0px"}
         right={"8px"}
         boxSize={"5"}
         color={"gray"}
@@ -70,7 +76,7 @@ const ChatMassage: React.FC<{
       <Icon
         as={BiCheckDouble}
         position={"absolute"}
-        bottom={"7px"}
+        bottom={"0px"}
         right={"8px"}
         boxSize={"5"}
         color={"gray"}

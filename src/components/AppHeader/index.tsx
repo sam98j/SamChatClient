@@ -6,7 +6,7 @@ import {
   HamburgerIcon,
   Icon,
 } from "@chakra-ui/icons";
-import { Avatar, Box, Text } from "@chakra-ui/react";
+import { Avatar, Box, ResponsiveValue, Text } from "@chakra-ui/react";
 import Link from "next/link";
 import { changeNewChatScrStatus } from "@/redux/system.slice";
 import { useDispatch } from "react-redux";
@@ -26,6 +26,8 @@ const AppHeader = () => {
       };
     }
   );
+  // Screen Header Name align
+  const isChatOpen = Boolean(openedChat) ? "true" : "false";
   // dispach
   const dispatch = useDispatch();
   return (
@@ -33,48 +35,49 @@ const AppHeader = () => {
       className={styles.appHeader}
       display={"flex"}
       alignItems={"center"}
-      fontFamily={"effra"}
+      overflowY={"hidden"}
+      is-chat-open={isChatOpen}
       gap={"5"}
     >
       {/* back Arr */}
       <Box>
-        <Link
-          href={"/chats"}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Icon
-            as={HiOutlineChevronLeft}
-            color={"messenger.500"}
-            boxSize={"6"}
-          />
-          <Text marginTop={"5px"} textColor={"messenger.500"}>
-            Chats
-          </Text>
-        </Link>
+        {Boolean(openedChat) ? (
+          <Link
+            href={"/chats"}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Icon
+              as={HiOutlineChevronLeft}
+              color={"messenger.500"}
+              boxSize={"6"}
+            />
+            <Text marginTop={"5px"} textColor={"messenger.500"}>
+              Chats
+            </Text>
+          </Link>
+        ) : (
+          ""
+        )}
       </Box>
       {/* Screen name */}
       <Box
         display={"flex"}
         flexDirection={"column"}
-        paddingTop={"20px"}
-        gap={"10px"}
+        justifyContent={"center"}
         flexGrow={"1"}
+        gap={"20px"}
+        className={styles.screen_name_container}
       >
         {/* Chat Name */}
-        <Text
-          className={styles.screen_name}
-          // textAlign={"center"}
-          fontSize={"xl"}
-          lineHeight={"0px"}
-        >
+        <Text className={styles.screen_name} fontSize={"lg"}>
           {openedChat === undefined ? "Chats" : openedChat?.usrname}
         </Text>
         {/* is Chat User Typing */}
-        <Text
+        <Box
           fontSize={"sm"}
           className={styles.usr_status}
           is-typing={String(isChatUsrTyping)}
@@ -82,7 +85,7 @@ const AppHeader = () => {
         >
           <span className={styles.typing}>typing ...</span>
           <span className={styles.online}>{chatUsrStatus}</span>
-        </Text>
+        </Box>
       </Box>
       {openedChat === undefined ? (
         <EditIcon
