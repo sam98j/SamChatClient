@@ -4,16 +4,16 @@ module.exports = nextTranslate({
   reactStrictMode: false,
   async redirects(){
     return [
-      // {
-      //   source: '/',
-      //   destination: '/login',
-      //   permanent: true,
-      // },
-      // {
-      //   source: '/chats',                                           
-      //   destination: '/login',
-      //   permanent: true,
-      // },                                            
+      {
+        source: '/profile',
+        destination: '/home',
+        permanent: true,
+      },       
+      {
+        source: '/login',
+        destination: '/chats',
+        permanent: true,
+      }                                
     ]
   }                                           
 });

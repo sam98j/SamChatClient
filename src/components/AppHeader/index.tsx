@@ -6,7 +6,7 @@ import {
   HamburgerIcon,
   Icon,
 } from "@chakra-ui/icons";
-import { Avatar, Box, ResponsiveValue, Text } from "@chakra-ui/react";
+import { Avatar, Box, Button, ResponsiveValue, Text } from "@chakra-ui/react";
 import Link from "next/link";
 import { changeNewChatScrStatus } from "@/redux/system.slice";
 import { useDispatch } from "react-redux";
@@ -15,19 +15,36 @@ import { IoVideocamOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { HiOutlineChevronLeft } from "react-icons/hi";
+import AppLogo from "../AppLogo";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
+import useTranslation from "next-translate/useTranslation";
 const AppHeader = () => {
+  const { t } = useTranslation("appHeader");
+  // search params
+  const loginStatus = useSearchParams().get("s");
+  // path name
+  const pathname = usePathname();
   // get opened chat status
-  const { openedChat, isChatUsrTyping, chatUsrStatus } = useSelector(
-    (state: RootState) => {
-      return {
-        openedChat: state.chat.openedChat,
-        isChatUsrTyping: state.chat.isChatUsrTyping,
-        chatUsrStatus: state.chat.chatUsrStatus,
-      };
-    }
-  );
+  const {
+    openedChat,
+    isChatUsrTyping,
+    chatUsrStatus,
+    currentUsr,
+    currentRoute,
+  } = useSelector((state: RootState) => {
+    return {
+      openedChat: state.chat.openedChat,
+      isChatUsrTyping: state.chat.isChatUsrTyping,
+      chatUsrStatus: state.chat.chatUsrStatus,
+      currentUsr: state.auth.currentUser,
+      currentRoute: state.system.currentRoute,
+    };
+  });
   // Screen Header Name align
   const isChatOpen = Boolean(openedChat) ? "true" : "false";
+  // locale
+  const { locale } = useRouter();
   // dispach
   const dispatch = useDispatch();
   return (
@@ -36,12 +53,16 @@ const AppHeader = () => {
       display={"flex"}
       alignItems={"center"}
       overflowY={"hidden"}
+      position={"relative"}
       is-chat-open={isChatOpen}
-      gap={"5"}
+      is-usr-loggedin={String(loginStatus !== "false")}
+      pref-lang={String(locale)}
     >
+      {currentUsr ? "" : <AppLogo />}
       {/* back Arr */}
-      <Box>
-        {Boolean(openedChat) ? (
+      <Box className={styles.back_arr_container}>
+        {/* if user is not logged in  */}
+        {Boolean(pathname !== "/chats") && Boolean(currentUsr) ? (
           <Link
             href={"/chats"}
             style={{
@@ -55,45 +76,61 @@ const AppHeader = () => {
               color={"messenger.500"}
               boxSize={"6"}
             />
-            <Text marginTop={"5px"} textColor={"messenger.500"}>
-              Chats
-            </Text>
+            <Text textColor={"messenger.500"}>{t("prev_nav")}</Text>
           </Link>
+        ) : (
+          ""
+        )}
+        {pathname === "/chats" && currentUsr ? (
+          <Text textColor={"messenger.500"} fontSize={"lg"}>
+            {t("edit_btn")}
+          </Text>
         ) : (
           ""
         )}
       </Box>
       {/* Screen name */}
-      <Box
-        display={"flex"}
-        flexDirection={"column"}
-        justifyContent={"center"}
-        flexGrow={"1"}
-        gap={"20px"}
-        className={styles.screen_name_container}
-      >
-        {/* Chat Name */}
-        <Text className={styles.screen_name} fontSize={"lg"}>
-          {openedChat === undefined ? "Chats" : openedChat?.usrname}
-        </Text>
-        {/* is Chat User Typing */}
+      {currentUsr ? (
         <Box
-          fontSize={"sm"}
-          className={styles.usr_status}
-          is-typing={String(isChatUsrTyping)}
-          is-online="false"
+          display={"flex"}
+          flexDirection={"column"}
+          justifyContent={"center"}
+          gap={"20px"}
+          flexGrow={1}
+          className={styles.screen_name_container}
         >
-          <span className={styles.typing}>typing ...</span>
-          <span className={styles.online}>{chatUsrStatus}</span>
+          {/* Chat Name */}
+          <Text className={styles.screen_name} fontSize={"lg"}>
+            {currentRoute}
+          </Text>
+          {/* is Chat User Typing */}
+          <Box
+            fontSize={"sm"}
+            className={styles.usr_status}
+            is-typing={String(isChatUsrTyping)}
+            is-online="false"
+          >
+            <span className={styles.typing}>typing ...</span>
+            <span className={styles.online}>{chatUsrStatus}</span>
+          </Box>
         </Box>
-      </Box>
-      {openedChat === undefined ? (
-        <EditIcon
-          boxSize={"6"}
-          color={"messenger.500"}
-          onClick={() => dispatch(changeNewChatScrStatus(true))}
-        />
       ) : (
+        ""
+      )}
+      {/* add new chat btn */}
+      <Box width={"70px"} className={styles.create_new_chat_btn}>
+        {pathname === "/chats" && !openedChat && currentUsr ? (
+          <EditIcon
+            boxSize={"6"}
+            display={"block"}
+            color={"messenger.500"}
+            onClick={() => dispatch(changeNewChatScrStatus(true))}
+          />
+        ) : (
+          ""
+        )}
+      </Box>
+      {currentUsr && openedChat ? (
         <Box display={"flex"} alignItems={"center"} gap={5}>
           <Avatar
             name="Hosam Alden"
@@ -102,6 +139,25 @@ const AppHeader = () => {
           ></Avatar>
           <Icon as={BsTelephone} boxSize={"5"} color={"messenger.500"} />
           <Icon as={IoVideocamOutline} boxSize={"6"} color={"messenger.500"} />
+        </Box>
+      ) : (
+        ""
+      )}
+      {/* login and sign up */}
+      {currentUsr ? (
+        ""
+      ) : (
+        <Box display={"flex"} gap={4}>
+          <Link href="/signup">
+            <Button colorScheme="messenger" variant="solid">
+              Sing Up
+            </Button>
+          </Link>
+          <Link href="/login?s=false">
+            <Button colorScheme="messenger" variant="outline">
+              Login
+            </Button>
+          </Link>
         </Box>
       )}
     </Box>

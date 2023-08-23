@@ -1,8 +1,18 @@
+@import "./styles.ar.module";
+
 .chat {
     padding: 20px 20px 50px 20px;
     height: calc(100dvh - 50px);
     overflow: scroll;
     font-family: 'effra' !important;
+    // spinner
+    .spinner {
+        color: blue;
+        position: absolute;
+        left: 50%;
+        bottom: 50%;
+        transform: translate(-50%, -50%);
+    }
     // scroll bar styles
     &::-webkit-scrollbar {
         width: 3px;

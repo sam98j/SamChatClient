@@ -1,0 +1,13 @@
+.bubble {
+    &[pref-lang="ar"] {
+        .msg_time {
+            margin: 0 20px;
+        }
+        &[sended-by-me="false"]{
+            .msg_time {
+                margin: initial;
+            }
+            margin-right: auto;
+        }
+    }
+}

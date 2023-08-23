@@ -1,0 +1,11 @@
+.chat {
+    &[pref-lang="ar"] {
+        .input_inner_icon {
+            left: 0 !important;
+            right: initial;
+        }
+        .send_btn svg {
+            transform: scaleX(-1);
+        }
+    }
+}

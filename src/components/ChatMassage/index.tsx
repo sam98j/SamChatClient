@@ -9,11 +9,13 @@ import { Text } from "@chakra-ui/react";
 import { HiOutlineClock } from "react-icons/hi";
 import { useDispatch } from "react-redux";
 import { setMessageStatus } from "@/redux/chats.slice";
+import { useRouter } from "next/router";
 
 const ChatMassage: React.FC<{
   messageData: ChatMessage;
   markMsgAsReaded: (msgId: string, senderId: string) => void;
 }> = ({ messageData, markMsgAsReaded }) => {
+  const { locale } = useRouter();
   // redux dispatch function
   const dispatch = useDispatch();
   const { text, senderId, status, date } = messageData;
@@ -49,6 +51,7 @@ const ChatMassage: React.FC<{
       className={styles.bubble}
       sended-by-me={`${String(state.sendedByme)}`}
       message-status={String(status)}
+      pref-lang={locale}
     >
       <Text marginBottom={"10px"}>{text}</Text>
       <Text color={"gray"} className={styles.msg_time}>

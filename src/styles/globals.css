@@ -1,9 +1,4 @@
-/* @font-face {
-  font-family: 'effraregular' !important; 
-  src: url('../../public/efrraweb/alfont_com_alfont_com_effra_rg-webfont.woff');
-  src: url('../../public/efrraweb/alfont_com_alfont_com_effra_rg-webfont.woff2');
-  font-weight: normal;
-} */
+
 
 * {
   box-sizing: border-box;
@@ -13,7 +8,7 @@
 }
 
 body {
-  font-family: 'effra' !important;
+  /* font-family: 'effra' !important; */
   font-weight: normal;
 }
 

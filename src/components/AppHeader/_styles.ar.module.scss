@@ -1,0 +1,9 @@
+.appHeader {
+    &[pref-lang="ar"] {
+        .back_arr_container a {
+            svg {
+                transform: scaleX(-1);
+            }
+        }
+    }
+}

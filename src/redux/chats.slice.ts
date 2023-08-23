@@ -17,8 +17,8 @@ export interface SingleChat {
 
 // state slice shape
 export interface ChatState {
-    chats: SingleChat[] | null,
-    chatMessages: ChatMessage[],
+    chats: SingleChat[] | null | undefined,
+    chatMessages: ChatMessage[] | null,
     openedChat: {id: string, usrname: string} | null | undefined,
     isChatUsrTyping: boolean,
     chatUsrStatus: string
@@ -43,7 +43,7 @@ export const chatSlice = createSlice({
             state.openedChat = openedChat
         },
         // add message to the chat
-        addMessageToChat: (state, action: PayloadAction<ChatMessage>) => {state.chatMessages.push(action.payload)},
+        addMessageToChat: (state, action: PayloadAction<ChatMessage>) => {state.chatMessages?.push(action.payload)},
         // change chat user typing state
         setChatUsrTyping: (state, action: PayloadAction<boolean>) => {state.isChatUsrTyping = action.payload},
         // set chat usr status
@@ -51,10 +51,10 @@ export const chatSlice = createSlice({
         // change message status
         setMessageStatus: (state, action: PayloadAction<{msgId: string, status: MessageStatus}>) => {
             // get index of the message
-            const msgIndex = state.chatMessages.findIndex((msg) => msg._id === action.payload.msgId);
+            const msgIndex = state.chatMessages?.findIndex((msg) => msg._id === action.payload.msgId)!;
             // if msg dosnot exist termenate the process
             if(msgIndex === -1) return
-            state.chatMessages[msgIndex].status = action.payload.status
+            state.chatMessages![msgIndex].status = action.payload.status
         }
     },
     extraReducers: (builder) =>{
@@ -66,6 +66,9 @@ export const chatSlice = createSlice({
         builder.addCase(getChatMessages.fulfilled,  (state, action) => {
             const chatMessages = action.payload;
             state.chatMessages = chatMessages
+        })
+        builder.addCase(getChatMessages.pending,  (state, action) => {
+            state.chatMessages = null
         })
         // set usr online status
         builder.addCase(getUsrOnlineStatus.fulfilled, (state, action: PayloadAction<string>) => {state.chatUsrStatus = action.payload})

@@ -7,6 +7,7 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Spinner,
   Text,
 } from "@chakra-ui/react";
 import { ImAttachment } from "react-icons/im";
@@ -36,6 +37,8 @@ import {
   playReceiveMessageSound,
   playSentMessageSound,
 } from "../../utils/chat.util";
+import { setCurrentRoute } from "@/redux/system.slice";
+import { useRouter } from "next/router";
 
 interface ChatInterface {
   msgText: string;
@@ -44,6 +47,7 @@ interface ChatInterface {
 
 const Chat = () => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const { locale } = useRouter();
   // redux store dispatch function
   const dispatch = useDispatch();
   // use ref
@@ -116,6 +120,8 @@ const Chat = () => {
   }, [chatMessages]);
   // component did mount life cicle hook
   useEffect(() => {
+    // set route name
+    dispatch(setCurrentRoute(openedChat?.usrname!));
     // get usr online status
     dispatch(getUsrOnlineStatus(parmas.get("id")!) as any);
     // check for chat opened
@@ -178,10 +184,12 @@ const Chat = () => {
       <Head>
         <title>Hosam Alden</title>
       </Head>
-      <div className={styles.chat} ref={chatRef}>
+      <div className={styles.chat} ref={chatRef} pref-lang={locale}>
         {/* chat messages */}
-        {chatMessages.length ? (
-          chatMessages.map((msg) => (
+        {chatMessages === null ? (
+          <Spinner className={styles.spinner} />
+        ) : chatMessages!.length ? (
+          chatMessages!.map((msg) => (
             <ChatMassage
               messageData={msg}
               key={Math.random()}
@@ -196,6 +204,7 @@ const Chat = () => {
             </Text>
           </Box>
         )}
+
         {/* chat footer */}
         <Box
           className={styles.footer}
@@ -207,7 +216,7 @@ const Chat = () => {
         >
           <Icon as={ImAttachment} boxSize={5} color={"messenger.500"} />
           <InputGroup>
-            <InputRightElement>
+            <InputRightElement className={styles.input_inner_icon}>
               <Icon as={BiSticker} boxSize={5} color={"messenger.500"} />
             </InputRightElement>
             <Input
@@ -224,6 +233,7 @@ const Chat = () => {
           <IconButton
             onClick={handleSendBtnClick}
             isRound={true}
+            className={styles.send_btn}
             icon={
               <Icon
                 as={state?.msgText ? IoSend : BsMic}

@@ -54,7 +54,12 @@ const ChatCard: React.FC<{ avataruri: string; chat: SingleChat }> = ({
       >
         <Avatar name="Hosam Alden" src={avataruri} />
         <Box flexGrow={"1"}>
-          <Heading size={"sm"} marginBottom={"5px"} textColor={"messenger.500"}>
+          <Heading
+            size={"sm"}
+            marginBottom={"5px"}
+            textColor={"messenger.500"}
+            fontFamily={"effra"}
+          >
             {chat.usrname}
           </Heading>
           <Text textColor={"gray.500"}>{previewData?.lastMsgText}</Text>

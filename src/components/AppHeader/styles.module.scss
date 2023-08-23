@@ -1,6 +1,19 @@
+@import "./_styles.ar.module";
+
 .appHeader {
     height: 50px;
     padding: 1.25rem;
+    .create_new_chat_btn {
+        display: flex;
+        justify-content: flex-end;
+    }
+    .back_arr_container {
+        display: flex;
+        justify-content: flex-start;
+        width: 6rem;
+    }
+    // hide the header in login page
+    &[is-usr-loggedin="false"] {display: none;}
     // usr status
     .usr_status {
         .typing {
@@ -34,6 +47,11 @@
             height: initial;
         }
         .usr_status {
+            display: none;
+        }
+    }
+    &[is-chat-open="true"] {
+        .create_new_chat_btn {
             display: none;
         }
     }

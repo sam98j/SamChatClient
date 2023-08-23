@@ -7,10 +7,20 @@ import Image from "next/image";
 import noMassgeVector from "../../../assets/vectors/undraw_begin_chat_re_v0lw.svg";
 import { Box, Text } from "@chakra-ui/react";
 import BottomBar from "@/components/BottomBar";
+import { useEffect } from "react";
+import { getUserChats } from "@/apis/chats.api";
+import { useDispatch } from "react-redux";
+import { setCurrentRoute } from "@/redux/system.slice";
 
 export default function Home() {
+  const dispatch = useDispatch();
   // get user chats
   const chats = useSelector((state: RootState) => state.chat.chats);
+  useEffect(() => {
+    dispatch(setCurrentRoute("Chats"));
+    const userToken = localStorage.getItem("access_token");
+    dispatch(getUserChats(userToken) as any);
+  }, []);
   return (
     <>
       <Head>
@@ -19,7 +29,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className={styles.home}>
+      <div className={styles.chats}>
         {/* render chats */}
         <Box>
           {chats?.length === 0 ? (

@@ -9,8 +9,10 @@ import {
 import styles from "./styles.module.scss";
 import { IoChatbubbles } from "react-icons/io5";
 import Link from "next/link";
+import useTranslation from "next-translate/useTranslation";
 
 const BottomBar = () => {
+  const { t } = useTranslation("bottomBar");
   return (
     <Box
       position={"absolute"}
@@ -26,21 +28,23 @@ const BottomBar = () => {
       <Link href={"/profile"}>
         <Box className={styles.icon_box}>
           <Icon as={BsPersonCircle} boxSize={"6"} />
-          <Text>Profile</Text>
+          <Text>{t("profile")}</Text>
         </Box>
       </Link>
       <Box className={styles.icon_box}>
         <Icon as={IoChatbubbles} boxSize={"6"} color={"messenger.500"} />
-        <Text textColor={"messenger.500"}>Chats</Text>
+        <Text textColor={"messenger.500"}>{t("chats")}</Text>
       </Box>
       <Box className={styles.icon_box}>
         <Icon as={BsTelephone} boxSize={"6"} />
-        <Text>Calls</Text>
+        <Text>{t("calls")}</Text>
       </Box>
-      <Box className={styles.icon_box}>
-        <Icon as={BsGearWideConnected} boxSize={"6"} />
-        <Text>Settings</Text>
-      </Box>
+      <Link href={"/settings"}>
+        <Box className={styles.icon_box}>
+          <Icon as={BsGearWideConnected} boxSize={"6"} />
+          <Text>{t("settings")}</Text>
+        </Box>
+      </Link>
     </Box>
   );
 };

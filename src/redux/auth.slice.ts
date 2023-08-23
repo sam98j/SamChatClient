@@ -28,7 +28,7 @@ export interface LogUserInSuccData {
 }
 // inital state
 const initialState: AuthState = {
-    currentUser: undefined,
+    currentUser: null,
     apiResMessage: null
 }
 
@@ -36,7 +36,12 @@ const initialState: AuthState = {
 export const authSlice = createSlice({
     name: "auth",
     initialState,
-    reducers: {},
+    reducers: {
+        logout: (state) => {
+            localStorage.removeItem('access_token')
+            state.currentUser = undefined
+        }
+    },
     extraReducers: (builder) =>{
         builder.addCase(loginUser.pending,  (state, action) => {
             state.currentUser =  null
@@ -57,8 +62,12 @@ export const authSlice = createSlice({
         builder.addCase(getUserChats.fulfilled, (state, action) => {
             state.currentUser = action.payload.userId
         })
+        builder.addCase(getUserChats.rejected, (state, action) => {
+            state.currentUser = undefined
+        })
     },
 })
 
+export const {logout} = authSlice.actions
 // export the reducer function
 export default authSlice.reducer;

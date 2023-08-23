@@ -13,9 +13,15 @@ import { getUserChats } from "@/apis/chats.api";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import CreateChat from "@/components/CreateChat";
+import Head from "next/head";
+import AppLogo from "@/components/AppLogo";
 // import the lcoal font
 const effraFont = localFont({
-  src: "../../public/efrraweb/alfont_com_alfont_com_effra_md-1-webfont.woff2",
+  src: "../../public/efrra_web_font/alfont_com_alfont_com_effra_rg-webfont.woff2",
+});
+// import the lcoal font
+const effraFont2 = localFont({
+  src: "../../public/efrra_web_font/alfont_com_alfont_com_effra_rg-webfont.woff",
 });
 
 function App({ Component, pageProps }: AppProps) {
@@ -24,8 +30,13 @@ function App({ Component, pageProps }: AppProps) {
   // store dispatch func
   const dispatch = useDispatch();
   useEffect(() => {
-    if (!user) {
-      router.push("/login");
+    if (user) {
+      router.push("/chats");
+      return;
+    }
+    if (user === undefined) {
+      router.push("/home");
+      return;
     }
   }, [user]);
   useEffect(() => {
@@ -33,21 +44,27 @@ function App({ Component, pageProps }: AppProps) {
     dispatch(getUserChats(userToken) as any);
   }, []);
   return (
-    <ChakraProvider>
-      <Provider store={store}>
-        <div
-          className={effraFont.className}
-          style={{
-            height: "100dvh",
-            overflow: "hidden",
-          }}
-        >
-          {user ? <AppHeader /> : ""}
-          <Component {...pageProps} />
-          <CreateChat />
-        </div>
-      </Provider>
-    </ChakraProvider>
+    <>
+      <Head>
+        <link rel="shortcut icon" href="/favicon.ico" />
+      </Head>
+      <ChakraProvider>
+        <Provider store={store}>
+          <div
+            // className={`${effraFont2.className} ${effraFont.className}`}
+            style={{
+              height: "100dvh",
+              overflow: "hidden",
+            }}
+          >
+            {user !== null ? <AppHeader /> : ""}
+            {user !== null ? <Component {...pageProps} /> : ""}
+            {user === null ? <AppLogo /> : ""}
+            <CreateChat />
+          </div>
+        </Provider>
+      </ChakraProvider>
+    </>
   );
 }
 
