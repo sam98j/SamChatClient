@@ -35,7 +35,7 @@ function App({ Component, pageProps }: AppProps) {
       return;
     }
     if (user === undefined) {
-      router.push("/home");
+      router.push("/");
       return;
     }
   }, [user]);

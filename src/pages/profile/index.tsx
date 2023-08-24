@@ -24,7 +24,7 @@ const Profile = () => {
     dispatch(logout());
     // check for current user auth state
     if (!currentUser) {
-      router.push("/home");
+      router.push("/");
     }
   };
   return (

@@ -6,7 +6,7 @@ module.exports = nextTranslate({
     return [
       {
         source: '/profile',
-        destination: '/home',
+        destination: '/',
         permanent: true,
       },       
       {
