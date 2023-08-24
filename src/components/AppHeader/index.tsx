@@ -21,8 +21,6 @@ import { useRouter } from "next/router";
 import useTranslation from "next-translate/useTranslation";
 const AppHeader = () => {
   const { t } = useTranslation("appHeader");
-  // search params
-  const loginStatus = useSearchParams().get("s");
   // path name
   const pathname = usePathname();
   // get opened chat status
@@ -55,7 +53,7 @@ const AppHeader = () => {
       overflowY={"hidden"}
       position={"relative"}
       is-chat-open={isChatOpen}
-      is-usr-loggedin={String(loginStatus !== "false")}
+      is-usr-loggedin={String(pathname === "/login")}
       pref-lang={String(locale)}
     >
       {currentUsr ? "" : <AppLogo />}

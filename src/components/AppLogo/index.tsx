@@ -12,7 +12,6 @@ const AppLogo = () => {
     <Box
       className={styles.logo_container}
       display={"flex"}
-      alignItems={"center"}
       justifyContent={"center"}
       flexDirection={"column"}
       gap={5}
@@ -23,7 +22,11 @@ const AppLogo = () => {
         <Image alt="logo" src={logoSVG} className={styles.img} />
         <Text fontSize={"lg"}>SamChat</Text>
       </Box>
-      {user === null ? <Spinner color="blue" display={"block"} /> : ""}
+      {user === null ? (
+        <Spinner color="blue" display={"block"} alignSelf={"center"} />
+      ) : (
+        ""
+      )}
     </Box>
   );
 };

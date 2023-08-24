@@ -3,6 +3,7 @@
 .appHeader {
     height: 50px;
     padding: 1.25rem;
+    background-color: transparent;
     .create_new_chat_btn {
         display: flex;
         justify-content: flex-end;
@@ -13,7 +14,7 @@
         width: 6rem;
     }
     // hide the header in login page
-    &[is-usr-loggedin="false"] {display: none;}
+    &[is-usr-loggedin="true"] {display: none;}
     // usr status
     .usr_status {
         .typing {

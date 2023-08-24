@@ -1,12 +1,37 @@
 .home {
     height: 100dvh;
+    display: flex;
+    @media (max-width: 500px){
+        .illustration {
+            display: none;
+        }
+    }
+    &:before {
+        position: absolute;
+        content: "";
+        width: 150px;
+        height: 150px;
+        background-color: rgb(233, 130, 233);
+        opacity: .1;
+        filter: blur(1rem);
+        z-index: -100;
+        border-radius: 30%;
+        left: -20px;
+        top: -20px;
+    }
     .container {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         height: calc(100% - 50px);
         display: flex;
         flex-direction: column;
-        align-items: center;
-        padding: 30px;
+        // padding: 30px;
         gap: 3px;
+    }
+    // illustration
+    .illustration {
+        img {
+            height: 100rem;
+            width: 100rem;
+        }
     }
 }
