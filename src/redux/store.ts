@@ -1,8 +1,8 @@
-import {configureStore } from '@reduxjs/toolkit'
+import {configureStore } from '@reduxjs/toolkit';
 import { createWrapper } from 'next-redux-wrapper';
 import authReducer from './auth.slice';
-import systemReducer from './system.slice'
-import chatReducer from './chats.slice'
+import systemReducer from './system.slice';
+import chatReducer from './chats.slice';
 
 // create and configure redux store 
 export const store = configureStore({
@@ -11,7 +11,7 @@ export const store = configureStore({
         system: systemReducer,
         chat: chatReducer
     }
-})
+});
 
 export type RootState = ReturnType<typeof store.getState>
 

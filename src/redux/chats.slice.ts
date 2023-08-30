@@ -30,50 +30,50 @@ const initialState: ChatState = {
     chatMessages: [],
     openedChat: undefined,
     isChatUsrTyping: false,
-    chatUsrStatus: ""
-}
+    chatUsrStatus: ''
+};
 
 // create state slcie and export it
 export const chatSlice = createSlice({
-    name: "chat",
+    name: 'chat',
     initialState,
     reducers: {
         setOpenedChat: (state, action: PayloadAction<{id: string, usrname: string} | undefined>) => {
-            const openedChat = action.payload
-            state.openedChat = openedChat
+            const openedChat = action.payload;
+            state.openedChat = openedChat;
         },
         // add message to the chat
-        addMessageToChat: (state, action: PayloadAction<ChatMessage>) => {state.chatMessages?.push(action.payload)},
+        addMessageToChat: (state, action: PayloadAction<ChatMessage>) => {state.chatMessages?.push(action.payload);},
         // change chat user typing state
-        setChatUsrTyping: (state, action: PayloadAction<boolean>) => {state.isChatUsrTyping = action.payload},
+        setChatUsrTyping: (state, action: PayloadAction<boolean>) => {state.isChatUsrTyping = action.payload;},
         // set chat usr status
-        setChatUsrStatus: (state, action: PayloadAction<string>) => {state.chatUsrStatus = action.payload},
+        setChatUsrStatus: (state, action: PayloadAction<string>) => {state.chatUsrStatus = action.payload;},
         // change message status
         setMessageStatus: (state, action: PayloadAction<{msgId: string, status: MessageStatus}>) => {
             // get index of the message
-            const msgIndex = state.chatMessages?.findIndex((msg) => msg._id === action.payload.msgId)!;
+            const msgIndex = state.chatMessages?.findIndex((msg) => msg._id === action.payload.msgId);
             // if msg dosnot exist termenate the process
-            if(msgIndex === -1) return
-            state.chatMessages![msgIndex].status = action.payload.status
+            if(msgIndex === -1) return;
+            state.chatMessages![msgIndex!].status = action.payload.status;
         }
     },
     extraReducers: (builder) =>{
         builder.addCase(getUserChats.fulfilled,  (state, action) => {
             const chats = action.payload.chats as [];
             state.chats =  chats,
-            state.chatMessages = []
-        })
+            state.chatMessages = [];
+        });
         builder.addCase(getChatMessages.fulfilled,  (state, action) => {
             const chatMessages = action.payload;
-            state.chatMessages = chatMessages
-        })
-        builder.addCase(getChatMessages.pending,  (state, action) => {
-            state.chatMessages = null
-        })
+            state.chatMessages = chatMessages;
+        });
+        builder.addCase(getChatMessages.pending,  (state) => {
+            state.chatMessages = null;
+        });
         // set usr online status
-        builder.addCase(getUsrOnlineStatus.fulfilled, (state, action: PayloadAction<string>) => {state.chatUsrStatus = action.payload})
+        builder.addCase(getUsrOnlineStatus.fulfilled, (state, action: PayloadAction<string>) => {state.chatUsrStatus = action.payload;});
     },
-})
-export const {setOpenedChat, addMessageToChat, setChatUsrTyping, setChatUsrStatus, setMessageStatus} = chatSlice.actions
+});
+export const {setOpenedChat, addMessageToChat, setChatUsrTyping, setChatUsrStatus, setMessageStatus} = chatSlice.actions;
 // export the reducer function
 export default chatSlice.reducer;
