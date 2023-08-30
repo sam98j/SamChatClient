@@ -1,7 +1,6 @@
-import { loginUser } from '@/apis/auth.api';
+import { loginUser, signUpApi } from '@/apis/auth.api';
 import { getUserChats } from '@/apis/chats.api';
 import {createSlice} from '@reduxjs/toolkit';
-import type {PayloadAction} from '@reduxjs/toolkit';
 
 // loging success shape
 // Login Successfly Response
@@ -30,44 +29,52 @@ export interface LogUserInSuccData {
 const initialState: AuthState = {
     currentUser: null,
     apiResMessage: null
-}
+};
 
 // create state slcie and export it
 export const authSlice = createSlice({
-    name: "auth",
+    name: 'auth',
     initialState,
     reducers: {
         logout: (state) => {
-            localStorage.removeItem('access_token')
-            state.currentUser = undefined
+            localStorage.removeItem('access_token');
+            state.currentUser = undefined;
         }
     },
     extraReducers: (builder) =>{
-        builder.addCase(loginUser.pending,  (state, action) => {
-            state.currentUser =  null
-        })
+        builder.addCase(loginUser.pending,  (state) => {
+            state.currentUser =  null;
+        });
         builder.addCase(loginUser.fulfilled,  (state, action) => {
             const {access_token, user} = action.payload as LogUserInSuccData;
             (function storeUserAccessToken(){
                 // store the user access token in the localstorage
-                localStorage.setItem('access_token', `Bearer ${access_token}`)
-            })()
+                localStorage.setItem('access_token', `Bearer ${access_token}`);
+            })();
             state.currentUser =  user._id,
-            state.apiResMessage = {err: false, msg: 'You Successfyl Logged In ...'}
-        })
-        builder.addCase(loginUser.rejected,  (state, action) => {
+            state.apiResMessage = {err: false, msg: 'You Successfyl Logged In ...'};
+        });
+        builder.addCase(loginUser.rejected,  (state) => {
             state.currentUser =  undefined;
-            state.apiResMessage = {err: true, msg: "Some thing Went Wrong, Check You email or password"}
-        })
+            state.apiResMessage = {err: true, msg: 'Some thing Went Wrong, Check You email or password'};
+        });
         builder.addCase(getUserChats.fulfilled, (state, action) => {
-            state.currentUser = action.payload.userId
-        })
-        builder.addCase(getUserChats.rejected, (state, action) => {
-            state.currentUser = undefined
-        })
+            state.currentUser = action.payload.userId;
+        });
+        builder.addCase(getUserChats.rejected, (state) => {
+            state.currentUser = undefined;
+        });
+        builder.addCase(signUpApi.fulfilled, (state, action) => {
+            if(action.payload.message) {
+                state.apiResMessage = {err: true, msg: action.payload.message};
+                return;
+            }
+            state.currentUser = action.payload.user._id;
+            localStorage.setItem('access_token', `Bearer ${action.payload.access_token}`);
+        });
     },
-})
+});
 
-export const {logout} = authSlice.actions
+export const {logout} = authSlice.actions;
 // export the reducer function
 export default authSlice.reducer;

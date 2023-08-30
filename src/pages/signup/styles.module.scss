@@ -1,0 +1,30 @@
+.signup {
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        input[type="file"]::-webkit-file-upload-button {
+            visibility: hidden;
+        }
+        input[type="file"]::before {
+            content: "Select File";
+            display: inline-block;
+            // border: 1px solid lightgray;
+            background-color: dodgerblue;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            padding: 2px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        svg {
+            color: gray;
+        }
+        input {
+            padding: 0 30px;
+        }
+    }
+}
