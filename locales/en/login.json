@@ -8,5 +8,8 @@
     "login_btn_text": "Login",
     "dont_have_account_msg": "Don't hava an account?",
     "create_account_link_text": "Create an Account",
-    "copy": "All Rights Reserved, SamChat"
+    "copy": "All Rights Reserved, SamChat",
+    "emailPlaceholder": "email",
+    "passwordPlaceholder": "password",
+    "pageName": "SamChat | Login"
 }

@@ -4,27 +4,51 @@
         flex-direction: column;
         gap: 10px;
         width: 100%;
-        input[type="file"]::-webkit-file-upload-button {
-            visibility: hidden;
+        a {
+            color: dodgerblue;
         }
-        input[type="file"]::before {
-            content: "Select File";
-            display: inline-block;
-            // border: 1px solid lightgray;
-            background-color: dodgerblue;
-            color: white;
-            border-radius: 6px;
-            cursor: pointer;
-            padding: 2px;
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
+        input[type="file"] {
+            color: transparent;
+            &::-webkit-file-upload-button {
+                visibility: hidden;
+            }
+            &::before {
+                content: attr(input-placeholder);
+                display: inline-block;
+                background-color: dodgerblue;
+                color: white;
+                border-radius: 6px;
+                cursor: pointer;
+                padding: 2px;
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+            &::after {
+                content: attr(selected-file-name);
+                display: inline-block;
+                color: gray;
+                position: absolute;
+                right: 20px;
+                bottom: 50%;
+                transform: translateY(50%);
+            }
         }
         svg {
             color: gray;
         }
         input {
             padding: 0 30px;
+        }
+    }
+    &[pref-lang='ar'] {
+        .inputIcon {
+            left: initial;
+            right: 0;
+        }
+        input[type="file"]::after {
+            right: initial;
+            left: 20px !important;
         }
     }
 }

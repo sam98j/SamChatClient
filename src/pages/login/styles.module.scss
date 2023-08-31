@@ -4,6 +4,12 @@
     // background: linear-gradient(to bottom, dodgerblue, blue);
     height: 100vh !important;
     display: flex;
+    &[pref-lang='ar'] {
+        form .inputIcon {
+            left: initial;
+            right: 0;
+        }
+    }
     // styling the login form
     form {
         border: 1px solid white;
@@ -46,7 +52,7 @@
             color: gray;
             position: relative;
             input {
-                padding-left: 40px;
+                padding: 0 40px;
             }
             i {
                 position: absolute;
@@ -77,7 +83,6 @@
             margin-top: 20px;
             display: flex;
             gap: 10px;
-            justify-content: center;
             a {
                 color: dodgerblue;
             }

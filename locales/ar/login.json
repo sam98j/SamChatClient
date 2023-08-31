@@ -8,5 +8,8 @@
     "login_btn_text": "تسجيل الدخول لحسابك",
     "dont_have_account_msg": "ليس لديك حساب ؟",
     "create_account_link_text": "قم بإنشاء حساب",
-    "copy": "جميع الحقوق محفوظة سام شات"
+    "copy": "جميع الحقوق محفوظة سام شات",
+    "emailPlaceholder": "البريد الإلكتروني",
+    "passwordPlaceholder": "كلمة المرور",
+    "pageName": "سام شات | تسجيل الدخول"
 }

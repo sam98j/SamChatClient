@@ -21,12 +21,17 @@ import { AnyAction } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useRouter } from 'next/router';
+import LanguageSwitcher from '@/components/LangSwitcher/LangSwitcher';
+import useTranslation from 'next-translate/useTranslation';
+import Link from 'next/link';
 
 const SignUp = () => {
     const dispatch = useDispatch();
-    const {push} = useRouter();
+    const {t} = useTranslation('signUp');
+    const {push, locale} = useRouter();
     const user = useSelector((state: RootState) => state.auth.currentUser);
     const [isLoading, setIsLoading] = useState(false);
+    const [selectedUserImage, seTselectedUserImage] = useState('');
     const [state, setState] = useState<SignUpDto>({
         email: '',
         usrname: '',
@@ -41,6 +46,10 @@ const SignUp = () => {
             [e.target.name]: e.target.value,
         });
         if (e.target.name === 'profile_img') {
+            if(e.target.value){
+                const fileName = e.target.value.split('\\');
+                seTselectedUserImage(fileName[fileName.length -1]);
+            }
             const formData = new FormData();
             formData.append('profile_img', e.target.files![0]);
             setState({
@@ -61,7 +70,7 @@ const SignUp = () => {
     return (
         <>
             <Head>
-                <title>SignUp Page</title>
+                <title>{t('pageName')}</title>
             </Head>
             {/* body */}
             <Box
@@ -70,22 +79,26 @@ const SignUp = () => {
                 alignItems={'center'}
                 padding={'40px'}
                 gap={5}
+                pref-lang={locale}
                 className={styles.signup}
             >
                 <AppLogo />
-                <Text fontWeight={'black'} fontSize={'x-large'}>
-          Welcome To SamChat
+                <Text fontWeight={'bold'} fontSize={'x-large'}>
+                    {t('greeting')}
+                </Text>
+                <Text fontSize={'lg'}>
+                    {t('createYourAccountText')}
                 </Text>
                 {/* form */}
                 <form onSubmit={handleSubmition}>
                     {/* email */}
                     <InputGroup>
                         <FormControl>
-                            <InputLeftElement>
+                            <InputLeftElement className={styles.inputIcon}>
                                 <Icon as={HiOutlineMail} />
                             </InputLeftElement>
                             <Input
-                                placeholder="Email"
+                                placeholder={t('emailPlaceholder')}
                                 type="email"
                                 name="email"
                                 value={state.email}
@@ -96,11 +109,11 @@ const SignUp = () => {
                     {/* name */}
                     <InputGroup>
                         <FormControl>
-                            <InputLeftElement>
+                            <InputLeftElement className={styles.inputIcon}>
                                 <Icon as={BsPersonCircle} />
                             </InputLeftElement>
                             <Input
-                                placeholder="Your name"
+                                placeholder={t('namePlaceholder')}
                                 type="text"
                                 name="name"
                                 value={state.name}
@@ -111,11 +124,11 @@ const SignUp = () => {
                     {/* password */}
                     <InputGroup>
                         <FormControl>
-                            <InputLeftElement>
+                            <InputLeftElement className={styles.inputIcon}>
                                 <Icon as={HiOutlineKey} />
                             </InputLeftElement>
                             <Input
-                                placeholder="password"
+                                placeholder={t('passwordPlaceholder')}
                                 type="password"
                                 name="password"
                                 value={state.password}
@@ -123,14 +136,14 @@ const SignUp = () => {
                             />
                         </FormControl>
                     </InputGroup>
+                    {/* re-enter password */}
                     <InputGroup>
-                        {/* re-enter password */}
                         <FormControl>
-                            <InputLeftElement>
+                            <InputLeftElement className={styles.inputIcon}>
                                 <Icon as={HiOutlineKey} />
                             </InputLeftElement>
                             <Input
-                                placeholder="re-enter your password"
+                                placeholder={t('re-enterPasswordPlaceholder')}
                                 type="password"
                                 name="password"
                                 value={state.password}
@@ -141,11 +154,11 @@ const SignUp = () => {
                     {/* usrname */}
                     <InputGroup>
                         <FormControl>
-                            <InputLeftElement>
+                            <InputLeftElement className={styles.inputIcon}>
                                 <Icon as={BsPersonCircle} />
                             </InputLeftElement>
                             <Input
-                                placeholder="username"
+                                placeholder={t('usernamePlaceholder')}
                                 type="text"
                                 name="usrname"
                                 value={state.usrname}
@@ -156,15 +169,16 @@ const SignUp = () => {
                     {/* file */}
                     <InputGroup>
                         <FormControl>
-                            <InputLeftElement>
+                            <InputLeftElement className={styles.inputIcon}>
                                 <Icon as={HiOutlineCamera} />
                             </InputLeftElement>
                             <Input
-                                placeholder="username"
                                 type="file"
                                 accept="image/png, image/jpeg"
                                 id="profile_img"
                                 name="profile_img"
+                                selected-file-name={selectedUserImage ? selectedUserImage : t('chosenImageText')}
+                                input-placeholder={t('choseImageInputPlaceholder')}
                                 onChange={handleInputChange}
                             />
                         </FormControl>
@@ -173,11 +187,14 @@ const SignUp = () => {
                         colorScheme="messenger"
                         width={'fit-content'}
                         marginTop={'20px'}
+                        marginBottom={'20px'}
                         type="submit"
                         isDisabled={isLoading}
                     >
-                        {isLoading ? 'Signing Up ...' : 'Sign Up'}
+                        {t('signUpBtnText')}
                     </Button>
+                    <Text>{t('loginText')} <Link href={'/login'}>{t('loginLinkText')}</Link></Text>
+                    <LanguageSwitcher path='signup'/>
                 </form>
             </Box>
         </>

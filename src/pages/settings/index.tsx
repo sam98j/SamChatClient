@@ -21,7 +21,7 @@ const Settings = () => {
             <Box padding={'20px'}>
                 <Box>
                     <Text textColor={'gray'}>{tSettings('select_lang')}</Text>
-                    <LanguageSwitcher />
+                    <LanguageSwitcher path='settings'/>
                 </Box>
             </Box>
         </>

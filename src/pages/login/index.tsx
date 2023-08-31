@@ -1,9 +1,12 @@
+/* eslint-disable react/no-unknown-property */
 import {
     FormControl,
     FormHelperText,
     Input,
     Button,
     Checkbox,
+    InputLeftElement,
+    InputGroup,
 } from '@chakra-ui/react';
 import { HiOutlineMail, HiLockOpen } from 'react-icons/hi';
 import Head from 'next/head';
@@ -18,13 +21,16 @@ import { useDispatch } from 'react-redux';
 import { loginUser } from '@/apis/auth.api';
 import { Spinner } from '@chakra-ui/react';
 import LoginAlerts from '@/components/LoginAlerts/LoginAlerts';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import LanguageSwitcher from '@/components/LangSwitcher/LangSwitcher';
 import useTranslation from 'next-translate/useTranslation';
 import { AnyAction } from '@reduxjs/toolkit';
+import Link from 'next/link';
+import { Icon } from '@chakra-ui/icons';
 
 const Login = () => {
     // translation
+    const {locale, push} = useRouter();
     const { t } = useTranslation('login');
     // component Local state
     const [userCred, setUserCred] = useState<{
@@ -36,7 +42,6 @@ const Login = () => {
         (state: RootState) => state.auth
     );
     // Router
-    const router = useRouter();
     // handle Input Change
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
@@ -54,7 +59,7 @@ const Login = () => {
     useEffect(() => {
         // check if the current user is logged in
         if (currentUser) {
-            router.push('/chats');
+            push('/chats');
             return;
         }
     }, [currentUser]);
@@ -63,10 +68,10 @@ const Login = () => {
     return (
         <>
             <Head>
-                <title>Login to Your Account</title>
+                <title>{t('pageName')}</title>
                 <link rel='icon' href='/favicon.ico' />
             </Head>
-            <div className={styles.login}>
+            <div className={styles.login} pref-lang={locale}>
                 {apiResMessage ? <LoginAlerts response={apiResMessage} /> : ''}
                 {/* Login Form */}
                 <form onSubmit={handleFormSubmition}>
@@ -79,33 +84,36 @@ const Login = () => {
                         <p>{t('login_with_oauth')}</p>
                     </div>
                     {/* email input */}
-                    <FormControl className={styles.FormControl}>
-                        {/* <FormLabel>Email address</FormLabel> */}
-                        <i>
-                            <HiOutlineMail size={'20px'} />
-                        </i>
-                        <Input
-                            type='email'
-                            placeholder='Eamil'
-                            value={userCred.email}
-                            name='email'
-                            onChange={handleInputChange}
-                        />
-                        <FormHelperText>{t('email_input_msg')}</FormHelperText>
-                    </FormControl>
+                    <InputGroup>
+                        <FormControl className={styles.FormControl}>
+                            <InputLeftElement className={styles.inputIcon}>
+                                <Icon as={HiOutlineMail}/>
+                            </InputLeftElement>
+                            <Input
+                                type='email'
+                                placeholder={t('emailPlaceholder')}
+                                value={userCred.email}
+                                name='email'
+                                onChange={handleInputChange}
+                            />
+                            <FormHelperText>{t('email_input_msg')}</FormHelperText>
+                        </FormControl>
+                    </InputGroup>
                     {/* password input */}
-                    <FormControl className={styles.FormControl}>
-                        <i>
-                            <HiLockOpen />
-                        </i>
-                        <Input
-                            type='password'
-                            placeholder='Password'
-                            value={userCred.password}
-                            name='password'
-                            onChange={handleInputChange}
-                        />
-                    </FormControl>
+                    <InputGroup>
+                        <FormControl className={styles.FormControl}>
+                            <InputLeftElement className={styles.inputIcon}>
+                                <Icon as={HiLockOpen}/>
+                            </InputLeftElement>
+                            <Input
+                                type='password'
+                                placeholder={t('passwordPlaceholder')}
+                                value={userCred.password}
+                                name='password'
+                                onChange={handleInputChange}
+                            />
+                        </FormControl>
+                    </InputGroup>
                     <div className={styles.areaContainer}>
                         <Checkbox className={styles.checkBox}>
                             {t('remember_me_btn_text')}
@@ -136,11 +144,11 @@ const Login = () => {
                     </div>
                     <p className={styles.createAccountLink}>
                         {t('dont_have_account_msg')}{' '}
-                        <a href=''>{t('create_account_link_text')}</a>
+                        <Link href='/signup'>{t('create_account_link_text')}</Link>
                     </p>
                     {/* bottom area */}
                     <div className=''>
-                        <LanguageSwitcher />
+                        <LanguageSwitcher path='login'/>
                     </div>
                 </form>
                 {/* vector section */}

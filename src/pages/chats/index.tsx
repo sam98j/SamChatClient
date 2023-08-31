@@ -13,8 +13,10 @@ import { useDispatch } from 'react-redux';
 import { setCurrentRoute } from '@/redux/system.slice';
 import React from 'react';
 import { AnyAction } from '@reduxjs/toolkit';
+import useTranslation from 'next-translate/useTranslation';
 
 export default function Home() {
+    const {t} = useTranslation('chatsPage');
     const dispatch = useDispatch();
     // get user chats
     const chats = useSelector((state: RootState) => state.chat.chats);
@@ -44,7 +46,7 @@ export default function Home() {
                         <Box className={styles.imgContainer}>
                             <Image src={noMassgeVector} alt='no chats' />
                             <Text textColor={'gray'} fontSize={'1.5rem'}>
-                                No Chats Yet!
+                                {t('noChatText')}
                             </Text>
                         </Box>
                     ) : (
