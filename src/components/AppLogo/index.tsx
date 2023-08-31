@@ -5,8 +5,10 @@ import Image from 'next/image';
 import styles from './styles.module.scss';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import useTranslation from 'next-translate/useTranslation';
 
 const AppLogo = () => {
+    const {t} = useTranslation('appLogo');
     const user = useSelector((state: RootState) => state.auth.currentUser);
     return (
         <Box
@@ -20,7 +22,7 @@ const AppLogo = () => {
         >
             <Box display={'flex'} alignItems={'center'} gap={2}>
                 <Image alt='logo' src={logoSVG} className={styles.img} />
-                <Text fontSize={'lg'}>SamChat</Text>
+                <Text fontSize={'lg'}>{t('appName')}</Text>
             </Box>
             {user === null ? (
                 <Spinner color='blue' display={'block'} alignSelf={'center'} />

@@ -14,6 +14,13 @@ import CreateChat from '@/components/CreateChat';
 import Head from 'next/head';
 import AppLogo from '@/components/AppLogo';
 import { AnyAction } from '@reduxjs/toolkit';
+import {extendTheme} from '@chakra-ui/react';
+// chakra theme
+const theme = extendTheme({
+    fonts: {
+        body: '"Baloo Bhaijaan 2", cursive'
+    }
+});
 
 function App({ Component, pageProps }: AppProps) {
     const router = useRouter();
@@ -39,7 +46,7 @@ function App({ Component, pageProps }: AppProps) {
             <Head>
                 <link rel='shortcut icon' href='/favicon.ico' />
             </Head>
-            <ChakraProvider>
+            <ChakraProvider theme={theme}>
                 <Provider store={store}>
                     <div
                         // className={`${effraFont2.className} ${effraFont.className}`}
