@@ -3,8 +3,8 @@
 .bubble {
     border-radius: 1.15rem;
     line-height: 1.25;
-    max-width: 75%;
-    padding: 0.5rem .875rem;
+    max-width: 80%;
+    padding: .3rem .8rem;
     position: relative;
     word-wrap: break-word;
     margin: 0.5rem 0;
@@ -17,10 +17,6 @@
        content: "";
        height: 1rem;
        position: absolute;
-    }
-    .msg_time {
-      position: absolute;
-      bottom: 0px;
     }
     // if the message is sended by the current user
     &[sended-by-me="true"] {
@@ -43,13 +39,10 @@
     }
     // if the message is not sended by the current user
     &[sended-by-me="false"] {
-      .check_icon, .double_check_icon, .time_icon {
+      .msg_status_icon {
         display: none !important;
       }
-      .msg_time {
-        color: white;
-        left: 12px;
-      }
+      .msg_time {color: white;}
       background-color: #248bf5;
       color: #fff; 
       &:before {
@@ -66,30 +59,9 @@
         width: 10px;
       }
     }
-    // time icon
-    .time_icon, .check_icon, .double_check_icon {
-      display: none
-    }
-    // check for message sent status
-    &[message-status="null"] {
-      .time_icon {
-        display: initial;
-      }
-    }
-    // check icon
-    &[message-status="SENT"] {
-      .check_icon {
-        display: initial;
-      }
-    }
-    // dubble check icon
-    &[message-status="DELEVERED"] {
-      .double_check_icon {display: initial;}
-    }
     // dubble check when message reded
     &[message-status="READED"] {
-      .double_check_icon {
-        display: initial;
+      .msg_status_icon {
         color: dodgerblue;
       }
     }

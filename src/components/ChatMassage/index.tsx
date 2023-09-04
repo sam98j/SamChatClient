@@ -6,11 +6,12 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { Icon } from '@chakra-ui/icons';
 import { BiCheck, BiCheckDouble } from 'react-icons/bi';
-import { Text } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 import { HiOutlineClock } from 'react-icons/hi';
 import { useDispatch } from 'react-redux';
 import { setMessageStatus } from '@/redux/chats.slice';
 import { useRouter } from 'next/router';
+import VoiceMemoPlayer from '../VoiceMemoPlayer';
 
 const ChatMassage: React.FC<{
     messageData: ChatMessage;
@@ -19,7 +20,7 @@ const ChatMassage: React.FC<{
     const { locale } = useRouter();
     // redux dispatch function
     const dispatch = useDispatch();
-    const { text, senderId, status, date } = messageData;
+    const { text, senderId, status, date, isItTextMsg, voiceNoteDuration } = messageData;
     // msg time
     let msgTime: Date | string = new Date(date);
     msgTime = `${msgTime.getHours()}:${msgTime.getMinutes()}`;
@@ -56,38 +57,21 @@ const ChatMassage: React.FC<{
             message-status={String(status)}
             pref-lang={locale}
         >
-            <Text marginBottom={'10px'}>{text}</Text>
-            <Text color={'gray'} className={styles.msg_time}>
-                {msgTime}
-            </Text>
-            {/* when status is null show clock icon */}
-            <Icon
-                as={HiOutlineClock}
-                position={'absolute'}
-                bottom={'0px'}
-                right={'8px'}
-                color={'gray'}
-                boxSize={'4'}
-                className={styles.time_icon}
-            />
-            <Icon
-                as={BiCheck}
-                position={'absolute'}
-                bottom={'0px'}
-                right={'8px'}
-                boxSize={'5'}
-                color={'gray'}
-                className={styles.check_icon}
-            />
-            <Icon
-                as={BiCheckDouble}
-                position={'absolute'}
-                bottom={'0px'}
-                right={'8px'}
-                boxSize={'5'}
-                color={'gray'}
-                className={styles.double_check_icon}
-            />
+            {/* chat text  */}
+            <Text>{isItTextMsg ? text : <VoiceMemoPlayer data={{sendedByMe: state.sendedByme, src: text, voiceNoteDuration}} />}</Text>
+            {/* msg footer */}
+            <Box display={'flex'} justifyContent={'flex-end'}>
+                <Text color={'gray'} className={styles.msg_time} width={'fit-content'}>
+                    {msgTime}
+                </Text>
+                {/* when status is null show clock icon */}
+                <Icon
+                    as={status === null ? HiOutlineClock : status === MessageStatus.SENT ? BiCheck : BiCheckDouble}
+                    boxSize={'5'}
+                    color={'gray'}
+                    className={styles.msg_status_icon}
+                />
+            </Box>
         </div>
     );
 };

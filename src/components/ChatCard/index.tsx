@@ -5,16 +5,19 @@ import { useSearchParams } from 'next/navigation';
 import { SingleChat, setOpenedChat } from '@/redux/chats.slice';
 import { useDispatch } from 'react-redux';
 import useChatsApi from './getData.hook';
+import useTranslation from 'next-translate/useTranslation';
 
 const ChatCard: React.FC<{ avataruri: string; chat: SingleChat }> = ({
     avataruri,
     chat,
 }) => {
     const searchParams = useSearchParams();
+    const {t} = useTranslation('chatCard');
     const [previewData, setPreveiwData] = useState<{
         date: string;
         lastMsgText: string;
         unReadedMsgs: number;
+        isItTextMsg: boolean
     }>();
     const { fetchChatPreviewData } = useChatsApi();
     // store dispatch function
@@ -64,7 +67,7 @@ const ChatCard: React.FC<{ avataruri: string; chat: SingleChat }> = ({
                         {chat.usrname}
                     </Heading>
                     <Text textColor={'gray.500'}>
-                        {previewData?.lastMsgText}
+                        {previewData?.isItTextMsg ? previewData?.lastMsgText : t('voiceMsg')}
                     </Text>
                 </Box>
                 <Box>

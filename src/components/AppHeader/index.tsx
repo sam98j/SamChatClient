@@ -107,7 +107,7 @@ const AppHeader = () => {
                         is-online='false'
                     >
                         <span className={styles.typing}>typing ...</span>
-                        <span className={styles.online}>{chatUsrStatus}</span>
+                        <span className={styles.online}>{chatUsrStatus === 'online' ? t('online') : `${t('last_seen')} ${chatUsrStatus}`}</span>
                     </Box>
                 </Box>
             ) : (

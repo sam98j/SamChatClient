@@ -69,7 +69,7 @@ const CreateChat = () => {
                         <Search2Icon color='gray.300' />
                     </InputLeftElement>
                     <Input
-                        type='tel'
+                        type='text'
                         placeholder='Search by user name'
                         variant='filled'
                         borderRadius={'2xl'}

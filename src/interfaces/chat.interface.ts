@@ -11,4 +11,6 @@ export interface ChatMessage {
     receiverId: string;
     status: MessageStatus | null;
     date: string;
+    isItTextMsg: boolean,
+    voiceNoteDuration: string
 }

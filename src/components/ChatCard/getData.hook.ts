@@ -5,6 +5,7 @@ const useChatsApi = () => {
         date: string;
         lastMsgText: string;
         unReadedMsgs: number;
+        isItTextMsg: boolean
     } | null> => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         // access token
@@ -24,6 +25,7 @@ const useChatsApi = () => {
             date: string;
             lastMsgText: string;
             unReadedMsgs: number;
+            isItTextMsg: boolean
         };
     };
     return { fetchChatPreviewData };

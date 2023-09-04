@@ -17,11 +17,12 @@ import useTranslation from 'next-translate/useTranslation';
 
 export default function Home() {
     const {t} = useTranslation('chatsPage');
+    const {t: routesNamesTra} = useTranslation('routesNames');
     const dispatch = useDispatch();
     // get user chats
     const chats = useSelector((state: RootState) => state.chat.chats);
     useEffect(() => {
-        dispatch(setCurrentRoute('Chats'));
+        dispatch(setCurrentRoute(routesNamesTra('chats')));
         const userToken = localStorage.getItem('access_token');
         dispatch(getUserChats(userToken) as unknown as AnyAction);
     }, []);

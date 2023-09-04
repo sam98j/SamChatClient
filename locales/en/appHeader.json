@@ -1,4 +1,6 @@
 {
     "edit_btn": "Edit",
-    "prev_nav": "Chats"
+    "prev_nav": "Chats",
+    "last_seen": "last seen at",
+    "online": "online"
 }
