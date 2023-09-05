@@ -15,8 +15,11 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useDispatch } from 'react-redux';
 import { changeNewChatScrStatus } from '@/redux/system.slice';
+import useTranslation from 'next-translate/useTranslation';
 
 const CreateChat = () => {
+    // trans
+    const {t} = useTranslation('createChat');
     // redux store dispatch function
     const dispatch = useDispatch();
     // redux store
@@ -70,7 +73,7 @@ const CreateChat = () => {
                     </InputLeftElement>
                     <Input
                         type='text'
-                        placeholder='Search by user name'
+                        placeholder={t('search_usr_placeholder')}
                         variant='filled'
                         borderRadius={'2xl'}
                         onChange={handleFormChange}

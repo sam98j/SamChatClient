@@ -6,6 +6,11 @@ import { SingleChat, setOpenedChat } from '@/redux/chats.slice';
 import { useDispatch } from 'react-redux';
 import useChatsApi from './getData.hook';
 import useTranslation from 'next-translate/useTranslation';
+import { Icon } from '@chakra-ui/icons';
+import { BsMic } from 'react-icons/bs';
+import { secondsToDurationConverter } from '@/utils/voiceMemoRec';
+import MessageStatusIcon from '../MessageStatus';
+import { MessageStatus } from '@/interfaces/chat.interface';
 
 const ChatCard: React.FC<{ avataruri: string; chat: SingleChat }> = ({
     avataruri,
@@ -17,7 +22,10 @@ const ChatCard: React.FC<{ avataruri: string; chat: SingleChat }> = ({
         date: string;
         lastMsgText: string;
         unReadedMsgs: number;
-        isItTextMsg: boolean
+        isItTextMsg: boolean,
+        voiceNoteDuration: string,
+        senderId: string;
+        status: MessageStatus
     }>();
     const { fetchChatPreviewData } = useChatsApi();
     // store dispatch function
@@ -66,8 +74,9 @@ const ChatCard: React.FC<{ avataruri: string; chat: SingleChat }> = ({
                     >
                         {chat.usrname}
                     </Heading>
-                    <Text textColor={'gray.500'}>
-                        {previewData?.isItTextMsg ? previewData?.lastMsgText : t('voiceMsg')}
+                    <Text textColor={'gray.500'} display={'flex'} alignItems={'center'}>
+                        <MessageStatusIcon data={{msgStatus: previewData?.status as MessageStatus, senderId: previewData?.senderId as string}}/>
+                        {previewData?.isItTextMsg ? previewData?.lastMsgText :  (<><Icon as={BsMic} />{t('voiceMsg')} {secondsToDurationConverter(Number(previewData?.voiceNoteDuration))}</>)}
                     </Text>
                 </Box>
                 <Box>

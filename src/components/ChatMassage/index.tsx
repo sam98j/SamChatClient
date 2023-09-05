@@ -4,14 +4,15 @@ import styles from './styles.module.scss';
 import { ChatMessage, MessageStatus } from '@/interfaces/chat.interface';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { Icon } from '@chakra-ui/icons';
-import { BiCheck, BiCheckDouble } from 'react-icons/bi';
+// import { Icon } from '@chakra-ui/icons';
+// import { BiCheck, BiCheckDouble } from 'react-icons/bi';
 import { Box, Text } from '@chakra-ui/react';
-import { HiOutlineClock } from 'react-icons/hi';
+// import { HiOutlineClock } from 'react-icons/hi';
 import { useDispatch } from 'react-redux';
 import { setMessageStatus } from '@/redux/chats.slice';
 import { useRouter } from 'next/router';
 import VoiceMemoPlayer from '../VoiceMemoPlayer';
+import MessageStatusIcon from '../MessageStatus';
 
 const ChatMassage: React.FC<{
     messageData: ChatMessage;
@@ -60,17 +61,10 @@ const ChatMassage: React.FC<{
             {/* chat text  */}
             <Text>{isItTextMsg ? text : <VoiceMemoPlayer data={{sendedByMe: state.sendedByme, src: text, voiceNoteDuration}} />}</Text>
             {/* msg footer */}
-            <Box display={'flex'} justifyContent={'flex-end'}>
-                <Text color={'gray'} className={styles.msg_time} width={'fit-content'}>
-                    {msgTime}
-                </Text>
+            <Box display={'flex'} justifyContent={'flex-end'} marginTop={'5px'}>
+                <Text color={'gray'} className={styles.msg_time} width={'fit-content'}>{msgTime}</Text>
                 {/* when status is null show clock icon */}
-                <Icon
-                    as={status === null ? HiOutlineClock : status === MessageStatus.SENT ? BiCheck : BiCheckDouble}
-                    boxSize={'5'}
-                    color={'gray'}
-                    className={styles.msg_status_icon}
-                />
+                <MessageStatusIcon data={{msgStatus: status!, senderId: senderId}}/>
             </Box>
         </div>
     );

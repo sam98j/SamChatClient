@@ -1,3 +1,5 @@
+import { MessageStatus } from '@/interfaces/chat.interface';
+
 const useChatsApi = () => {
     const fetchChatPreviewData = async (
         chatUsrId: string
@@ -5,7 +7,10 @@ const useChatsApi = () => {
         date: string;
         lastMsgText: string;
         unReadedMsgs: number;
-        isItTextMsg: boolean
+        isItTextMsg: boolean,
+        voiceNoteDuration: string,
+        senderId: string,
+        status: MessageStatus
     } | null> => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         // access token
@@ -25,7 +30,10 @@ const useChatsApi = () => {
             date: string;
             lastMsgText: string;
             unReadedMsgs: number;
-            isItTextMsg: boolean
+            isItTextMsg: boolean,
+            voiceNoteDuration: string,
+            senderId: string,
+            status: MessageStatus
         };
     };
     return { fetchChatPreviewData };

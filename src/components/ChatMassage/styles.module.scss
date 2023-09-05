@@ -39,9 +39,6 @@
     }
     // if the message is not sended by the current user
     &[sended-by-me="false"] {
-      .msg_status_icon {
-        display: none !important;
-      }
       .msg_time {color: white;}
       background-color: #248bf5;
       color: #fff; 
@@ -57,12 +54,6 @@
         left: 20px;
         transform: translate(-30px, -2px);
         width: 10px;
-      }
-    }
-    // dubble check when message reded
-    &[message-status="READED"] {
-      .msg_status_icon {
-        color: dodgerblue;
       }
     }
 }
