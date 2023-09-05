@@ -2,5 +2,7 @@
     "edit_btn": "Edit",
     "prev_nav": "Chats",
     "last_seen": "last seen at",
-    "online": "online"
+    "online": "online",
+    "login_link": "Login",
+    "signup_link": "SignUp"
 }

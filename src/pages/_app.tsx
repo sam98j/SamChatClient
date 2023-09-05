@@ -49,7 +49,6 @@ function App({ Component, pageProps }: AppProps) {
             <ChakraProvider theme={theme}>
                 <Provider store={store}>
                     <div
-                        // className={`${effraFont2.className} ${effraFont.className}`}
                         style={{
                             height: '100dvh',
                             overflow: 'hidden',

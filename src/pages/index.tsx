@@ -5,13 +5,15 @@ import { Box, Button, Text } from '@chakra-ui/react';
 import Image from 'next/image';
 import IllusSVG from '@/../assets/vectors/undraw_in_sync_re_jlqd.svg';
 import Link from 'next/link';
+import useTranslation from 'next-translate/useTranslation';
 
 const Home = () => {
+    const {t} = useTranslation('home');
     return (
         <>
             <>
                 <Head>
-                    <title>SamChat | Home</title>
+                    <title>{t('pageName')}</title>
                 </Head>
                 <div className={styles.home}>
                     <Box
@@ -19,26 +21,17 @@ const Home = () => {
                         padding={['20px', null, 100, 100]}
                     >
                         <Box fontSize={'4xl'} fontWeight={'black'}>
-                            Welcome to{' '}
-                            <Text textColor={'messenger.500'}>SamChat</Text>
-                            <Text>Fast, Secure, easy Chat App</Text>
+                            {t('welcome_text')}{' '}
+                            <Text textColor={'messenger.500'} fontWeight={'black'}>{t('appName')}</Text>
+                            <Text>{t('features')}</Text>
                         </Box>
-                        <Text
-                            textColor={'gray.600'}
-                            width={[null, null, null, '50%']}
-                        >
-                            SamChat is a free, web-based messaging app that
-                            allows you to stay in touch with friends and family
-                            from anywhere in the world. With SamChat, you can
-                            send text messages, make voice calls, and video
-                            chat. You can also share photos, videos, and files.
-                        </Text>
+                        <Text textColor={'gray.600'} width={[null, null, null, '50%']}>{t('disc')}</Text>
                         <Button
                             colorScheme='blue'
                             marginTop={'20px'}
                             width={'10rem'}
                         >
-                            <Link href={'/login'}>Start Now</Link>
+                            <Link href={'/login'}>{t('start_now_txt')}</Link>
                         </Button>
                     </Box>
                     {/* illustration */}

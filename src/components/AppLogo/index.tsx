@@ -14,15 +14,14 @@ const AppLogo = () => {
         <Box
             className={styles.logo_container}
             display={'flex'}
-            justifyContent={'center'}
             flexDirection={'column'}
+            justifyContent={'center'}
             gap={5}
-            flexGrow={1}
             is-app-loading={String(user === null)}
         >
             <Box display={'flex'} alignItems={'center'} gap={2}>
                 <Image alt='logo' src={logoSVG} className={styles.img} />
-                <Text fontSize={'lg'} fontWeight={'black'}>{t('appName')}</Text>
+                <Text fontSize={'lg'} fontWeight={'black'}>{user === null ? t('appName') : ''}</Text>
             </Box>
             {user === null ? (
                 <Spinner color='blue' display={'block'} alignSelf={'center'} />

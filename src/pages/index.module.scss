@@ -1,6 +1,7 @@
 .home {
-    height: 100dvh;
+    height: calc(100dvh - 50px);
     display: flex;
+    overflow: hidden !important;
     @media (max-width: 500px){
         .illustration {
             display: none;

@@ -154,12 +154,12 @@ const AppHeader = () => {
                 <Box display={'flex'} gap={4}>
                     <Link href='/signup'>
                         <Button colorScheme='messenger' variant='solid'>
-                            Sing Up
+                            {t('signup_link')}
                         </Button>
                     </Link>
                     <Link href='/login?s=false'>
                         <Button colorScheme='messenger' variant='outline'>
-                            Login
+                            {t('login_link')}
                         </Button>
                     </Link>
                 </Box>
