@@ -17,27 +17,28 @@ import { BsMic, BsStopFill } from 'react-icons/bs';
 import { BiSticker } from 'react-icons/bi';
 import { IoSend } from 'react-icons/io5';
 import { Icon } from '@chakra-ui/icons';
-import { Socket, io } from 'socket.io-client';
+import { Socket} from 'socket.io-client';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import NextImage from 'next/image';
 import NoMessageDrow from '../../../assets/vectors/undraw_new_message_re_fp03.svg';
 import { useSearchParams } from 'next/navigation';
 import { v4 as uuid } from 'uuid';
-import { ChatMessage, MessageStatus } from '../../interfaces/chat.interface';
+import { ChatMessage} from '../../interfaces/chat.interface';
 import { useDispatch } from 'react-redux';
 import {
     addMessageToChat,
-    setChatUsrStatus,
-    setChatUsrTyping,
-    setMessageStatus,
+    // setChatUsrStatus,
+    // setChatUsrTyping,
+    setCurrentUsrTypingState,
+    // setMessageStatus,
     setOpenedChat,
 } from '@/redux/chats.slice';
 import { getChatMessages, getUsrOnlineStatus } from '@/apis/chats.api';
 import ChatMassage from '@/components/ChatMassage';
 import {
-    playReceiveMessageSound,
-    playSentMessageSound,
+    // playReceiveMessageSound,
+    // playSentMessageSound,
     voiceMemoTimer,
 } from '../../utils/chat.util';
 import { setCurrentRoute } from '@/redux/system.slice';
@@ -54,8 +55,7 @@ interface ChatInterface {
 const {start, stop, cancel} = VoiceMemoRecorder();
 
 const Chat = () => {
-    // api url
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    console.log('mount');
     // translate
     const {t} = useTranslation('chatScreen');
     // langs
@@ -87,17 +87,9 @@ const Chat = () => {
         opened_socket: null,
     });
     // handleInputFocus
-    const handleInputFocus = () =>
-        state.opened_socket?.emit('chatusr_typing_status', {
-            chatUsrId: parmas.get('id'),
-            status: true,
-        });
+    const handleInputFocus = () => dispatch(setCurrentUsrTypingState(true));
     // handleInputBlur
-    const handleInputBlur = () =>
-        state.opened_socket?.emit('chatusr_typing_status', {
-            chatUsrId: parmas.get('id'),
-            status: false,
-        });
+    const handleInputBlur = () => dispatch(setCurrentUsrTypingState(false));
     // opened socket
     // inputChangeHandler
     const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -160,7 +152,6 @@ const Chat = () => {
             } as ChatMessage;
             dispatch(addMessageToChat(message));
             // send message with web sockets
-            state.opened_socket?.emit('send_msg', message);
             // clear the input
             setState({
                 ...state,
@@ -170,8 +161,9 @@ const Chat = () => {
         }
     };
     // mark maessage as readed
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const markMessageAsReaded = (msgId: string, senderId: string) => {
-        state.opened_socket?.emit('message_readed', { msgId, senderId });
+        // state.opened_socket?.emit('message_readed', { msgId, senderId });
     };
     // scroll to the bottom of the view
     useEffect(() => {
@@ -191,54 +183,8 @@ const Chat = () => {
                 getChatMessages(parmas.get('id')!) as unknown as AnyAction
             );
         }
-        // // open websocket connection
-        const socket = io(`${apiUrl}`, {
-            query: { client_id: currentUsr },
-        });
-        // chatusr_start_typing
-        socket.on('chatusr_typing_status', (status) =>
-            dispatch(setChatUsrTyping(status))
-        );
-        // receive msg
-        socket.on('message', (message: ChatMessage) => {
-            socket.emit('message_delevered', {
-                msgId: message._id,
-                senderId: message.senderId,
-            });
-            // check if the msg releated to current chat
-            if (message.senderId !== openedChat?.id) {
-                return;
-            }
-            dispatch(addMessageToChat(message));
-            playReceiveMessageSound();
-        });
-        // usr_online_status
-        socket.on('usr_online_status', (data) => {
-            if (parmas.get('id') === data.id) {
-                dispatch(setChatUsrStatus(data.status));
-            }
-        });
-        // on new chat create
-        socket.on('chat_created', (chatId) => dispatch(setOpenedChat(chatId)));
-        // receive message status
-        socket.on(
-            'message_status',
-            (data: { msgId: string; status: MessageStatus }) => {
-                dispatch(setMessageStatus(data));
-                // check for message sent status
-                if (data.status === MessageStatus.SENT) {
-                    playSentMessageSound();
-                }
-            }
-        );
-        setState({
-            ...state,
-            opened_socket: socket,
-        });
         // clean up when component unmount
-        return function cleanUp() {
-            dispatch(setOpenedChat(undefined));
-        };
+        return function cleanUp() {dispatch(setOpenedChat(undefined));};
     }, []);
     // dummy messages
     return (

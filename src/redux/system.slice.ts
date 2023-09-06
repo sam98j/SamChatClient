@@ -5,14 +5,16 @@ import type {PayloadAction} from '@reduxjs/toolkit';
 export interface SystemState {
     isNewChatScreenOpen: boolean,
     currentRoute: string,
-    prefLanguage: string
+    prefLanguage: string,
+    isChatUsrTyping: boolean
 }
 
 // inital state
 const initialState: SystemState = {
     isNewChatScreenOpen: false,
     currentRoute: '',
-    prefLanguage: 'en'
+    prefLanguage: 'en',
+    isChatUsrTyping: false
 };
 
 // create state slcie and export it
@@ -24,7 +26,10 @@ export const systemSlice = createSlice({
             state.isNewChatScreenOpen = action.payload;
         },
         setCurrentRoute: (state, action: PayloadAction<string>) => {state.currentRoute = action.payload;},
-        setLang: (state, action: PayloadAction<string>) => {state.prefLanguage = action.payload;}
+        setLang: (state, action: PayloadAction<string>) => {state.prefLanguage = action.payload;},
+        setChatUsrTypingStatus(state, action: PayloadAction<boolean>){
+            state.isChatUsrTyping = action.payload;
+        }
     },
 });
 export const {changeNewChatScrStatus, setCurrentRoute} = systemSlice.actions;

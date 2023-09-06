@@ -40,12 +40,12 @@ const ChatMassage: React.FC<{
     useEffect(() => {
         // check if the current usr is not the sender
         if (currentUsr !== senderId) {
-            dispatch(
-                setMessageStatus({
-                    msgId: messageData._id,
-                    status: MessageStatus.READED,
-                })
-            );
+            // dispatch(
+            //     setMessageStatus({
+            //         msgId: messageData._id,
+            //         status: MessageStatus.READED,
+            //     })
+            // );
             // check if message is readed
             if (status === MessageStatus.READED) return;
             markMsgAsReaded(messageData._id, senderId);

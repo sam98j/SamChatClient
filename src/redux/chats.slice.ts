@@ -21,7 +21,9 @@ export interface ChatState {
     chatMessages: ChatMessage[] | null,
     openedChat: {id: string, usrname: string} | null | undefined,
     isChatUsrTyping: boolean,
-    chatUsrStatus: string
+    isCurrentUsrTyping: boolean,
+    chatUsrStatus: string,
+
 }
 
 // inital state
@@ -30,6 +32,7 @@ const initialState: ChatState = {
     chatMessages: [],
     openedChat: undefined,
     isChatUsrTyping: false,
+    isCurrentUsrTyping: false,
     chatUsrStatus: ''
 };
 
@@ -55,7 +58,9 @@ export const chatSlice = createSlice({
             // if msg dosnot exist termenate the process
             if(msgIndex === -1) return;
             state.chatMessages![msgIndex!].status = action.payload.status;
-        }
+        },
+        // set current usr typing state
+        setCurrentUsrTypingState(state, action: PayloadAction<boolean>){state.isCurrentUsrTyping = action.payload;}
     },
     extraReducers: (builder) =>{
         builder.addCase(getUserChats.fulfilled,  (state, action) => {
@@ -74,6 +79,6 @@ export const chatSlice = createSlice({
         builder.addCase(getUsrOnlineStatus.fulfilled, (state, action: PayloadAction<string>) => {state.chatUsrStatus = action.payload;});
     },
 });
-export const {setOpenedChat, addMessageToChat, setChatUsrTyping, setChatUsrStatus, setMessageStatus} = chatSlice.actions;
+export const {setOpenedChat, addMessageToChat, setChatUsrTyping, setChatUsrStatus, setMessageStatus, setCurrentUsrTypingState} = chatSlice.actions;
 // export the reducer function
 export default chatSlice.reducer;
