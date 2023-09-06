@@ -9,24 +9,31 @@ import { useDispatch } from 'react-redux';
 import { logout } from '@/redux/auth.slice';
 import { setCurrentRoute } from '@/redux/system.slice';
 import useTranslation from 'next-translate/useTranslation';
+import { getUsrProfileData } from '@/apis/usrprofile.api';
 
 const Profile = () => {
     const { t } = useTranslation('routesNames');
     // router
-    const router = useRouter();
+    const {push} = useRouter();
     const dispatch = useDispatch();
-    const currentUser = useSelector(
-        (state: RootState) => state.auth.currentUser
+    const {currentUser, usrProfiledata} = useSelector((state: RootState) => {
+        return {
+            currentUser: state.auth.currentUser,
+            usrProfiledata: state.usrProfile
+        };
+    }
     );
     useEffect(() => {
         dispatch(setCurrentRoute(t('profile')));
+        dispatch(getUsrProfileData(currentUser!) as unknown as never);
     }, []);
     // handleClick
     const handleClick = () => {
         dispatch(logout());
         // check for current user auth state
         if (!currentUser) {
-            router.push('/');
+            console.log('push');
+            push('/');
         }
     };
     return (
@@ -48,9 +55,11 @@ const Profile = () => {
                         src='https://xsgames.co/randomusers/avatar.php?g=female'
                         size={'2xl'}
                     />
-                    <Text fontSize={'2xl'} fontWeight={'black'}>
-                        Hosam Alden
+                    {/* name */}
+                    <Text fontSize={'2xl'} fontWeight={'black'} margin={'0'} lineHeight={'0'}>
+                        {usrProfiledata.usrProfile?.name}
                     </Text>
+                    <Text lineHeight={'0'} textColor={'gray'}>@{usrProfiledata.usrProfile?.usrname}</Text>
                 </Box>
                 {/* signout btn */}
                 <Box

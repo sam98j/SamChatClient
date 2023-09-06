@@ -39,23 +39,21 @@ export const authSlice = createSlice({
         logout: (state) => {
             localStorage.removeItem('access_token');
             state.currentUser = undefined;
+        },
+        resetAuthApiRes: (state) => {
+            state.apiResMessage = null;
         }
     },
     extraReducers: (builder) =>{
-        builder.addCase(loginUser.pending,  (state) => {
-            state.currentUser =  null;
-        });
         builder.addCase(loginUser.fulfilled,  (state, action) => {
             const {access_token, user} = action.payload as LogUserInSuccData;
-            (function storeUserAccessToken(){
-                // store the user access token in the localstorage
-                localStorage.setItem('access_token', `Bearer ${access_token}`);
-            })();
+            // store the user access token in the localstorage
+            localStorage.setItem('access_token', `Bearer ${access_token}`);
             state.currentUser =  user._id,
             state.apiResMessage = {err: false, msg: 'You Successfyl Logged In ...'};
         });
         builder.addCase(loginUser.rejected,  (state) => {
-            state.currentUser =  undefined;
+            state.currentUser =  '';
             state.apiResMessage = {err: true, msg: 'Some thing Went Wrong, Check You email or password'};
         });
         builder.addCase(getUserChats.fulfilled, (state, action) => {
@@ -75,6 +73,6 @@ export const authSlice = createSlice({
     },
 });
 
-export const {logout} = authSlice.actions;
+export const {logout, resetAuthApiRes} = authSlice.actions;
 // export the reducer function
 export default authSlice.reducer;

@@ -42,7 +42,6 @@ const AppHeader = () => {
     const { locale } = useRouter();
     // dispach
     const dispatch = useDispatch();
-    console.log(isLoginOrSignUpOpen);
     return (
         <Box
             className={styles.appHeader}

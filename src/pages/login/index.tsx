@@ -27,6 +27,7 @@ import useTranslation from 'next-translate/useTranslation';
 import { AnyAction } from '@reduxjs/toolkit';
 import Link from 'next/link';
 import { Icon } from '@chakra-ui/icons';
+import { resetAuthApiRes } from '@/redux/auth.slice';
 
 const Login = () => {
     // translation
@@ -37,8 +38,10 @@ const Login = () => {
         email: string;
         password: string;
     }>({ email: '', password: '' });
+    // is loading
+    const [isLoading, setIsLoading] = useState(false);
     // get data from the redux store
-    const { currentUser, apiResMessage } = useSelector(
+    const {apiResMessage } = useSelector(
         (state: RootState) => state.auth
     );
     // Router
@@ -53,16 +56,21 @@ const Login = () => {
     // handle form Submition
     const handleFormSubmition = (event: React.FormEvent) => {
         event.preventDefault();
+        setIsLoading(true);
         Dispatch(loginUser(userCred) as unknown as AnyAction);
     };
     // redirec the user when loggedIn succ
     useEffect(() => {
+        if(apiResMessage) {
+            setIsLoading(false);
+        }
         // check if the current user is logged in
-        if (currentUser) {
+        if (apiResMessage?.err === false) {
             push('/chats');
+            Dispatch(resetAuthApiRes());
             return;
         }
-    }, [currentUser]);
+    }, [apiResMessage]);
     // React Redux Dispatch Function
     const Dispatch = useDispatch();
     return (
@@ -123,23 +131,20 @@ const Login = () => {
                     {/* submit btn */}
                     <div className={styles.btnArea}>
                         <Button
-                            colorScheme='green'
+                            colorScheme='blue'
                             className={styles.formSubmitionBtn}
                             type='submit'
+                            variant={'outline'}
+                            isDisabled={isLoading}
                         >
-                            {currentUser ? (
-                                <p>{t('login_btn_text')}</p>
-                            ) : currentUser === undefined ? (
-                                <p>{t('login_btn_text')}</p>
-                            ) : (
+                            {!isLoading ? <p>{t('login_btn_text')}</p> : 
                                 <Spinner
                                     thickness='2px'
                                     speed='0.65s'
-                                    emptyColor='gray.200'
-                                    color='green.300'
-                                    size='md'
-                                />
-                            )}
+                                    emptyColor='white'
+                                    color='blue'
+                                    size='sm'
+                                />}
                         </Button>
                     </div>
                     <p className={styles.createAccountLink}>

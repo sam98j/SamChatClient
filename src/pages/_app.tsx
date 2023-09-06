@@ -16,24 +16,20 @@ import AppLogo from '@/components/AppLogo';
 import { AnyAction } from '@reduxjs/toolkit';
 import {extendTheme} from '@chakra-ui/react';
 // chakra theme
-const theme = extendTheme({
-    fonts: {
-        body: '"Baloo Bhaijaan 2", cursive'
-    }
-});
+const theme = extendTheme({fonts: {body: '"Baloo Bhaijaan 2", cursive'}});
 
 function App({ Component, pageProps }: AppProps) {
-    const router = useRouter();
+    const {push} = useRouter();
     const user = useSelector((state: RootState) => state.auth.currentUser);
     // store dispatch func
     const dispatch = useDispatch();
     useEffect(() => {
         if (user) {
-            router.push('/chats');
+            push('/chats');
             return;
         }
         if (user === undefined) {
-            router.push('/');
+            push('/');
             return;
         }
     }, [user]);
@@ -55,7 +51,7 @@ function App({ Component, pageProps }: AppProps) {
                         }}
                     >
                         {user !== null ? <AppHeader /> : ''}
-                        {user !== null ? <Component {...pageProps} /> : ''}
+                        {user === null ? '' : <Component {...pageProps} />}
                         {user === null ? <AppLogo /> : ''}
                         <CreateChat />
                     </div>
