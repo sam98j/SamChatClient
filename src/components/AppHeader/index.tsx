@@ -15,6 +15,7 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import useTranslation from 'next-translate/useTranslation';
 import { ChatUserActions } from '@/interfaces/chat.interface';
+import RecVoiceInd from '../RecVoiceInd';
 const AppHeader = () => {
     const { t } = useTranslation('appHeader');
     // path name
@@ -109,7 +110,7 @@ const AppHeader = () => {
                     >
                         <span className={styles.typing}>
                             {isChatUsrDoingAction && isChatUsrDoingAction === ChatUserActions.TYPEING ? t('usr_typing') : ''}
-                            {isChatUsrDoingAction && isChatUsrDoingAction === ChatUserActions.RECORDING_VOICE ? t('recording_voice') : ''}
+                            {isChatUsrDoingAction && isChatUsrDoingAction === ChatUserActions.RECORDING_VOICE ? <RecVoiceInd /> : ''}
                         </span>
                         <span className={styles.online}>{chatUsrStatus === 'online' ? t('online') : `${t('last_seen')} ${chatUsrStatus}`}</span>
                     </Box>

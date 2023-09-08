@@ -1,0 +1,29 @@
+.rec_voice_ind {
+    display: flex;
+    align-items: center;
+    span {
+        display: inline-block; 
+        margin: 1px; 
+        height: 10px; 
+        border-radius: 5px;
+        width: 4px; 
+        background-color: forestgreen;
+    }
+    // span:fir
+    span.first {
+        animation-name: animate;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+        animation-duration: .7s;
+    }
+    span.third {
+        animation-name: animate;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+        animation-duration: 1s;
+    }
+    @keyframes animate {
+        0%{transform: scale(1);}
+        100%{transform: scale(.5);}
+    }
+}

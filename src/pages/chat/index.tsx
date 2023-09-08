@@ -26,21 +26,10 @@ import { useSearchParams } from 'next/navigation';
 import { v4 as uuid } from 'uuid';
 import { ChatMessage, ChatUserActions} from '../../interfaces/chat.interface';
 import { useDispatch } from 'react-redux';
-import {
-    // setChatUsrStatus,
-    // setChatUsrTyping,
-    setCurrentUsrDoingAction,
-    setMessageToSent,
-    // setMessageStatus,
-    setOpenedChat,
-} from '@/redux/chats.slice';
+import { setCurrentUsrDoingAction, setMessageToSent, setOpenedChat} from '@/redux/chats.slice';
 import { getChatMessages, getUsrOnlineStatus } from '@/apis/chats.api';
 import ChatMassage from '@/components/ChatMassage';
-import {
-    // playReceiveMessageSound,
-    // playSentMessageSound,
-    voiceMemoTimer,
-} from '../../utils/chat.util';
+import {voiceMemoTimer} from '../../utils/chat.util';
 import { setCurrentRoute } from '@/redux/system.slice';
 import { useRouter } from 'next/router';
 import { AnyAction } from '@reduxjs/toolkit';
@@ -82,10 +71,7 @@ const Chat = () => {
     // timer interval
     const [timerInterval, setTimerInterval] = useState<NodeJS.Timer>();
     // get url params
-    const [state, setState] = useState<ChatInterface>({
-        msgText: '',
-        opened_socket: null
-    });
+    const [state, setState] = useState<ChatInterface>({msgText: '', opened_socket: null});
     // handleInputFocus
     const handleInputFocus = () => dispatch(setCurrentUsrDoingAction(ChatUserActions.TYPEING));
     // handleInputBlur
@@ -101,12 +87,14 @@ const Chat = () => {
     };
     // handle start recrding vioice
     const startRecVoiceMemoHandler = async () => {
+        dispatch(setCurrentUsrDoingAction(ChatUserActions.RECORDING_VOICE));
         await start();
         setIsReco(true);
         setTimerInterval(voiceMemoTimer(setTimer));
     };
     // handle stop recrding vioice
     const stopRecVoiceMemoHandler = () => {
+        dispatch(setCurrentUsrDoingAction(null));
         setIsReco(false);
         cancel();
         clearInterval(timerInterval);
@@ -115,6 +103,7 @@ const Chat = () => {
     const handleSendBtnClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
         if(isRec && !state.msgText){
+            dispatch(setCurrentUsrDoingAction(null));
             clearInterval(timerInterval);
             const blob = await stop();
             const reader = new FileReader();
@@ -178,9 +167,7 @@ const Chat = () => {
     // dummy messages
     return (
         <>
-            <Head>
-                <title>{chatName}</title>
-            </Head>
+            <Head><title>{chatName}</title></Head>
             <div className={styles.chat} ref={chatRef} pref-lang={locale}>
                 {/* chat messages */}
                 {chatMessages === null ? (
