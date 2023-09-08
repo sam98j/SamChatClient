@@ -24,13 +24,13 @@ import NextImage from 'next/image';
 import NoMessageDrow from '../../../assets/vectors/undraw_new_message_re_fp03.svg';
 import { useSearchParams } from 'next/navigation';
 import { v4 as uuid } from 'uuid';
-import { ChatMessage} from '../../interfaces/chat.interface';
+import { ChatMessage, ChatUserActions} from '../../interfaces/chat.interface';
 import { useDispatch } from 'react-redux';
 import {
-    addMessageToChat,
     // setChatUsrStatus,
     // setChatUsrTyping,
-    setCurrentUsrTypingState,
+    setCurrentUsrDoingAction,
+    setMessageToSent,
     // setMessageStatus,
     setOpenedChat,
 } from '@/redux/chats.slice';
@@ -55,7 +55,7 @@ interface ChatInterface {
 const {start, stop, cancel} = VoiceMemoRecorder();
 
 const Chat = () => {
-    console.log('mount');
+    console.log('chat render');
     // translate
     const {t} = useTranslation('chatScreen');
     // langs
@@ -84,12 +84,12 @@ const Chat = () => {
     // get url params
     const [state, setState] = useState<ChatInterface>({
         msgText: '',
-        opened_socket: null,
+        opened_socket: null
     });
     // handleInputFocus
-    const handleInputFocus = () => dispatch(setCurrentUsrTypingState(true));
+    const handleInputFocus = () => dispatch(setCurrentUsrDoingAction(ChatUserActions.TYPEING));
     // handleInputBlur
-    const handleInputBlur = () => dispatch(setCurrentUsrTypingState(false));
+    const handleInputBlur = () => dispatch(setCurrentUsrDoingAction(null));
     // opened socket
     // inputChangeHandler
     const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -131,9 +131,8 @@ const Chat = () => {
                     isItTextMsg: false,
                     voiceNoteDuration: String(Math.round(duration))
                 } as ChatMessage;
-                dispatch(addMessageToChat(message));
+                dispatch(setMessageToSent(message));
                 // send message with web sockets
-                state.opened_socket?.emit('send_msg', message);
                 // set isRec
                 setIsReco(false);
             });
@@ -150,7 +149,7 @@ const Chat = () => {
                 status: null,
                 isItTextMsg: true
             } as ChatMessage;
-            dispatch(addMessageToChat(message));
+            dispatch(setMessageToSent(message));
             // send message with web sockets
             // clear the input
             setState({
@@ -159,11 +158,6 @@ const Chat = () => {
             });
             return;
         }
-    };
-    // mark maessage as readed
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const markMessageAsReaded = (msgId: string, senderId: string) => {
-        // state.opened_socket?.emit('message_readed', { msgId, senderId });
     };
     // scroll to the bottom of the view
     useEffect(() => {
@@ -177,12 +171,7 @@ const Chat = () => {
         // get usr online status
         dispatch(getUsrOnlineStatus(parmas.get('id')!) as unknown as AnyAction);
         // check for chat opened
-        if (openedChat) {
-            // load chat messages
-            dispatch(
-                getChatMessages(parmas.get('id')!) as unknown as AnyAction
-            );
-        }
+        if (openedChat) {dispatch(getChatMessages(parmas.get('id')!) as unknown as AnyAction);}
         // clean up when component unmount
         return function cleanUp() {dispatch(setOpenedChat(undefined));};
     }, []);
@@ -197,13 +186,7 @@ const Chat = () => {
                 {chatMessages === null ? (
                     <Spinner className={styles.spinner} />
                 ) : chatMessages!.length ? (
-                    chatMessages!.map((msg) => (
-                        <ChatMassage
-                            messageData={msg}
-                            key={Math.random()}
-                            markMsgAsReaded={markMessageAsReaded}
-                        />
-                    ))
+                    chatMessages!.map((msg) => (<ChatMassage messageData={msg} key={Math.random()}/> ))
                 ) : (
                     <Box className={styles.imgContainer}>
                         <NextImage src={NoMessageDrow} alt='' />
@@ -212,7 +195,6 @@ const Chat = () => {
                         </Text>
                     </Box>
                 )}
-
                 {/* chat footer */}
                 <Box
                     className={styles.footer}

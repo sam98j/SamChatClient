@@ -39,10 +39,12 @@ const BottomBar = () => {
                 />
                 <Text textColor={'messenger.500'}>{t('chats')}</Text>
             </Box>
-            <Box className={styles.icon_box}>
-                <Icon as={BsTelephone} boxSize={'6'} />
-                <Text>{t('calls')}</Text>
-            </Box>
+            <Link href={'/calls'}>
+                <Box className={styles.icon_box}>
+                    <Icon as={BsTelephone} boxSize={'6'} />
+                    <Text>{t('calls')}</Text>
+                </Box>
+            </Link>
             <Link href={'/settings'}>
                 <Box className={styles.icon_box}>
                     <Icon as={BsGearWideConnected} boxSize={'6'} />

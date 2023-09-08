@@ -1,5 +1,5 @@
 import { getChatMessages, getUserChats, getUsrOnlineStatus } from '@/apis/chats.api';
-import { ChatMessage, MessageStatus } from '@/interfaces/chat.interface';
+import { ChatMessage, ChatUserActions, MessageStatus } from '@/interfaces/chat.interface';
 import {createSlice} from '@reduxjs/toolkit';
 import type {PayloadAction} from '@reduxjs/toolkit';
 
@@ -20,10 +20,11 @@ export interface ChatState {
     chats: SingleChat[] | null | undefined,
     chatMessages: ChatMessage[] | null,
     openedChat: {id: string, usrname: string} | null | undefined,
-    isChatUsrTyping: boolean,
-    isCurrentUsrTyping: boolean,
+    isChatUsrDoingAction: null | ChatUserActions,
+    isCurrentUsrDoingAction: null | ChatUserActions,
     chatUsrStatus: string,
-
+    messageToBeMarketAsReaded: null | {msgId: string, senderId: string},
+    messageToSent: null | ChatMessage
 }
 
 // inital state
@@ -31,9 +32,11 @@ const initialState: ChatState = {
     chats: null,
     chatMessages: [],
     openedChat: undefined,
-    isChatUsrTyping: false,
-    isCurrentUsrTyping: false,
-    chatUsrStatus: ''
+    isChatUsrDoingAction: null,
+    isCurrentUsrDoingAction: null,
+    chatUsrStatus: '',
+    messageToBeMarketAsReaded: null,
+    messageToSent: null
 };
 
 // create state slcie and export it
@@ -48,7 +51,7 @@ export const chatSlice = createSlice({
         // add message to the chat
         addMessageToChat: (state, action: PayloadAction<ChatMessage>) => {state.chatMessages?.push(action.payload);},
         // change chat user typing state
-        setChatUsrTyping: (state, action: PayloadAction<boolean>) => {state.isChatUsrTyping = action.payload;},
+        setChatUsrDoingAction: (state, action: PayloadAction<null | ChatUserActions>) => {state.isChatUsrDoingAction = action.payload;},
         // set chat usr status
         setChatUsrStatus: (state, action: PayloadAction<string>) => {state.chatUsrStatus = action.payload;},
         // change message status
@@ -60,7 +63,16 @@ export const chatSlice = createSlice({
             state.chatMessages![msgIndex!].status = action.payload.status;
         },
         // set current usr typing state
-        setCurrentUsrTypingState(state, action: PayloadAction<boolean>){state.isCurrentUsrTyping = action.payload;}
+        setCurrentUsrDoingAction(state, action: PayloadAction<null | ChatUserActions>){state.isCurrentUsrDoingAction = action.payload;},
+        // messageToBeMarketAsReaded
+        setMessageToBeMarketAsReaded(state, action: PayloadAction<{msgData: {msgId: string, senderId: string}}>){
+            state.messageToBeMarketAsReaded = action.payload.msgData;
+        },
+        // set message to be sent
+        setMessageToSent(state, action: PayloadAction<null | ChatMessage>){
+            if(action.payload) {state.chatMessages?.push(action.payload);}
+            state.messageToSent = action.payload;
+        }
     },
     extraReducers: (builder) =>{
         builder.addCase(getUserChats.fulfilled,  (state, action) => {
@@ -79,6 +91,6 @@ export const chatSlice = createSlice({
         builder.addCase(getUsrOnlineStatus.fulfilled, (state, action: PayloadAction<string>) => {state.chatUsrStatus = action.payload;});
     },
 });
-export const {setOpenedChat, addMessageToChat, setChatUsrTyping, setChatUsrStatus, setMessageStatus, setCurrentUsrTypingState} = chatSlice.actions;
+export const {setOpenedChat, addMessageToChat, setChatUsrDoingAction, setChatUsrStatus, setMessageStatus, setCurrentUsrDoingAction, setMessageToBeMarketAsReaded, setMessageToSent} = chatSlice.actions;
 // export the reducer function
 export default chatSlice.reducer;

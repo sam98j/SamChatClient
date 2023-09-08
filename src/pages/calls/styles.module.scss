@@ -1,0 +1,14 @@
+.calls {
+    height: calc(100dvh - 50px);
+    // background: #000;
+    .svg_container {
+        position: absolute;
+        left: 50%;
+        bottom: 50%;
+        transform: translate(-50%, 50%);
+        img {
+            height: 15rem;
+            width: 15rem;
+        }
+    }
+}

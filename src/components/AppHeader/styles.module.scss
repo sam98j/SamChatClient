@@ -25,7 +25,7 @@
         .online {
             color: gray;
         }
-        &[is-typing="true"] {
+        &[is-usr-doing-action="true"] {
             .typing {
                 display: block;
             }

@@ -14,6 +14,7 @@ import AppLogo from '../AppLogo';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import useTranslation from 'next-translate/useTranslation';
+import { ChatUserActions } from '@/interfaces/chat.interface';
 const AppHeader = () => {
     const { t } = useTranslation('appHeader');
     // path name
@@ -21,14 +22,14 @@ const AppHeader = () => {
     // get opened chat status
     const {
         openedChat,
-        isChatUsrTyping,
+        isChatUsrDoingAction,
         chatUsrStatus,
         currentUsr,
         currentRoute,
     } = useSelector((state: RootState) => {
         return {
             openedChat: state.chat.openedChat,
-            isChatUsrTyping: state.chat.isChatUsrTyping,
+            isChatUsrDoingAction: state.chat.isChatUsrDoingAction,
             chatUsrStatus: state.chat.chatUsrStatus,
             currentUsr: state.auth.currentUser,
             currentRoute: state.system.currentRoute,
@@ -36,6 +37,7 @@ const AppHeader = () => {
     });
     // Screen Header Name align
     const isChatOpen = openedChat ? 'true' : 'false';
+    console.log(isChatUsrDoingAction);
     // check for signup or login page if it open
     const isLoginOrSignUpOpen = pathname === '/login' || pathname === '/signup';
     // locale
@@ -102,10 +104,13 @@ const AppHeader = () => {
                     <Box
                         fontSize={'sm'}
                         className={styles.usr_status}
-                        is-typing={String(isChatUsrTyping)}
+                        is-usr-doing-action={String(isChatUsrDoingAction !== null)}
                         is-online='false'
                     >
-                        <span className={styles.typing}>typing ...</span>
+                        <span className={styles.typing}>
+                            {isChatUsrDoingAction && isChatUsrDoingAction === ChatUserActions.TYPEING ? t('usr_typing') : ''}
+                            {isChatUsrDoingAction && isChatUsrDoingAction === ChatUserActions.RECORDING_VOICE ? t('recording_voice') : ''}
+                        </span>
                         <span className={styles.online}>{chatUsrStatus === 'online' ? t('online') : `${t('last_seen')} ${chatUsrStatus}`}</span>
                     </Box>
                 </Box>
