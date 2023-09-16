@@ -3,7 +3,10 @@
 .chats {
     /* padding: 10px; */
     height: calc(100dvh - 50px);
-    position: relative;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    // position: relative;
+    padding: 20px;
     .imgContainer {
         display: flex;
         align-items: center;

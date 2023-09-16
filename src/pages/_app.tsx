@@ -17,7 +17,7 @@ import { AnyAction } from '@reduxjs/toolkit';
 import {extendTheme} from '@chakra-ui/react';
 import { playReceiveMessageSound, playSentMessageSound } from '@/utils/chat.util';
 import { ChatMessage, MessageStatus } from '@/interfaces/chat.interface';
-import { addMessageToChat, setChatUsrStatus, setMessageStatus, setMessageToSent, setOpenedChat, setChatUsrDoingAction } from '@/redux/chats.slice';
+import { addMessageToChat, setChatUsrStatus, setMessageStatus, setMessageToSent, setOpenedChat, setChatUsrDoingAction, addNewChat, placeLastUpdatedChatToTheTop } from '@/redux/chats.slice';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { io , Socket} from 'socket.io-client';
 import { setNewIncomingMsg } from '@/redux/system.slice';
@@ -53,12 +53,14 @@ function App({ Component, pageProps }: AppProps) {
     // listen to isCurrentUsrDoingAction
     useEffect(() => {
         // chatusr_start_typing
-        socketClient?.emit('chatusr_typing_status', {chatUsrId: parmas.get('id'), action: isCurrentUsrDoingAction,});
+        socketClient?.emit('chatusr_typing_status', {cUsrId: currentUser,chatUsrId: parmas.get('id'), action: isCurrentUsrDoingAction,});
     }, [isCurrentUsrDoingAction]);
     // listen for chat user doing action
     useEffect(() => {
         // listen for chat usr doing action
         socketClient?.on('chatusr_typing_status', (actionData) => dispatch(setChatUsrDoingAction(actionData)));
+        // listen for new chat created
+        socketClient?.on('new_chat_created', (newChat) => dispatch(addNewChat(newChat)));
     }, [currentUser, socketClient]);
     // listen for message to be mark as readed
     useEffect(() => {
@@ -76,6 +78,8 @@ function App({ Component, pageProps }: AppProps) {
     }, [currentUser]);
     useEffect(() => {
         socketClient?.on('message', (message: ChatMessage) => {
+            // place last updated chat to the top
+            dispatch(placeLastUpdatedChatToTheTop({chatUsrId: message.senderId}));
             // check for current route if it's chats
             if(pathname === '/chats') {dispatch(setNewIncomingMsg(message));}
             socketClient?.emit('message_delevered', {msgId: message._id, senderId: message.senderId,});

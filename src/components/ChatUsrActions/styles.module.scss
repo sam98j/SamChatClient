@@ -1,0 +1,14 @@
+.chat_usr_actions {
+    // usr status
+    .actions {display: none; color: green;}
+    .online {color: gray;}
+    &[is-chat-opened='false'] {
+        .online {display: none;}
+    }
+    &[is-usr-doing-action="true"] {
+        // display actions
+        .actions {display: block;}
+        // hide online status
+        .online {display: none;}
+    }
+}

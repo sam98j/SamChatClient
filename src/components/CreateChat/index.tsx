@@ -1,13 +1,6 @@
 /* eslint-disable react/no-unknown-property */
 import React, { useState } from 'react';
 import styles from './styles.module.scss';
-import {
-    Input,
-    InputGroup,
-    InputLeftElement,
-    InputRightElement,
-} from '@chakra-ui/react';
-import { Search2Icon, SpinnerIcon } from '@chakra-ui/icons';
 import NewChatUser from '../NewChatUser';
 import useUsersApi from './getUsrs.hook';
 import { LoggedInUserData } from '@/redux/auth.slice';
@@ -15,17 +8,13 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useDispatch } from 'react-redux';
 import { changeNewChatScrStatus } from '@/redux/system.slice';
-import useTranslation from 'next-translate/useTranslation';
+import SearchInput from '../SearchInput/SearchInput';
 
 const CreateChat = () => {
-    // trans
-    const {t} = useTranslation('createChat');
     // redux store dispatch function
     const dispatch = useDispatch();
     // redux store
-    const isModalOpen = useSelector(
-        (state: RootState) => state.system.isNewChatScreenOpen
-    );
+    const isModalOpen = useSelector((state: RootState) => state.system.isNewChatScreenOpen);
     const { fetchUsers } = useUsersApi();
     // use effect
     // componet state
@@ -55,48 +44,15 @@ const CreateChat = () => {
         });
     };
     return (
-        <div
-            className={styles.create_chat_container}
-            is-opened={String(isModalOpen)}
-        >
+        <div className={styles.create_chat_container} is-opened={String(isModalOpen)}>
             {/* close modal  */}
-            <div
-                style={{ height: '100%' }}
-                onClick={() => dispatch(changeNewChatScrStatus(false))}
-            ></div>
+            <div style={{ height: '100%' }} onClick={() => dispatch(changeNewChatScrStatus(false))}></div>
             {/* create chat modal */}
             <div className={styles.create_chat}>
                 {/* Search Input */}
-                <InputGroup>
-                    <InputLeftElement pointerEvents='none'>
-                        <Search2Icon color='gray.300' />
-                    </InputLeftElement>
-                    <Input
-                        type='text'
-                        placeholder={t('search_usr_placeholder')}
-                        variant='filled'
-                        borderRadius={'2xl'}
-                        onChange={handleFormChange}
-                    />
-                    <InputRightElement>
-                        {state.loading ? (
-                            <SpinnerIcon
-                                color={'gray.400'}
-                                className={styles.loader_icon}
-                            />
-                        ) : (
-                            ''
-                        )}
-                    </InputRightElement>
-                </InputGroup>
+                <SearchInput data={{handleFormChange, loadingState: state.loading}}/>
                 {/* new Chat User */}
-                {state.fetchedUsers.map((usr) => (
-                    <NewChatUser
-                        key={usr._id}
-                        usr={usr}
-                        searchqr={state.searchqr}
-                    />
-                ))}
+                {state.fetchedUsers.map((usr) => (<NewChatUser key={usr._id} usr={usr} searchqr={state.searchqr}/>))}
             </div>
         </div>
     );

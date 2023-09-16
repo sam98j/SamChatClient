@@ -1,0 +1,18 @@
+.chatCard {
+    margin: 0 -20px 0 -20px;
+    // skelton loading circle
+    .skeleton_circle {margin-top: 10px; margin-left: auto;}
+    // un_readed_messages_count
+    .un_readed_messages_count {margin-left: auto;}
+    &[pref-lang='ar'] {
+        .skeleton_circle {margin-right: auto; margin-left: initial;}
+        .un_readed_messages_count {margin-right: auto; margin-left: initial;}
+    }
+    // hide chat usr actions
+    .chat_usr_actions {display: none;}
+    // when chat usr doing actions
+    &[chat-usr-doing-actions='true'] {
+        .msg_text {display: none;}
+        .chat_usr_actions {display: block;}
+    }
+}

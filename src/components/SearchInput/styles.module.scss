@@ -1,0 +1,13 @@
+.search_input {
+    // loader icon
+    .loader_icon {
+        @keyframes rotate {
+            from {transform: rotate(0);}
+            to {transform: rotate(360deg);}
+        }
+        animation-name: rotate;
+        animation-duration: 1s;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+    }
+}

@@ -6,13 +6,8 @@ import type {PayloadAction} from '@reduxjs/toolkit';
 // Single Chat
 export interface SingleChat {
     usrid: string;
-    usrname: string
-    lastMessage: {
-        date: string;
-        text: string
-    };
-    unReadedMessages: number;
-    chatMessages: ChatMessage[]
+    usrname: string;
+    avatar: string
 }
 
 // state slice shape
@@ -20,7 +15,7 @@ export interface ChatState {
     chats: SingleChat[] | null | undefined,
     chatMessages: ChatMessage[] | null,
     openedChat: {id: string, usrname: string} | null | undefined,
-    isChatUsrDoingAction: null | ChatUserActions,
+    isChatUsrDoingAction: {action: ChatUserActions | null, actionSender: string | null},
     isCurrentUsrDoingAction: null | ChatUserActions,
     chatUsrStatus: string,
     messageToBeMarketAsReaded: null | {msgId: string, senderId: string},
@@ -32,7 +27,7 @@ const initialState: ChatState = {
     chats: null,
     chatMessages: [],
     openedChat: undefined,
-    isChatUsrDoingAction: null,
+    isChatUsrDoingAction: {action: null, actionSender: null},
     isCurrentUsrDoingAction: null,
     chatUsrStatus: '',
     messageToBeMarketAsReaded: null,
@@ -51,7 +46,9 @@ export const chatSlice = createSlice({
         // add message to the chat
         addMessageToChat: (state, action: PayloadAction<ChatMessage>) => {state.chatMessages?.push(action.payload);},
         // change chat user typing state
-        setChatUsrDoingAction: (state, action: PayloadAction<null | ChatUserActions>) => {state.isChatUsrDoingAction = action.payload;},
+        setChatUsrDoingAction: (state, action: PayloadAction<{action: ChatUserActions, actionSender: string}>) => {
+            state.isChatUsrDoingAction = action.payload;
+        },
         // set chat usr status
         setChatUsrStatus: (state, action: PayloadAction<string>) => {state.chatUsrStatus = action.payload;},
         // change message status
@@ -72,6 +69,18 @@ export const chatSlice = createSlice({
         setMessageToSent(state, action: PayloadAction<null | ChatMessage>){
             if(action.payload) {state.chatMessages?.push(action.payload);}
             state.messageToSent = action.payload;
+        },
+        // add new chat to the chats
+        addNewChat(state, action: PayloadAction<SingleChat>){state.chats = [action.payload, ...state.chats!];},
+        // place last update chat to the top
+        placeLastUpdatedChatToTheTop(state, action: PayloadAction<{chatUsrId: string}>){
+            state.chats?.find((chat, index) => {
+                if(chat.usrid === action.payload.chatUsrId) {
+                    const chatsFirstPart = state.chats?.slice(0, index);
+                    const chatsSecondPart = state.chats?.slice(index + 1);
+                    const updatedChat = state.chats?.slice(index, index + 1);
+                    state.chats = Array.prototype.concat(updatedChat, chatsFirstPart, chatsSecondPart);
+                }});
         }
     },
     extraReducers: (builder) =>{
@@ -91,6 +100,7 @@ export const chatSlice = createSlice({
         builder.addCase(getUsrOnlineStatus.fulfilled, (state, action: PayloadAction<string>) => {state.chatUsrStatus = action.payload;});
     },
 });
-export const {setOpenedChat, addMessageToChat, setChatUsrDoingAction, setChatUsrStatus, setMessageStatus, setCurrentUsrDoingAction, setMessageToBeMarketAsReaded, setMessageToSent} = chatSlice.actions;
+export const {
+    setOpenedChat, addMessageToChat, setChatUsrDoingAction, setChatUsrStatus, setMessageStatus, setCurrentUsrDoingAction, setMessageToBeMarketAsReaded, setMessageToSent, addNewChat, placeLastUpdatedChatToTheTop} = chatSlice.actions;
 // export the reducer function
 export default chatSlice.reducer;

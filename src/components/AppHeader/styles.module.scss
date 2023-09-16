@@ -16,45 +16,8 @@
     }
     // hide the header in login page
     &[is-usr-loggedin="true"] {display: none;}
-    // usr status
-    .usr_status {
-        .typing {
-            display: none;
-            color: green;
-        }
-        .online {
-            color: gray;
-        }
-        &[is-usr-doing-action="true"] {
-            .typing {
-                display: block;
-            }
-            .online {
-                display: none;
-            }
-        }
-        &[is-online="true"] {
-            .online {
-                color: green;
-            }
-        }
-    }
-    .screen_name {
-        height: 0px;
-    }
+    .screen_name {height: 0px;}
     // the screen name
-    &[is-chat-open="false"] {
-        .screen_name {
-            text-align: center;
-            height: initial;
-        }
-        .usr_status {
-            display: none;
-        }
-    }
-    &[is-chat-open="true"] {
-        .create_new_chat_btn {
-            display: none;
-        }
-    }
+    &[is-chat-open="false"] {.screen_name {text-align: center; height: initial;}}
+    &[is-chat-open="true"] {.create_new_chat_btn {display: none;}}
 }

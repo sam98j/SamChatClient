@@ -12,11 +12,18 @@ import { secondsToDurationConverter } from '@/utils/voiceMemoRec';
 import MessageStatusIcon from '../MessageStatus';
 import { MessageStatus } from '@/interfaces/chat.interface';
 import { RootState } from '@/redux/store';
+import { useRouter } from 'next/router';
+import styles from './styles.module.scss';
+import ChatUsrActions from '../ChatUsrActions/ChatUsrActions';
 
-const ChatCard: React.FC<{ avataruri: string; chat: SingleChat }> = ({avataruri, chat}) => {
+const ChatCard: React.FC<{ chat: SingleChat }> = ({chat}) => {
+    // localize lang
+    const {locale} = useRouter();
     const searchParams = useSearchParams();
     // get data from store
     const newIncomingMsg = useSelector((state: RootState) => state.system.newIncomingMsg);
+    // get data from store
+    const isChatUsrDoingAction = useSelector((state: RootState) => state.chat.isChatUsrDoingAction);
     const {t} = useTranslation('chatCard');
     const [previewData, setPreveiwData] = useState<{
         date: string;
@@ -69,21 +76,25 @@ const ChatCard: React.FC<{ avataruri: string; chat: SingleChat }> = ({avataruri,
                 display={'flex'}
                 gap={'3'}
                 padding={'1.25rem 1.25rem 0rem 1.25rem'}
-                border={''}
+                pref-lang={locale}
+                chat-usr-doing-actions={String(Boolean(isChatUsrDoingAction.actionSender === chat.usrid && isChatUsrDoingAction.action !== null))}
+                className={styles.chatCard}
             >
-                <Avatar name='Hosam Alden' src={avataruri} />
+                {/* chat avatar */}
+                <Avatar name='Hosam Alden' src={chat.avatar} />
                 <Box flexGrow={'1'}>
-                    <Heading
-                        size={'sm'}
-                        marginBottom={'5px'}
-                        textColor={'messenger.500'}
-                        fontFamily={'effra'}
-                    >
-                        {chat.usrname}
-                    </Heading>
-                    <Text textColor={'gray.500'} display={'flex'} alignItems={'center'}>
+                    {/* chat usr name */}
+                    <Heading size={'sm'} marginBottom={'5px'} textColor={'messenger.500'}>{chat.usrname}</Heading>
+                    {/* usr actions */}
+                    <Text className={styles.chat_usr_actions}><ChatUsrActions /></Text>
+                    {/* text message field */}
+                    <Text textColor={'gray.500'} display={'flex'} className={styles.msg_text}>
+                        {/* message status icons */}
                         <MessageStatusIcon data={{msgStatus: previewData?.status as MessageStatus, senderId: previewData?.senderId as string}}/>
-                        {previewData && previewData?.isItTextMsg ? previewData?.lastMsgText : previewData && !previewData.isItTextMsg ? (<><Icon as={BsMic} />{t('voiceMsg')} {secondsToDurationConverter(Number(previewData?.voiceNoteDuration))}</>) : ''}
+                        {/* display text msg  */}
+                        {previewData && previewData?.isItTextMsg ? `${previewData?.lastMsgText.split(' ').slice(0, 6).join(' ')} ...` : ''}
+                        {/* display voice message details */}
+                        {previewData && !previewData.isItTextMsg ? (<><Icon as={BsMic} />{t('voiceMsg')} {secondsToDurationConverter(Number(previewData?.voiceNoteDuration))}</>) : ''}
                         {/* loading */}
                         {!previewData ? <Box height={'10px'} width={'100%'} bgColor={'gray.100'} borderRadius={'10px'}></Box> : ''}
                     </Text>
@@ -93,6 +104,7 @@ const ChatCard: React.FC<{ avataruri: string; chat: SingleChat }> = ({avataruri,
                     <Text width={'fit-content'}>
                         {previewData ? previewData?.date : <Box height={'10px'} width={'50px'} bgColor={'gray.100'} borderRadius={'10px'}></Box>}
                     </Text>
+                    {/* un readed messages */}
                     {previewData && previewData?.unReadedMsgs !== 0 ? (
                         <Text
                             bgColor={'messenger.500'}
@@ -101,13 +113,13 @@ const ChatCard: React.FC<{ avataruri: string; chat: SingleChat }> = ({avataruri,
                             height={'1.25rem'}
                             borderRadius={'50%'}
                             textAlign={'center'}
-                            marginLeft={'auto'}
+                            className={styles.un_readed_messages_count}
                         >
                             {previewData?.unReadedMsgs}
                         </Text>
                     ) : ''}
                     {/* loading */}
-                    {!previewData ? <SkeletonCircle size='5' marginLeft={'auto'} marginTop={'10px'}/> : ''}
+                    {!previewData ? <SkeletonCircle size='5' className={styles.skeleton_circle}/> : ''}
                 </Box>
             </Box>
         </Link>
