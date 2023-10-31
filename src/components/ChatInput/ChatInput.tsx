@@ -62,7 +62,8 @@ const ChatInput = () => {
     // handleSendBtnClick
     const handleSendBtnClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
-        if(isRec && inputText){
+        // send voice msg if it's recording and input is empty
+        if(isRec && !inputText){
             dispatch(setCurrentUsrDoingAction(null));
             clearInterval(timerInterval);
             const blob = await stop();

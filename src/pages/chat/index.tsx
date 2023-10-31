@@ -18,7 +18,6 @@ import { AnyAction } from '@reduxjs/toolkit';
 import ChatInput from '@/components/ChatInput/ChatInput';
 
 const Chat = () => {
-    console.log('chat render');
     // redux store dispatch function
     const dispatch = useDispatch();
     // use ref
