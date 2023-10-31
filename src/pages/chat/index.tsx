@@ -1,7 +1,7 @@
 /* eslint-disable no-constant-condition */
 /* eslint-disable react/no-unknown-property */
 import Head from 'next/head';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './styles.module.scss';
 import {Box, Spinner,Text,} from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
@@ -24,22 +24,24 @@ const Chat = () => {
     // use ref
     const chatRef = useRef<HTMLDivElement>(null);
     // data from the store
-    const {openedChat, chatMessages, chatName } = useSelector((state: RootState) => {
+    const {chatMessages, chatName, chats } = useSelector((state: RootState) => {
         return {
             openedChat: state.chat.openedChat,
             chatMessages: state.chat.chatMessages,
-            chatName: state.system.currentRoute
+            chatName: state.system.currentRoute,
+            chats: state.chat.chats
         };
     }
     );
     const parmas = useSearchParams();
+    // open chat state
+    const [openedChat] = useState(() => chats?.filter(chat => chat.usrid === parmas.get('id') as string)[0]);
     // scroll to the bottom of the view
-    useEffect(() => {
-        // scroll view to the end after send msg
-        chatRef.current?.scrollTo(0, chatRef.current.scrollHeight);
-    }, [chatMessages]);
+    useEffect(() => {chatRef.current?.scrollTo(0, chatRef.current.scrollHeight);}, [chatMessages]);
     // component did mount life cicle hook
     useEffect(() => {
+        // set opend chat
+        dispatch(setOpenedChat({id: openedChat?.usrid as string, usrname: openedChat?.usrname as string}));
         // set route name
         dispatch(setCurrentRoute(openedChat!.usrname!));
         // get usr online status

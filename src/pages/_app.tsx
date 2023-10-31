@@ -26,7 +26,6 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 const theme = extendTheme({fonts: {body: '"Baloo Bhaijaan 2", cursive'}});
 
 function App({ Component, pageProps }: AppProps) {
-    console.log('app render');
     // use path
     const pathname = usePathname();
     // router

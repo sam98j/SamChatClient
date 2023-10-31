@@ -1,4 +1,4 @@
-import { getChatMessages, getUserChats, getUsrOnlineStatus } from '@/apis/chats.api';
+import { getChatMessages, getChatProfile, getUserChats, getUsrOnlineStatus } from '@/apis/chats.api';
 import { ChatMessage, ChatUserActions, MessageStatus } from '@/interfaces/chat.interface';
 import {createSlice} from '@reduxjs/toolkit';
 import type {PayloadAction} from '@reduxjs/toolkit';
@@ -8,6 +8,12 @@ export interface SingleChat {
     usrid: string;
     usrname: string;
     avatar: string
+}
+// chat profile
+export interface ChatProfile {
+    avatar: string;
+    name: string;
+    email: string
 }
 
 // state slice shape
@@ -19,7 +25,8 @@ export interface ChatState {
     isCurrentUsrDoingAction: null | ChatUserActions,
     chatUsrStatus: string,
     messageToBeMarketAsReaded: null | {msgId: string, senderId: string},
-    messageToSent: null | ChatMessage
+    messageToSent: null | ChatMessage,
+    currentChatPorfile: null | ChatProfile
 }
 
 // inital state
@@ -31,7 +38,8 @@ const initialState: ChatState = {
     isCurrentUsrDoingAction: null,
     chatUsrStatus: '',
     messageToBeMarketAsReaded: null,
-    messageToSent: null
+    messageToSent: null,
+    currentChatPorfile: null
 };
 
 // create state slcie and export it
@@ -93,9 +101,9 @@ export const chatSlice = createSlice({
             const chatMessages = action.payload;
             state.chatMessages = chatMessages;
         });
-        builder.addCase(getChatMessages.pending,  (state) => {
-            state.chatMessages = null;
-        });
+        builder.addCase(getChatMessages.pending,  (state) => {state.chatMessages = null;});
+        // get chat profile
+        builder.addCase(getChatProfile.fulfilled, (state, action: PayloadAction<ChatProfile>) => {state.currentChatPorfile = action.payload;});
         // set usr online status
         builder.addCase(getUsrOnlineStatus.fulfilled, (state, action: PayloadAction<string>) => {state.chatUsrStatus = action.payload;});
     },

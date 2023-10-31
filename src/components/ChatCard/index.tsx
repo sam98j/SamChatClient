@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Avatar, Box, Heading, SkeletonCircle, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { SingleChat, setOpenedChat } from '@/redux/chats.slice';
-import { useDispatch, useSelector } from 'react-redux';
+import { SingleChat } from '@/redux/chats.slice';
+import {useSelector } from 'react-redux';
 import useChatsApi from './getData.hook';
 import useTranslation from 'next-translate/useTranslation';
 import { Icon } from '@chakra-ui/icons';
@@ -35,11 +35,9 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({chat}) => {
         status: MessageStatus | null
     }>();
     const { fetchChatPreviewData } = useChatsApi();
-    // store dispatch function
-    const dispatch = useDispatch();
     const createQueryString = useCallback(
         (name: string, value: string) => {
-            const params = new URLSearchParams(searchParams);
+            const params = new URLSearchParams(searchParams as unknown as URLSearchParams);
             params.set(name, value);
 
             return params.toString();
@@ -68,10 +66,7 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({chat}) => {
         })();
     }, []);
     return (
-        <Link
-            href={`/chat?${createQueryString('id', chat.usrid)}`}
-            onClick={() => dispatch(setOpenedChat({ id: chat.usrid, usrname: chat.usrname }))}
-        >
+        <Link href={`/chat?${createQueryString('id', chat.usrid)}`}>
             <Box
                 display={'flex'}
                 gap={'3'}

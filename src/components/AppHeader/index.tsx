@@ -5,33 +5,36 @@ import { Avatar, Box, Button, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { changeNewChatScrStatus } from '@/redux/system.slice';
 import { useDispatch } from 'react-redux';
-import { BsTelephone } from 'react-icons/bs';
-import { IoVideocamOutline } from 'react-icons/io5';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { HiOutlineChevronLeft } from 'react-icons/hi';
 import AppLogo from '../AppLogo';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 import useTranslation from 'next-translate/useTranslation';
 import ChatUsrActions from '../ChatUsrActions/ChatUsrActions';
+import ChatCalls from '../ChatCalls';
 const AppHeader = () => {
     const { t } = useTranslation('appHeader');
     // path name
     const pathname = usePathname();
+    // query params
     // get opened chat status
-    const { openedChat, currentUsr, currentRoute } = useSelector((state: RootState) => {
+    const { openedChat, currentUsr, currentRoute, chatName } = useSelector((state: RootState) => {
         return {
             openedChat: state.chat.openedChat,
             chatUsrStatus: state.chat.chatUsrStatus,
             currentUsr: state.auth.currentUser,
             currentRoute: state.system.currentRoute,
+            chatName: state.chat.currentChatPorfile?.name
         };
     });
     // check for signup or login page if it open
     const isLoginOrSignUpOpen = pathname === '/login' || pathname === '/signup';
     // locale
     const { locale } = useRouter();
+    // url params
+    const params = useSearchParams();
     // dispach
     const dispatch = useDispatch();
     return (
@@ -51,9 +54,9 @@ const AppHeader = () => {
             <Box className={styles.back_arr_container}>
                 {/* if user is not logged in  */}
                 {Boolean(pathname !== '/chats') && Boolean(currentUsr) ? (
-                    <Link href={'/chats'} style={{display: 'flex',justifyContent: 'center', alignItems: 'center'}}>
+                    <Link href={currentRoute !== 'chatProfile' ? '/chats' : `/chat?id=${params.get('id')}`} style={{display: 'flex',justifyContent: 'center', alignItems: 'center'}}>
                         <Icon as={HiOutlineChevronLeft} color={'messenger.500'} boxSize={'6'}/>
-                        <Text textColor={'messenger.500'}>{t('prev_nav')}</Text>
+                        <Text textColor={'messenger.500'}>{currentRoute !== 'chatProfile' ? t('prev_nav') : chatName}</Text>
                     </Link>
                 ) : ''}
                 {/* show edit btn in the chats screen */}
@@ -70,7 +73,8 @@ const AppHeader = () => {
                     className={styles.screen_name_container}
                 >
                     {/* Chat Name */}
-                    <Text className={styles.screen_name} fontSize={'lg'}>{currentRoute}</Text>
+                    {/* do not display screen name when chat profile is opened */}
+                    <Text className={styles.screen_name} fontSize={'lg'}>{currentRoute !== 'chatProfile'? currentRoute : ''}</Text>
                     {/* show chatUsrAction only when chat is opened */}
                     {openedChat ? <ChatUsrActions /> : ''}
                 </Box>
@@ -85,11 +89,11 @@ const AppHeader = () => {
             {currentUsr && openedChat ? (
                 <Box display={'flex'} alignItems={'center'} gap={5}>
                     {/* chat usr avatar */}
-                    <Avatar name='Hosam Alden' size={'sm'} src='https://xsgames.co/randomusers/avatar.php?g=male'/>
-                    {/* voice call btn */}
-                    <Icon as={BsTelephone} boxSize={'5'} color={'messenger.500'}/>
-                    {/* video call btn */}
-                    <Icon as={IoVideocamOutline} boxSize={'6'} color={'messenger.500'}/>
+                    <Link href={`/chat/profile?id=${params.get('id')}`}>
+                        <Avatar name='Hosam Alden' size={'sm'} src='https://xsgames.co/randomusers/avatar.php?g=male'/>
+                    </Link>
+                    {/* Chat Calls */}
+                    <ChatCalls />
                 </Box>
             ) : ''}
             {/* login and sign up */}

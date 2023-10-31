@@ -1,4 +1,5 @@
 import { ChatMessage } from '@/interfaces/chat.interface';
+import { ChatProfile } from '@/redux/chats.slice';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -62,6 +63,27 @@ export const getUsrOnlineStatus = createAsyncThunk('getUsrOnlineStatus', async(u
         return thunkAPI.rejectWithValue('You Are Not Authente. Yet');
     }
     const resp = await response.text() as string;
+    // there is no error
+    return resp;
+});
+// get chat profile
+export const getChatProfile = createAsyncThunk('getChatProfile', async (chatId: string, thunkAPI)=> {
+    // access token
+    const access_token = localStorage.getItem('access_token');
+    // get request
+    const response = await fetch(`${apiUrl}/users/chat_profile/${chatId}`, {
+        method: 'GET',
+        headers: {authorization: access_token!}
+    });
+        // check for internal serval error
+    if(response.status >= 500) {
+        return thunkAPI.rejectWithValue('Internal Server Error');
+    }
+    // if the clinet err
+    if(response.status >= 400) {
+        return thunkAPI.rejectWithValue('You Are Not Authente. Yet');
+    }
+    const resp = await response.json() as ChatProfile;
     // there is no error
     return resp;
 });
