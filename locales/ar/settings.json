@@ -1,3 +1,10 @@
 {
-    "select_lang": "اختيار اللغة"
+  "select_lang": "اختيار اللغة",
+  "theme": "اختيار المظهر",
+  "theme__btn__light": "فاتح",
+  "theme__btn__dark": "مظلم",
+  "theme__btn__system": "لون النظام",
+  "notifications": "التنبيهات",
+  "notification__btn__on": "تشغيل",
+  "notification__btn__off": "إيقاف"
 }

@@ -1,3 +1,10 @@
 {
-    "select_lang": "Select language"
+  "select_lang": "Select language",
+  "theme": "Theme Color",
+  "theme__btn__light": "Light",
+  "theme__btn__dark": "Dark",
+  "theme__btn__system": "System",
+  "notifications": "Notifications",
+  "notification__btn__on": "On",
+  "notification__btn__off": "Off"
 }

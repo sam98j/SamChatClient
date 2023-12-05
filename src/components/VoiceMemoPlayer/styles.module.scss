@@ -1,25 +1,32 @@
 .voice_memo_rec {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-top: .5rem;
-    direction: ltr;
-    &[sended-by-me='false'] {
-        .time_line {background-color: white !important;}
-        .timer {color: white;}
-        .time_line span {background-color: rgba(30, 143, 255, 0.445);}
-    }
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 0.5rem;
+  direction: ltr;
+  &[sended-by-me='false'] {
     .time_line {
-        height: 4px;
-        width: 190px;
-        background-color: #80808063; // 
-        border-radius: 4px;
-        span {
-            height: 4px;
-            width: 0;
-            display: block;
-            background-color: dodgerblue; // 
-            border-radius: 5px;
-        }
+      background-color: white !important;
     }
+    .timer {
+      color: white;
+    }
+    .time_line span {
+      background-color: rgba(30, 143, 255, 0.445);
+    }
+  }
+  .time_line {
+    height: 4px;
+    width: 65vw;
+    background-color: #80808063; //
+    border-radius: 4px;
+    span {
+      height: 4px;
+      width: 0;
+      display: block;
+      background-color: dodgerblue; //
+      border-radius: 5px;
+      transition: all 1s linear;
+    }
+  }
 }

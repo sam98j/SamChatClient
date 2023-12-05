@@ -3,14 +3,14 @@ const nextTranslate = require('next-translate-plugin');
 
 // eslint-disable-next-line no-undef
 module.exports = nextTranslate({
-    reactStrictMode: false,
-    async redirects(){
-        return [
-            // {
-            //     source: '/profile',
-            //     destination: '/',
-            //     permanent: true,
-            // }                             
-        ];
-    }                                           
+  reactStrictMode: false,
+  async redirects() {
+    return [
+      // {
+      //     source: '/profile',
+      //     destination: '/',
+      //     permanent: true,
+      // }
+    ];
+  },
 });
