@@ -30,6 +30,7 @@ export interface ChatState {
   messageToBeMarketAsReaded: null | { msgId: string; senderId: string };
   messageToSent: null | ChatMessage;
   currentChatPorfile: null | ChatProfile;
+  chatMessagesBatchNo: number;
 }
 
 // inital state
@@ -43,6 +44,7 @@ const initialState: ChatState = {
   messageToBeMarketAsReaded: null,
   messageToSent: null,
   currentChatPorfile: null,
+  chatMessagesBatchNo: 1,
 };
 
 // create state slcie and export it
@@ -121,6 +123,10 @@ export const chatSlice = createSlice({
       // if there is no query
       if (action.payload === '') state.chats = parsedCachedChats;
     },
+    // set chat messages batch no
+    setChatMessagesBatchNo: (state, action: PayloadAction<number>) => {
+      state.chatMessagesBatchNo = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getUserChats.fulfilled, (state, action) => {
@@ -160,6 +166,7 @@ export const {
   addNewChat,
   placeLastUpdatedChatToTheTop,
   searchForChat,
+  setChatMessagesBatchNo,
 } = chatSlice.actions;
 // export the reducer function
 export default chatSlice.reducer;

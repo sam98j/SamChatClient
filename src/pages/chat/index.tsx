@@ -10,7 +10,7 @@ import NextImage from 'next/image';
 import NoMessageDrow from '../../../assets/vectors/undraw_new_message_re_fp03.svg';
 import { useSearchParams } from 'next/navigation';
 import { useDispatch } from 'react-redux';
-import { setOpenedChat } from '@/redux/chats.slice';
+import { setChatMessagesBatchNo, setOpenedChat } from '@/redux/chats.slice';
 import { getChatMessages, getUsrOnlineStatus } from '@/apis/chats.api';
 import ChatMassage from '@/components/ChatMassage';
 import { setCurrentRoute } from '@/redux/system.slice';
@@ -28,13 +28,24 @@ const Chat = () => {
   // use ref
   const chatRef = useRef<HTMLDivElement>(null);
   // data from the store
-  const { chatMessages, chatName, openedChat, chats } = useSelector((state: RootState) => {
+  const { chatMessages, chatName, openedChat, chats, messagesBatchNo } = useSelector((state: RootState) => {
     return {
       openedChat: state.chat.openedChat,
       chatMessages: state.chat.chatMessages,
       chatName: state.system.currentRoute,
       chats: state.chat.chats,
+      messagesBatchNo: state.chat.chatMessagesBatchNo,
     };
+  });
+  chatRef.current?.addEventListener('scroll', () => {
+    if (chatRef.current?.scrollTop === 0) {
+      console.log('fetching new messages');
+      // get chat messages based on page no
+      dispatch(
+        getChatMessages({ chatUsrId: parmas.get('id')!, msgBatch: messagesBatchNo + 1 }) as unknown as AnyAction
+      );
+      dispatch(setChatMessagesBatchNo(messagesBatchNo + 1));
+    }
   });
   const parmas = useSearchParams();
   const messages = groupChatMessagesByDate(chatMessages as ChatMessage[], locale as never)!;
@@ -42,8 +53,9 @@ const Chat = () => {
   const [cachedOpenedChat] = useState(() => chats?.filter((chat) => chat.usrid === (parmas.get('id') as string))[0]);
   // scroll to the bottom of the view
   useEffect(() => {
+    if (messagesBatchNo > 1) return;
     chatRef.current?.scrollTo(0, chatRef.current.scrollHeight);
-  }, [chatMessages]);
+  }, [chatMessages, messagesBatchNo]);
   // component did mount life cicle hook
   useEffect(() => {
     // set opend chat
@@ -61,13 +73,14 @@ const Chat = () => {
     // clean up when component unmount
     return function cleanUp() {
       dispatch(setOpenedChat(undefined));
+      dispatch(setChatMessagesBatchNo(1));
     };
   }, []);
   // listen for opened chat
   useEffect(() => {
     if (!openedChat) return;
     // get chats messages
-    dispatch(getChatMessages(parmas.get('id')!) as unknown as AnyAction);
+    dispatch(getChatMessages({ chatUsrId: parmas.get('id')!, msgBatch: messagesBatchNo }) as unknown as AnyAction);
     // set route name
     dispatch(setCurrentRoute(openedChat!.usrname!));
   }, [openedChat]);
