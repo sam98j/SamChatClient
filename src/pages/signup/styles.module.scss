@@ -1,54 +1,54 @@
 .signup {
-    form {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        width: 100%;
-        a {
-            color: dodgerblue;
-        }
-        input[type="file"] {
-            color: transparent;
-            &::-webkit-file-upload-button {
-                visibility: hidden;
-            }
-            &::before {
-                content: attr(input-placeholder);
-                display: inline-block;
-                background-color: dodgerblue;
-                color: white;
-                border-radius: 6px;
-                cursor: pointer;
-                padding: 2px;
-                position: absolute;
-                top: 50%;
-                transform: translateY(-50%);
-            }
-            &::after {
-                content: attr(selected-file-name);
-                display: inline-block;
-                color: gray;
-                position: absolute;
-                right: 20px;
-                bottom: 50%;
-                transform: translateY(50%);
-            }
-        }
-        svg {
-            color: gray;
-        }
-        input {
-            padding: 0 30px;
-        }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    a {
+      color: dodgerblue;
     }
-    &[pref-lang='ar'] {
-        .inputIcon {
-            left: initial;
-            right: 0;
-        }
-        input[type="file"]::after {
-            right: initial;
-            left: 20px !important;
-        }
+    input[type='file'] {
+      color: transparent;
+      &::-webkit-file-upload-button {
+        visibility: hidden;
+      }
+      &::before {
+        content: attr(input-placeholder);
+        display: inline-block;
+        background-color: dodgerblue;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        padding: 2px;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      &::after {
+        content: attr(selected-file-name);
+        display: inline-block;
+        color: gray;
+        position: absolute;
+        right: 20px;
+        bottom: 50%;
+        transform: translateY(50%);
+      }
     }
+    svg {
+      color: gray;
+    }
+    input {
+      padding: 0 30px;
+    }
+  }
+  &[pref-lang='ar'] {
+    .inputIcon {
+      left: initial;
+      right: 0;
+    }
+    input[type='file']::after {
+      right: initial;
+      left: 20px !important;
+    }
+  }
 }

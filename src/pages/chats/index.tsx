@@ -55,8 +55,9 @@ export default function Home() {
               </Text>
             </Box>
           ) : (
-            chats?.map((chat) => <ChatCard key={String(Math.random())} chat={chat} />)
+            ''
           )}
+          {chats?.length !== 0 ? chats?.map((chat) => <ChatCard key={String(Math.random())} chat={chat} />) : ''}
         </Box>
         <BottomBar />
       </div>

@@ -1,0 +1,12 @@
+.back_arr_container {
+  display: flex;
+  justify-content: flex-start;
+  width: 6rem;
+  &[pref-lang='ar'] {
+    a {
+      svg {
+        transform: scaleX(-1);
+      }
+    }
+  }
+}

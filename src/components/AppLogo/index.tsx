@@ -20,16 +20,16 @@ const AppLogo = () => {
       is-app-loading={String(user === null)}
     >
       <Box display={'flex'} alignItems={'center'} gap={2}>
+        {/* app logo */}
         <Image alt='logo' src={logoSVG} className={styles.img} />
+        {/* app name */}
         <Text fontSize={'lg'} fontWeight={'black'}>
+          {/* show app name only if usr data is not fetched yet */}
           {user === null ? t('appName') : ''}
         </Text>
       </Box>
-      {user === null ? (
-        <Spinner color='blue' display={'block'} alignSelf={'center'} />
-      ) : (
-        ''
-      )}
+      {/* show spinner loading if user data is not fetched yet */}
+      {user === null ? <Spinner color='blue' display={'block'} alignSelf={'center'} /> : ''}
     </Box>
   );
 };

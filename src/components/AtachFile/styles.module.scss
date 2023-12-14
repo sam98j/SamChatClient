@@ -1,0 +1,33 @@
+.attach_file_menu {
+  position: absolute;
+  height: 200px;
+  padding: 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 50%;
+  border-radius: 1rem;
+  background-color: rgba(128, 128, 128, 0.2);
+  backdrop-filter: blur(20px);
+  top: -200px;
+  // hide the menu
+  &[is-menu-open='false'] {
+    display: none;
+  }
+  input[type='file'] {
+    border: none;
+    color: transparent;
+    &::-webkit-file-upload-button {
+      visibility: hidden;
+    }
+    &::before {
+      content: attr(placeholder);
+      display: inline-block;
+      cursor: pointer;
+      color: black;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+}

@@ -28,9 +28,12 @@ const ChatUsrActions = () => {
         {isChatUsrDoingAction.action === ChatUserActions.RECORDING_VOICE ? <RecVoiceInd /> : ''}
       </span>
       <span className={styles.online}>
-        {chatUsrStatus === 'online'
-          ? t('online')
-          : `${t('last_seen')} ${getTime(chatUsrStatus, TimeUnits.fullTime, locale as never)}`}
+        {/* display online if usr is online */}
+        {chatUsrStatus === 'online' ? t('online') : ''}
+        {/* display last seen if usr is not online */}
+        {chatUsrStatus && chatUsrStatus !== 'online'
+          ? `${t('last_seen')} ${getTime(chatUsrStatus, TimeUnits.fullTime, locale as never)}`
+          : ''}
       </span>
     </Box>
   );

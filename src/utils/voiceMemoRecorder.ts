@@ -1,6 +1,3 @@
-// import React from 'react'
-// import { useState } from 'react';
-
 const VoiceMemoRecorder = () => {
   // audio blobs
   let audioBlobs: Blob[] = [];
@@ -23,9 +20,7 @@ const VoiceMemoRecorder = () => {
     // clear previously saved audio blobs
     audioBlobs = [];
     // listen to dataavailble event to store recorded audio blobs
-    mediaRecorder?.addEventListener('dataavailable', (e) =>
-      audioBlobs.push(e.data)
-    );
+    mediaRecorder?.addEventListener('dataavailable', (e) => audioBlobs.push(e.data));
     // start recording
     mediaRecorder?.start();
     return stream;

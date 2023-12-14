@@ -1,3 +1,5 @@
 {
-    "voiceMsg": "voice message"
+  "voiceMsg": "voice message",
+  "photo": "photo",
+  "video": "video"
 }

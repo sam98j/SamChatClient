@@ -27,9 +27,7 @@ const ChatProfile = () => {
     // set current route
     dispatch(setCurrentRoute('chatProfile'));
     // dispatch an async action
-    dispatch(
-      getChatProfile(params.get('id') as string) as unknown as AnyAction
-    );
+    dispatch(getChatProfile(params.get('id') as string) as unknown as AnyAction);
   }, []);
   return (
     <>
@@ -46,12 +44,7 @@ const ChatProfile = () => {
       >
         <Avatar src={chatPorfile?.avatar} size={'2xl'} />
         {/* name */}
-        <Text
-          fontSize={'2xl'}
-          fontWeight={'black'}
-          margin={'0'}
-          lineHeight={'0'}
-        >
+        <Text fontSize={'2xl'} fontWeight={'black'} margin={'0'} lineHeight={'0'}>
           {chatPorfile?.name}
         </Text>
         <Text lineHeight={'0'} marginBottom={'10px'} textColor={'gray'}>

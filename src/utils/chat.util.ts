@@ -10,7 +10,6 @@ export function playReceiveMessageSound() {
   const tone = new Audio('/sounds/chat_alart.mp3');
   tone.play();
 }
-
 export function voiceMemoTimer(setState: React.Dispatch<string>) {
   let counter = 0;
   let minites = 0;
@@ -25,7 +24,6 @@ export function voiceMemoTimer(setState: React.Dispatch<string>) {
   }, 1000);
   return interval;
 }
-
 // group messages by date
 export function groupChatMessagesByDate(chatMessages: ChatMessage[], local: never) {
   if (!chatMessages) return;
@@ -50,4 +48,8 @@ export function groupChatMessagesByDate(chatMessages: ChatMessage[], local: neve
   });
 
   return { dates: Array.from(messagesGroupedByDate.keys()), messages: Array.from(messagesGroupedByDate.values()) };
+}
+// shrink message
+export function shrinkMsg(msg: string) {
+  return `${msg.split(' ').slice(0, 6).join(' ')} ...`;
 }

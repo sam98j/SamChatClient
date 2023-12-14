@@ -1,40 +1,30 @@
-import { MessageStatus } from '@/interfaces/chat.interface';
+import { MessageStatus, MessagesTypes } from '@/interfaces/chat.interface';
+
+// response shape
+export interface ChatPreviewData {
+  date: string;
+  lastMsgText: string;
+  unReadedMsgs: number;
+  type: MessagesTypes;
+  voiceNoteDuration: string;
+  senderId: string;
+  status: MessageStatus | null;
+}
 
 const useChatsApi = () => {
-  const fetchChatPreviewData = async (
-    chatUsrId: string
-  ): Promise<{
-    date: string;
-    lastMsgText: string;
-    unReadedMsgs: number;
-    isItTextMsg: boolean;
-    voiceNoteDuration: string;
-    senderId: string;
-    status: MessageStatus;
-  } | null> => {
+  const fetchChatPreviewData = async (chatUsrId: string): Promise<ChatPreviewData | null> => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     // access token
     const access_token = localStorage.getItem('access_token')!;
-    const apiRes = await fetch(
-      `${apiUrl}/messages/getchatpreviewdata/${chatUsrId}`,
-      {
-        method: 'GET',
-        headers: { authorization: access_token },
-      }
-    );
+    const apiRes = await fetch(`${apiUrl}/messages/getchatpreviewdata/${chatUsrId}`, {
+      method: 'GET',
+      headers: { authorization: access_token },
+    });
     // check for server err
     if (apiRes.status >= 500 || apiRes.status >= 400) {
       return null;
     }
-    return (await apiRes.json()) as {
-      date: string;
-      lastMsgText: string;
-      unReadedMsgs: number;
-      isItTextMsg: boolean;
-      voiceNoteDuration: string;
-      senderId: string;
-      status: MessageStatus;
-    };
+    return (await apiRes.json()) as ChatPreviewData;
   };
   return { fetchChatPreviewData };
 };

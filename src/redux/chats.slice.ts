@@ -29,6 +29,7 @@ export interface ChatState {
   chatUsrStatus: string;
   messageToBeMarketAsReaded: null | { msgId: string; senderId: string };
   messageToSent: null | ChatMessage;
+  multiChunksMsgToSent: null | ChatMessage;
   currentChatPorfile: null | ChatProfile;
   chatMessagesBatchNo: number;
 }
@@ -43,6 +44,7 @@ const initialState: ChatState = {
   chatUsrStatus: '',
   messageToBeMarketAsReaded: null,
   messageToSent: null,
+  multiChunksMsgToSent: null,
   currentChatPorfile: null,
   chatMessagesBatchNo: 1,
 };
@@ -127,6 +129,18 @@ export const chatSlice = createSlice({
     setChatMessagesBatchNo: (state, action: PayloadAction<number>) => {
       state.chatMessagesBatchNo = action.payload;
     },
+    // setMultiChunksMsgToSent
+    setMultiChunksMsgToSent: (state, action: PayloadAction<ChatMessage>) => {
+      if (action.payload) {
+        const msgToRender = state.chatMessages?.filter((msg) => msg._id === action.payload?._id)[0];
+        // terminate if msg exist
+        if (!msgToRender) {
+          console.log('message pushed');
+          state.chatMessages?.push(action.payload);
+        }
+      }
+      // state.multiChunksMsgToSent = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getUserChats.fulfilled, (state, action) => {
@@ -164,6 +178,7 @@ export const {
   setMessageToBeMarketAsReaded,
   setMessageToSent,
   addNewChat,
+  setMultiChunksMsgToSent,
   placeLastUpdatedChatToTheTop,
   searchForChat,
   setChatMessagesBatchNo,

@@ -1,4 +1,8 @@
 {
-    "typeMessagePlaceholder": "type your message",
-    "rec_voice": "recording voice message ..."
+  "typeMessagePlaceholder": "type your message",
+  "rec_voice": "recording voice message ...",
+  "insertPhoto": "Insert Photo",
+  "insertVideo": "Insert Video",
+  "insertFile": "Insert File",
+  "you": "You"
 }

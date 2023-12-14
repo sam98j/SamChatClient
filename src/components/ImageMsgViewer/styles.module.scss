@@ -1,0 +1,53 @@
+.imageMsgViewer {
+  &,
+  & img {
+    border-radius: 1.15rem;
+  }
+  &[pref-lang='ar'] {
+    svg {
+      transform: scaleX(-1);
+    }
+  }
+  // viewer header
+  .viewerHeader {
+    display: none;
+  }
+  &[is-open='true'] {
+    &,
+    & img {
+      border-radius: 0;
+    }
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    z-index: 1;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(20px);
+    display: flex;
+    flex-direction: column;
+    // align-items: center;
+    // viewer header
+    .viewerHeader {
+      display: flex;
+      padding: 10px;
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.459);
+      backdrop-filter: blur(10px);
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
+    // viwer body
+    .viewerBody {
+      display: flex;
+      align-items: center;
+      flex-grow: 1;
+    }
+    img {
+      width: 100%;
+      max-height: 100dvh;
+    }
+  }
+}

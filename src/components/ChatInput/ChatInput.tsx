@@ -1,11 +1,4 @@
-import {
-  Box,
-  IconButton,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Text,
-} from '@chakra-ui/react';
+import { Box, IconButton, Input, InputGroup, InputRightElement, Text } from '@chakra-ui/react';
 import styles from './styles.module.scss';
 import React, { useState } from 'react';
 import { Icon } from '@chakra-ui/icons';
@@ -14,13 +7,10 @@ import { ImAttachment } from 'react-icons/im';
 import { BiSticker } from 'react-icons/bi';
 import useTranslation from 'next-translate/useTranslation';
 import { IoSend } from 'react-icons/io5';
-import { ChatMessage, ChatUserActions } from '@/interfaces/chat.interface';
+import { ChatMessage, ChatUserActions, MessagesTypes } from '@/interfaces/chat.interface';
 import { useDispatch } from 'react-redux';
-import {
-  setCurrentUsrDoingAction,
-  setMessageToSent,
-} from '@/redux/chats.slice';
-import VoiceMemoRecorder from '@/utils/hooks/voiceMemoRecorder';
+import { setCurrentUsrDoingAction, setMessageToSent } from '@/redux/chats.slice';
+import VoiceMemoRecorder from '@/utils/voiceMemoRecorder';
 import { voiceMemoTimer } from '@/utils/chat.util';
 import getBlobDuration from 'get-blob-duration';
 import { v4 as uuid } from 'uuid';
@@ -28,6 +18,8 @@ import { useSearchParams } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useRouter } from 'next/router';
+import AtachFile from '../AtachFile';
+import { setAttchFileMenuOpen } from '@/redux/system.slice';
 const { start, stop, cancel } = VoiceMemoRecorder();
 
 const ChatInput = () => {
@@ -40,7 +32,9 @@ const ChatInput = () => {
   // timer interval
   const [timerInterval, setTimerInterval] = useState<NodeJS.Timer>();
   // current logged usr
-  const currentUsr = useSelector((state: RootState) => state.auth.currentUser);
+  const { attachFileMenuOpen, currentUsr } = useSelector((state: RootState) => {
+    return { currentUsr: state.auth.currentUser, attachFileMenuOpen: state.system.attchFileMenuOpen };
+  });
   // url params
   const parmas = useSearchParams();
   // translatios
@@ -50,8 +44,7 @@ const ChatInput = () => {
   // timer
   const [timer, setTimer] = useState('00:00');
   // handleInputFocus
-  const handleInputFocus = () =>
-    dispatch(setCurrentUsrDoingAction(ChatUserActions.TYPEING));
+  const handleInputFocus = () => dispatch(setCurrentUsrDoingAction(ChatUserActions.TYPEING));
   // handleInputBlur
   const handleInputBlur = () => dispatch(setCurrentUsrDoingAction(null));
   // inputChangeHandler
@@ -73,9 +66,7 @@ const ChatInput = () => {
     clearInterval(timerInterval);
   };
   // handleSendBtnClick
-  const handleSendBtnClick = async (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const handleSendBtnClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     // send voice msg if it's recording and input is empty
     if (isRec && !inputText) {
@@ -90,10 +81,10 @@ const ChatInput = () => {
           _id: uuid(),
           receiverId: parmas.get('id'),
           senderId: currentUsr,
-          text: e.target?.result as string,
+          content: e.target?.result as string,
           date: new Date().toString(),
           status: null,
-          isItTextMsg: false,
+          type: MessagesTypes.VOICENOTE,
           voiceNoteDuration: String(Math.round(duration)),
         } as ChatMessage;
         dispatch(setMessageToSent(message));
@@ -109,10 +100,10 @@ const ChatInput = () => {
         _id: uuid(),
         receiverId: parmas.get('id'),
         senderId: currentUsr,
-        text: inputText,
+        content: inputText,
         date: new Date().toString(),
         status: null,
-        isItTextMsg: true,
+        type: MessagesTypes.TEXT,
       } as ChatMessage;
       dispatch(setMessageToSent(message));
       // send message with web sockets
@@ -120,6 +111,11 @@ const ChatInput = () => {
       setInputText('');
       return;
     }
+  };
+  // handleAttachFile
+  const handleAttachFile = () => {
+    const attchFileMenuStatus = attachFileMenuOpen ? false : true;
+    dispatch(setAttchFileMenuOpen(attchFileMenuStatus));
   };
   return (
     <Box
@@ -131,18 +127,16 @@ const ChatInput = () => {
       alignItems={'center'}
       pref-lang={locale}
     >
+      <AtachFile />
       {/* attach and flashing mic */}
       <IconButton
         aria-label=''
         isRound={true}
         is-voice-rec={String(isRec)}
         className={styles.mic_atta_icon}
+        onClick={handleAttachFile}
       >
-        <Icon
-          as={isRec ? BsMic : ImAttachment}
-          boxSize={5}
-          color={'messenger.500'}
-        />
+        <Icon as={isRec ? BsMic : ImAttachment} boxSize={5} color={'messenger.500'} />
       </IconButton>
       <Box flexGrow={'1'} textColor={'gray'} display={!isRec ? 'none' : 'flex'}>
         <Text> {timer} </Text>

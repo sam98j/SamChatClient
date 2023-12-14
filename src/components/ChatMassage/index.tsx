@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 import React, { useEffect, useState } from 'react';
 import styles from './styles.module.scss';
-import { ChatMessage, MessageStatus } from '@/interfaces/chat.interface';
+import { ChatMessage, MessageStatus, MessagesTypes } from '@/interfaces/chat.interface';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { Box, Text } from '@chakra-ui/react';
@@ -11,14 +11,19 @@ import { useRouter } from 'next/router';
 import VoiceMemoPlayer from '../VoiceMemoPlayer';
 import MessageStatusIcon from '../MessageStatus';
 import { TimeUnits, getTime } from '@/utils/time';
+import ImageMsgViewer from '../ImageMsgViewer';
+import FileMsgViewer from '../FileMsgViewer';
+import VideoMsgPlayer from '../VideoMsgPlayer';
 
 const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) => {
+  // messages types
+  const { TEXT, VOICENOTE, PHOTO, FILE, VIDEO } = MessagesTypes;
   console.log('message render');
   // current app lang
   const { locale } = useRouter();
   // redux dispatch function
   const dispatch = useDispatch();
-  const { text, senderId, status, date, isItTextMsg, voiceNoteDuration } = messageData;
+  const { content, senderId, status, date, type, voiceNoteDuration } = messageData;
   // msg time
   const msgTime = getTime(date, TimeUnits.time);
   // fetch data from redux store
@@ -43,9 +48,22 @@ const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) =>
     >
       {/* chat text  */}
       <Text>
-        {isItTextMsg ? text : <VoiceMemoPlayer data={{ sendedByMe: sendedByme, src: text, voiceNoteDuration }} />}
+        {/* voice message */}
+        {type === VOICENOTE ? (
+          <VoiceMemoPlayer data={{ sendedByMe: sendedByme, src: content, voiceNoteDuration }} />
+        ) : (
+          ''
+        )}
+        {/* text message */}
+        {type === TEXT ? content : ''}
+        {/* message type photo */}
+        {type === PHOTO ? <ImageMsgViewer msgUrl={content} sendedByMe={sendedByme} date={date} /> : ''}
+        {/* message type file */}
+        {type === FILE ? <FileMsgViewer /> : ''}
+        {/* message type video */}
+        {type === VIDEO ? <VideoMsgPlayer url={content} date={date} sendedByMe={sendedByme} /> : ''}
       </Text>
-      {/* msg footer */}
+      {/* msg footer appear  in all messages types*/}
       <Box display={'flex'} justifyContent={'flex-end'} marginTop={'5px'}>
         <Text color={'gray'} className={styles.msg_time} width={'fit-content'}>
           {msgTime}

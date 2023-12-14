@@ -4,8 +4,7 @@
   border-radius: 1.15rem;
   line-height: 1.25;
   max-width: 80%;
-  padding: 0.3rem 0.8rem;
-  position: relative;
+  padding: 10px;
   word-wrap: break-word;
   margin: 0.5rem 0;
   width: fit-content;
@@ -20,42 +19,44 @@
   }
   // if the message is sended by the current user
   &[sended-by-me='true'] {
+    border-bottom-right-radius: 0;
     margin-left: auto;
     background-color: #e5e5ea;
     color: #000;
-    &::before {
-      border-bottom-left-radius: 0.8rem 0.7rem;
-      border-right: 1rem solid #e5e5ea;
-      right: -0.35rem;
-      transform: translate(0, -0.1rem);
-    }
-    &::after {
-      background-color: #fff;
-      border-bottom-left-radius: 0.5rem;
-      right: -40px;
-      transform: translate(-30px, -2px);
-      width: 10px;
-    }
+    // &::before {
+    //   border-bottom-left-radius: 0.8rem 0.7rem;
+    //   border-right: 1rem solid #e5e5ea;
+    //   right: -0.35rem;
+    //   transform: translate(0, -0.1rem);
+    // }
+    // &::after {
+    //   background-color: #fff;
+    //   border-bottom-left-radius: 0.5rem;
+    //   right: -40px;
+    //   transform: translate(-30px, -2px);
+    //   width: 10px;
+    // }
   }
   // if the message is not sended by the current user
   &[sended-by-me='false'] {
+    border-bottom-left-radius: 0;
     .msg_time {
       color: white;
     }
     background-color: #248bf5;
     color: #fff;
-    &:before {
-      border-bottom-right-radius: 0.8rem 0.7rem;
-      border-left: 1rem solid #248bf5;
-      left: -0.35rem;
-      transform: translate(0, -0.1rem);
-    }
-    &::after {
-      background-color: #fff;
-      border-bottom-right-radius: 0.5rem;
-      left: 20px;
-      transform: translate(-30px, -2px);
-      width: 10px;
-    }
+    // &:before {
+    //   border-bottom-right-radius: 0.8rem 0.7rem;
+    //   border-left: 1rem solid #248bf5;
+    //   left: -0.35rem;
+    //   transform: translate(0, -0.1rem);
+    // }
+    // &::after {
+    //   background-color: #fff;
+    //   border-bottom-right-radius: 0.5rem;
+    //   left: 20px;
+    //   transform: translate(-30px, -2px);
+    //   width: 10px;
+    // }
   }
 }

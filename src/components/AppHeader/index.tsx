@@ -1,32 +1,30 @@
 import React from 'react';
 import styles from './styles.module.scss';
-import { EditIcon, Icon } from '@chakra-ui/icons';
-import { Avatar, Box, Button, Text } from '@chakra-ui/react';
+import { EditIcon } from '@chakra-ui/icons';
+import { Avatar, Box, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { changeNewChatScrStatus } from '@/redux/system.slice';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { HiOutlineChevronLeft } from 'react-icons/hi';
 import AppLogo from '../AppLogo';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
-import useTranslation from 'next-translate/useTranslation';
 import ChatUsrActions from '../ChatUsrActions/ChatUsrActions';
 import ChatCalls from '../ChatCalls';
+import BackArrow from '../BackArrow';
+import AuthLinks from '../AuthLinks';
 const AppHeader = () => {
-  const { t } = useTranslation('appHeader');
   // path name
   const pathname = usePathname();
   // query params
   // get opened chat status
-  const { openedChat, currentUsr, currentRoute, chatName } = useSelector((state: RootState) => {
+  const { openedChat, currentUsr, currentRoute } = useSelector((state: RootState) => {
     return {
       openedChat: state.chat.openedChat,
       chatUsrStatus: state.chat.chatUsrStatus,
       currentUsr: state.auth.currentUser,
       currentRoute: state.system.currentRoute,
-      chatName: state.chat.currentChatPorfile?.name,
     };
   });
   // check for signup or login page if it open
@@ -51,33 +49,7 @@ const AppHeader = () => {
       {/* show app logo when user is not logged in */}
       {currentUsr ? '' : <AppLogo />}
       {/* back Arr */}
-      <Box className={styles.back_arr_container}>
-        {/* if user is not logged in  */}
-        {Boolean(pathname !== '/chats') && Boolean(currentUsr) ? (
-          <Link
-            href={currentRoute !== 'chatProfile' ? '/chats' : `/chat?id=${params.get('id')}`}
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Icon as={HiOutlineChevronLeft} color={'messenger.500'} boxSize={'6'} />
-            <Text textColor={'messenger.500'}>{currentRoute !== 'chatProfile' ? t('prev_nav') : chatName}</Text>
-          </Link>
-        ) : (
-          ''
-        )}
-        {/* show edit btn in the chats screen */}
-        {pathname === '/chats' && currentUsr ? (
-          <Text textColor={'messenger.500'} fontSize={'lg'}>
-            {' '}
-            {t('edit_btn')}{' '}
-          </Text>
-        ) : (
-          ''
-        )}
-      </Box>
+      <BackArrow />
       {/* Screen name */}
       {currentUsr ? (
         <Box
@@ -116,7 +88,7 @@ const AppHeader = () => {
       {currentUsr && openedChat ? (
         <Box display={'flex'} alignItems={'center'} gap={5}>
           {/* chat usr avatar */}
-          <Link href={`/chat/profile?id=${params.get('id')}`}>
+          <Link href={`/chat_profile?id=${params.get('id')}`}>
             <Avatar name='Hosam Alden' size={'sm'} src={openedChat.avatar} />
           </Link>
           {/* Chat Calls */}
@@ -125,23 +97,8 @@ const AppHeader = () => {
       ) : (
         ''
       )}
-      {/* login and sign up */}
-      {currentUsr ? (
-        ''
-      ) : (
-        <Box display={'flex'} gap={4}>
-          <Link href='/signup'>
-            <Button colorScheme='messenger' variant='solid'>
-              {t('signup_link')}
-            </Button>
-          </Link>
-          <Link href='/login?s=false'>
-            <Button colorScheme='messenger' variant='outline'>
-              {t('login_link')}
-            </Button>
-          </Link>
-        </Box>
-      )}
+      {/* hide login and sign up if there is no loggedin user */}
+      {!currentUsr ? <AuthLinks /> : ''}
     </Box>
   );
 };

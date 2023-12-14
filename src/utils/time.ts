@@ -5,6 +5,7 @@ export enum TimeUnits {
 }
 
 export function getTime(stringDate: string, timeUnit: TimeUnits, local: never = 'en' as never) {
+  if (!stringDate) return '';
   // week's days
   const weekDays = {
     ar: ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
@@ -19,7 +20,13 @@ export function getTime(stringDate: string, timeUnit: TimeUnits, local: never = 
   const dateObj = new Date(stringDate);
   // if time unit is time
   if (timeUnit === TimeUnits.time) {
-    return `${dateObj.getHours()}:${dateObj.getMinutes()}`;
+    // time hour
+    const timeHoure = dateObj.getHours().toString();
+    // time minutes
+    const timeMinutes = dateObj.getMinutes().toString();
+    return `${timeHoure.length !== 1 ? timeHoure : `0${timeHoure}`}:${
+      timeMinutes.length !== 1 ? timeMinutes : `0${timeMinutes}`
+    }`;
   }
   // if time unit is date
   if (timeUnit === TimeUnits.date) {

@@ -4,24 +4,28 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { SingleChat, setOpenedChat } from '@/redux/chats.slice';
 import { useSelector } from 'react-redux';
-import useChatsApi from './getData.hook';
-import useTranslation from 'next-translate/useTranslation';
-import { Icon } from '@chakra-ui/icons';
-import { BsMic } from 'react-icons/bs';
-import { secondsToDurationConverter } from '@/utils/voiceMemoRec';
+import useChatsApi, { ChatPreviewData } from './getData.hook';
 import MessageStatusIcon from '../MessageStatus';
-import { MessageStatus } from '@/interfaces/chat.interface';
+import { MessageStatus, MessagesTypes } from '@/interfaces/chat.interface';
 import { RootState } from '@/redux/store';
 import { useRouter } from 'next/router';
 import styles from './styles.module.scss';
 import ChatUsrActions from '../ChatUsrActions/ChatUsrActions';
 import { useDispatch } from 'react-redux';
+import { TimeUnits, getTime } from '@/utils/time';
+import VoiceMemoPreview from '../VoiceMemoPreview';
+import { shrinkMsg } from '@/utils/chat.util';
+import PhotoPreview from '../PhotoPreview';
+import VideoPreview from '../VideoPreview';
 
 const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
   // use dispatch
   const dispatch = useDispatch();
   // localize lang
   const { locale } = useRouter();
+  // Messages types
+  const { TEXT, VOICENOTE, PHOTO, VIDEO } = MessagesTypes;
+  // search params
   const searchParams = useSearchParams();
   // get data from store
   const newIncomingMsg = useSelector((state: RootState) => state.system.newIncomingMsg);
@@ -36,16 +40,9 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
         avatar: chat.avatar,
       })
     );
-  const { t } = useTranslation('chatCard');
-  const [previewData, setPreveiwData] = useState<{
-    date: string;
-    lastMsgText: string;
-    unReadedMsgs: number;
-    isItTextMsg: boolean;
-    voiceNoteDuration: string;
-    senderId: string;
-    status: MessageStatus | null;
-  }>();
+  // preview data
+  const [previewData, setPreveiwData] = useState<ChatPreviewData>();
+  // fetch preview data
   const { fetchChatPreviewData } = useChatsApi();
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -59,14 +56,14 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
   // listen for the new incoming msg
   useEffect(() => {
     if (!newIncomingMsg || newIncomingMsg.senderId !== chat.usrid) return;
-    const { date, senderId, text: lastMsgText, isItTextMsg, status, voiceNoteDuration } = newIncomingMsg;
+    const { date, senderId, content: lastMsgText, type, status, voiceNoteDuration } = newIncomingMsg;
     // incoming msg date
     const incomingMsgDate = new Date(date);
     setPreveiwData({
       ...previewData,
       senderId,
       lastMsgText,
-      isItTextMsg,
+      type,
       status: status,
       voiceNoteDuration,
       unReadedMsgs: previewData?.unReadedMsgs as number,
@@ -100,7 +97,7 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
           <Heading size={'sm'} marginBottom={'5px'} textColor={'messenger.500'}>
             {chat.usrname}
           </Heading>
-          {/* usr actions */}
+          {/* usr actions (usr typing, recording voice) */}
           <Text className={styles.chat_usr_actions}>
             <ChatUsrActions />
           </Text>
@@ -108,34 +105,31 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
           <Text textColor={'gray.500'} display={'flex'} className={styles.msg_text}>
             {/* message status icons */}
             <MessageStatusIcon
-              data={{
-                msgStatus: previewData?.status as MessageStatus,
-                senderId: previewData?.senderId as string,
-              }}
+              data={{ msgStatus: previewData?.status as MessageStatus, senderId: previewData?.senderId as string }}
             />
             {/* display text msg  */}
-            {previewData && previewData?.isItTextMsg
-              ? `${previewData?.lastMsgText.split(' ').slice(0, 6).join(' ')} ...`
-              : ''}
+            {previewData && previewData?.type === TEXT ? shrinkMsg(previewData.lastMsgText) : ''}
             {/* display voice message details */}
-            {previewData && !previewData.isItTextMsg ? (
-              <>
-                <Icon as={BsMic} />
-                {t('voiceMsg')} {secondsToDurationConverter(Number(previewData?.voiceNoteDuration))}
-              </>
+            {previewData && previewData.type === VOICENOTE ? (
+              <VoiceMemoPreview duration={previewData.voiceNoteDuration} />
             ) : (
               ''
             )}
+            {/* photo message */}
+            {previewData && previewData.type === PHOTO ? <PhotoPreview /> : ''}
+            {/* video message preview*/}
+            {previewData && previewData.type === VIDEO ? <VideoPreview /> : ''}
             {/* loading */}
             {!previewData ? <Box height={'10px'} width={'100%'} bgColor={'gray.100'} borderRadius={'10px'}></Box> : ''}
           </Text>
         </Box>
         <Box>
           {/* loading msg time */}
-          <Text width={'fit-content'}>
+          <Text width={'fit-content'} textColor={'gray'}>
             {previewData ? (
-              previewData?.date
+              getTime(previewData?.date, TimeUnits.time)
             ) : (
+              // show skelton loading
               <Box height={'10px'} width={'50px'} bgColor={'gray.100'} borderRadius={'10px'}></Box>
             )}
           </Text>

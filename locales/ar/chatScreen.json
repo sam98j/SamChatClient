@@ -1,4 +1,8 @@
 {
-    "typeMessagePlaceholder": "اكتب رسالتك",
-    "rec_voice": "جار تسجيل رسالة صوتية ..."
+  "typeMessagePlaceholder": "اكتب رسالتك",
+  "rec_voice": "جار تسجيل رسالة صوتية ...",
+  "insertPhoto": "إدراج صورة",
+  "insertVideo": "إدراج فديو",
+  "insertFile": "إدراج ملف",
+  "you": "أنت"
 }
