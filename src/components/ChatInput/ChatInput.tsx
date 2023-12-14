@@ -9,7 +9,7 @@ import useTranslation from 'next-translate/useTranslation';
 import { IoSend } from 'react-icons/io5';
 import { ChatMessage, ChatUserActions, MessagesTypes } from '@/interfaces/chat.interface';
 import { useDispatch } from 'react-redux';
-import { setCurrentUsrDoingAction, setMessageToSent } from '@/redux/chats.slice';
+import { setCurrentUsrDoingAction, addMessageToChat } from '@/redux/chats.slice';
 import VoiceMemoRecorder from '@/utils/voiceMemoRecorder';
 import { voiceMemoTimer } from '@/utils/chat.util';
 import getBlobDuration from 'get-blob-duration';
@@ -53,64 +53,77 @@ const ChatInput = () => {
   };
   // start recording voice
   const startRecVoiceMemoHandler = async () => {
+    // tell the server about is currently recording voice to inform another usr in the chat
     dispatch(setCurrentUsrDoingAction(ChatUserActions.RECORDING_VOICE));
+    // start recording voice
     await start();
+    // set voice recording state
     setIsReco(true);
     setTimerInterval(voiceMemoTimer(setTimer));
   };
   // handle stop recrding vioice
   const stopRecVoiceMemoHandler = () => {
+    // tell server about usr is currently stop recording voice to inform another usr in chat
     dispatch(setCurrentUsrDoingAction(null));
+    // set voice recording state
     setIsReco(false);
+    // cancerl recording
     cancel();
     clearInterval(timerInterval);
+  };
+  // send text message
+  const sendTextMessage = (message: ChatMessage) => {
+    // create meassge
+    if (!inputText) return;
+    // push message to the chat
+    dispatch(addMessageToChat({ ...message, content: inputText, type: MessagesTypes.TEXT }));
+    // clear the input
+    setInputText('');
+  };
+  // send voice message
+  const sendVoiceMessage = async (message: ChatMessage) => {
+    // send voice msg if it's recording and input is empty
+    if (!isRec || inputText) return;
+    dispatch(setCurrentUsrDoingAction(null));
+    clearInterval(timerInterval);
+    const blob = await stop();
+    const reader = new FileReader();
+    reader.readAsDataURL(blob as Blob);
+    // voice note reader load handler
+    const voiceLoadHandler = async (e: ProgressEvent<FileReader>) => {
+      const duration = await getBlobDuration(e.target?.result as string);
+      // new Audio(e.target?.result as string, {ty});
+      const voiceNoteMessage = {
+        ...message,
+        voiceNoteDuration: String(Math.round(duration)),
+        content: e.target?.result as string,
+        type: MessagesTypes.VOICENOTE,
+      } as ChatMessage;
+      dispatch(addMessageToChat(voiceNoteMessage));
+      // set isRec
+      setIsReco(false);
+    };
+    // on voice reader load
+    reader.addEventListener('load', voiceLoadHandler);
   };
   // handleSendBtnClick
   const handleSendBtnClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    // send voice msg if it's recording and input is empty
-    if (isRec && !inputText) {
-      dispatch(setCurrentUsrDoingAction(null));
-      clearInterval(timerInterval);
-      const blob = await stop();
-      const reader = new FileReader();
-      reader.addEventListener('load', async (e) => {
-        const duration = await getBlobDuration(e.target?.result as string);
-        // new Audio(e.target?.result as string, {ty});
-        const message = {
-          _id: uuid(),
-          receiverId: parmas.get('id'),
-          senderId: currentUsr,
-          content: e.target?.result as string,
-          date: new Date().toString(),
-          status: null,
-          type: MessagesTypes.VOICENOTE,
-          voiceNoteDuration: String(Math.round(duration)),
-        } as ChatMessage;
-        dispatch(setMessageToSent(message));
-        // send message with web sockets
-        // set isRec
-        setIsReco(false);
-      });
-      reader.readAsDataURL(blob as Blob);
-    }
-    // create meassge
-    if (inputText) {
-      const message = {
-        _id: uuid(),
-        receiverId: parmas.get('id'),
-        senderId: currentUsr,
-        content: inputText,
-        date: new Date().toString(),
-        status: null,
-        type: MessagesTypes.TEXT,
-      } as ChatMessage;
-      dispatch(setMessageToSent(message));
-      // send message with web sockets
-      // clear the input
-      setInputText('');
+    // chat message
+    const message = {
+      _id: uuid(),
+      receiverId: parmas.get('id'),
+      senderId: currentUsr,
+      date: new Date().toString(),
+      status: null,
+    } as ChatMessage;
+    // if text message
+    if (inputText && !isRec) {
+      sendTextMessage(message);
       return;
     }
+    // if voice message
+    sendVoiceMessage(message);
   };
   // handleAttachFile
   const handleAttachFile = () => {

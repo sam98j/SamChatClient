@@ -15,7 +15,6 @@ export interface ChatProfile {
   name: string;
   email: string;
 }
-
 // state slice shape
 export interface ChatState {
   chats: SingleChat[] | null | undefined;
@@ -28,12 +27,9 @@ export interface ChatState {
   isCurrentUsrDoingAction: null | ChatUserActions;
   chatUsrStatus: string;
   messageToBeMarketAsReaded: null | { msgId: string; senderId: string };
-  messageToSent: null | ChatMessage;
-  multiChunksMsgToSent: null | ChatMessage;
   currentChatPorfile: null | ChatProfile;
   chatMessagesBatchNo: number;
 }
-
 // inital state
 const initialState: ChatState = {
   chats: null,
@@ -43,8 +39,6 @@ const initialState: ChatState = {
   isCurrentUsrDoingAction: null,
   chatUsrStatus: '',
   messageToBeMarketAsReaded: null,
-  messageToSent: null,
-  multiChunksMsgToSent: null,
   currentChatPorfile: null,
   chatMessagesBatchNo: 1,
 };
@@ -57,10 +51,6 @@ export const chatSlice = createSlice({
     setOpenedChat: (state, action: PayloadAction<{ id: string; usrname: string; avatar: string } | undefined>) => {
       const openedChat = action.payload;
       state.openedChat = openedChat;
-    },
-    // add message to the chat
-    addMessageToChat: (state, action: PayloadAction<ChatMessage>) => {
-      state.chatMessages?.push(action.payload);
     },
     // change chat user typing state
     setChatUsrDoingAction: (state, action: PayloadAction<{ action: ChatUserActions; actionSender: string }>) => {
@@ -85,13 +75,6 @@ export const chatSlice = createSlice({
     // messageToBeMarketAsReaded
     setMessageToBeMarketAsReaded(state, action: PayloadAction<{ msgData: { msgId: string; senderId: string } }>) {
       state.messageToBeMarketAsReaded = action.payload.msgData;
-    },
-    // set message to be sent
-    setMessageToSent(state, action: PayloadAction<null | ChatMessage>) {
-      if (action.payload) {
-        state.chatMessages?.push(action.payload);
-      }
-      state.messageToSent = action.payload;
     },
     // add new chat to the chats
     addNewChat(state, action: PayloadAction<SingleChat>) {
@@ -129,17 +112,16 @@ export const chatSlice = createSlice({
     setChatMessagesBatchNo: (state, action: PayloadAction<number>) => {
       state.chatMessagesBatchNo = action.payload;
     },
-    // setMultiChunksMsgToSent
-    setMultiChunksMsgToSent: (state, action: PayloadAction<ChatMessage>) => {
-      if (action.payload) {
-        const msgToRender = state.chatMessages?.filter((msg) => msg._id === action.payload?._id)[0];
-        // terminate if msg exist
-        if (!msgToRender) {
-          console.log('message pushed');
-          state.chatMessages?.push(action.payload);
-        }
-      }
-      // state.multiChunksMsgToSent = action.payload;
+    // add Message To Chat
+    addMessageToChat: (state, action: PayloadAction<ChatMessage>) => {
+      // terminate if no message
+      if (!action.payload) return;
+      // check if message is already in chat
+      const msgToRender = state.chatMessages?.filter((msg) => msg._id === action.payload?._id)[0];
+      // terminate if msg exist
+      if (msgToRender) return;
+      console.log('message pushed');
+      state.chatMessages?.push(action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -168,17 +150,16 @@ export const chatSlice = createSlice({
     });
   },
 });
+
 export const {
   setOpenedChat,
-  addMessageToChat,
   setChatUsrDoingAction,
   setChatUsrStatus,
   setMessageStatus,
   setCurrentUsrDoingAction,
   setMessageToBeMarketAsReaded,
-  setMessageToSent,
   addNewChat,
-  setMultiChunksMsgToSent,
+  addMessageToChat,
   placeLastUpdatedChatToTheTop,
   searchForChat,
   setChatMessagesBatchNo,

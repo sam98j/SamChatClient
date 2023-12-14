@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux';
 import { ChatMessage, MessagesTypes } from '@/interfaces/chat.interface';
 import { v4 as uuid } from 'uuid';
 import { useSearchParams } from 'next/navigation';
-import { setMultiChunksMsgToSent } from '@/redux/chats.slice';
+import { addMessageToChat } from '@/redux/chats.slice';
 import { setAttchFileMenuOpen } from '@/redux/system.slice';
 
 const AtachFile = () => {
@@ -25,52 +25,8 @@ const AtachFile = () => {
     return {
       attachFileMenuOpen: state.system.attchFileMenuOpen,
       currentUser: state.auth.currentUser,
-      multiChunksMsgStatus: state.chat.multiChunksMsgStatus,
     };
   });
-  // listen for file chunks
-  // useEffect(() => {
-  //   // if there is no chunks
-  //   if (!chunks) return;
-  //   // is it last chunk
-  //   const isLastChunk = chunkIndex === chunks.length - 1;
-  //   // terminate after last chunk
-  //   if (chunkIndex > chunks.length - 1) return;
-  //   // multi chunks status
-  //   const { delevered, isFirstChunk } = multiChunksMsgStatus;
-  //   // termenate if chunk is not delivered
-  //   if (delevered === false) return;
-  //   // if delevered is null and it's first chunk (run onley at first chunk)
-  //   if (delevered === null && isFirstChunk) {
-  //     console.log('first chunk', chunks[chunkIndex]);
-  //     // message
-  //     const message: ChatMessage = {
-  //       _id: uuid(),
-  //       date: new Date().toString(),
-  //       receiverId: params.get('id') as string,
-  //       senderId: currentUser as string,
-  //       status: null,
-  //       content: chunks[chunkIndex],
-  //       type: MessagesTypes.VIDEO,
-  //       voiceNoteDuration: '',
-  //     };
-  //     dispatch(setMultiChunksMsgToSent({ data: message, isLastChunk }));
-  //     //   // hide attach file menu
-  //     dispatch(setAttchFileMenuOpen(false));
-  //     // set multi chunks msg
-  //     setMulitChunksMessage(message);
-  //     // set current chunk index
-  //     setChunkIndex(chunkIndex + 1);
-  //     return;
-  //   }
-  //   // if delevered is null
-  //   if (delevered === null || isFirstChunk || !mulitChunksMessage) return;
-  //   console.log('not first', chunks[chunkIndex]);
-  //   // set the message to be sent
-  //   dispatch(setMultiChunksMsgToSent({ data: { ...mulitChunksMessage, content: chunks[chunkIndex] }, isLastChunk }));
-  //   // dispatch(setMultiChunksMsgStatus({ delevered: null, isFirstChunk: false }));
-  //   setChunkIndex(chunkIndex + 1);
-  // }, [chunks, multiChunksMsgStatus]);
   // handleFileSelection
   const handleFileSelection = (changeEvent: ChangeEvent<HTMLInputElement>) => {
     // selected file
@@ -97,7 +53,7 @@ const AtachFile = () => {
         voiceNoteDuration: '',
       };
       //   // dispatch a message
-      dispatch(setMultiChunksMsgToSent(message));
+      dispatch(addMessageToChat(message));
       //   // hide attach file menu
       dispatch(setAttchFileMenuOpen(false));
     }

@@ -16,12 +16,11 @@ import AppLogo from '@/components/AppLogo';
 import { AnyAction } from '@reduxjs/toolkit';
 import { extendTheme } from '@chakra-ui/react';
 import { playReceiveMessageSound, playSentMessageSound } from '@/utils/chat.util';
-import { ChatMessage, MessageStatus, MessagesTypes } from '@/interfaces/chat.interface';
+import { ChatMessage, MessageStatus } from '@/interfaces/chat.interface';
 import {
   addMessageToChat,
   setChatUsrStatus,
   setMessageStatus,
-  setMessageToSent,
   setOpenedChat,
   setChatUsrDoingAction,
   addNewChat,
@@ -30,7 +29,7 @@ import {
 import { usePathname, useSearchParams } from 'next/navigation';
 import { io, Socket } from 'socket.io-client';
 import { setNewIncomingMsg } from '@/redux/system.slice';
-import useMultiChunksMsg from '@/Hooks/useMultiChunksMsg';
+import useChatMessagesSender from '@/Hooks/useChatMsgSender';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 // chakra theme
 const theme = extendTheme({ fonts: { body: '"Baloo Bhaijaan 2", cursive' } });
@@ -39,7 +38,7 @@ function App({ Component, pageProps }: AppProps) {
   // socket instance
   const [socketClient, setSocket] = useState<Socket | null>(null);
   // multichunk msg
-  const { sendMuliChunksMsg } = useMultiChunksMsg(socketClient as Socket);
+  const { sendChatMessage } = useChatMessagesSender(socketClient as Socket);
   // use path
   const pathname = usePathname();
   // router
@@ -51,7 +50,7 @@ function App({ Component, pageProps }: AppProps) {
   // auth state
   const currentUser = useSelector((state: RootState) => state.auth.currentUser);
   // chat state
-  const { openedChat, isCurrentUsrDoingAction, messageToBeMarketAsReaded, messageToSent, chatMessages } = useSelector(
+  const { openedChat, isCurrentUsrDoingAction, messageToBeMarketAsReaded, chatMessages } = useSelector(
     (state: RootState) => state.chat
   );
   // listen for multichunk msg
@@ -59,23 +58,12 @@ function App({ Component, pageProps }: AppProps) {
     // terminate if chat's messages not fetched yet
     if (!chatMessages) return;
     // msgs  to sent
-    const messagesToSent = chatMessages.filter((msg) => msg.type !== MessagesTypes.TEXT && msg.status === null);
+    const messagesToSent = chatMessages.filter((msg) => msg.status === null);
     // terminate if there is no message waiting for send
     if (!messagesToSent[0]) return;
     // send
-    sendMuliChunksMsg(messagesToSent[0]);
+    sendChatMessage(messagesToSent[0]);
   }, [chatMessages]);
-  useEffect(() => {
-    // termenate if user is not available
-    if (!currentUser) return;
-    if (!socketClient) return;
-    // send msg
-    if (!messageToSent) return;
-    // regular msg
-    socketClient?.emit('send_msg', messageToSent);
-    // clear
-    dispatch(setMessageToSent(null));
-  }, [currentUser, messageToSent, socketClient]);
   // listen to isCurrentUsrDoingAction
   useEffect(() => {
     // chatusr_start_typing
