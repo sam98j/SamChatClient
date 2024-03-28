@@ -1,0 +1,25 @@
+.chat_profile {
+  // .list_content_type_container
+  .list_content_type_container .list_content_type {
+    &[is-active='true'] {
+      color: dodgerblue;
+      border-radius: 5px;
+      border-bottom: 5px solid dodgerblue;
+    }
+  }
+  // list content container
+  .list_content {
+    // list item
+    .list_content_item {
+      height: 100px;
+      width: 100px;
+      background-color: gainsboro;
+      border-radius: 5px;
+    }
+    // .list_content_item img
+    .list_content_item img {
+      height: 100%;
+      width: 100%;
+    }
+  }
+}

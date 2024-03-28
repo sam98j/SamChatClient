@@ -1,4 +1,4 @@
-import { ChatMessage } from '@/interfaces/chat.interface';
+import { GetChatMessagesRes } from '@/interfaces/chat.interface';
 import { ChatProfile } from '@/redux/chats.slice';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
@@ -44,7 +44,7 @@ export const getChatMessages = createAsyncThunk(
     if (response.status >= 400) {
       return thunkAPI.rejectWithValue('You Are Not Authente. Yet');
     }
-    const resp = (await response.json()) as ChatMessage[];
+    const resp = (await response.json()) as GetChatMessagesRes;
     // there is no error
     return resp;
   }

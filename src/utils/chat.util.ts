@@ -2,6 +2,11 @@ import { ChatMessage } from '@/interfaces/chat.interface';
 import React from 'react';
 import { TimeUnits, getTime } from './time';
 
+export interface MessagesGroubedByDate {
+  dates: string[];
+  messages: [[ChatMessage]];
+}
+
 export function playSentMessageSound() {
   const tone = new Audio('/sounds/uggg_sent_message.mp3');
   tone.play();
@@ -47,7 +52,10 @@ export function groupChatMessagesByDate(chatMessages: ChatMessage[], local: neve
     messagesGroupedByDate.set(d, messages);
   });
 
-  return { dates: Array.from(messagesGroupedByDate.keys()), messages: Array.from(messagesGroupedByDate.values()) };
+  return {
+    dates: Array.from(messagesGroupedByDate.keys()),
+    messages: Array.from(messagesGroupedByDate.values()),
+  } as MessagesGroubedByDate;
 }
 // shrink message
 export function shrinkMsg(msg: string) {

@@ -8,7 +8,7 @@ const PhotoPreview = () => {
   const { t } = useTranslation('chatCard');
   return (
     <Box display={'flex'} alignItems={'center'} gap={'2'}>
-      <BsImage color='green' />
+      <BsImage />
       <Text>{t('photo')}</Text>
     </Box>
   );

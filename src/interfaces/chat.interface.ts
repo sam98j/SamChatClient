@@ -27,3 +27,8 @@ export interface ChatMessage {
   date: string;
   voiceNoteDuration: string;
 }
+// get chat messages response
+export interface GetChatMessagesRes {
+  chatMessages: ChatMessage[];
+  isLastBatch: boolean;
+}

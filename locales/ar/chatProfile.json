@@ -1,0 +1,13 @@
+{
+  "content_list": {
+    "media": "الوسائط",
+    "links": "الروابط",
+    "docs": "المستندات",
+    "voice_notes": "الرسائل الصوتية"
+  },
+  "chat_options": {
+    "video_call": "مكالمة فديو",
+    "voice_call": "مكالمة صوتية",
+    "mute": "كتم الإشعارات"
+  }
+}

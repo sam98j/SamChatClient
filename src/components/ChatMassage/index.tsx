@@ -18,12 +18,12 @@ import VideoMsgPlayer from '../VideoMsgPlayer';
 const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) => {
   // messages types
   const { TEXT, VOICENOTE, PHOTO, FILE, VIDEO } = MessagesTypes;
-  console.log('message render');
   // current app lang
   const { locale } = useRouter();
   // redux dispatch function
   const dispatch = useDispatch();
   const { content, senderId, status, date, type, voiceNoteDuration } = messageData;
+  console.log('message render', content);
   // msg time
   const msgTime = getTime(date, TimeUnits.time);
   // fetch data from redux store

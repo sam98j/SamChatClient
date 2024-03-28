@@ -9,7 +9,7 @@ const VoiceMemoPreview: FC<{ duration: string }> = ({ duration }) => {
   const { t } = useTranslation('chatCard');
   return (
     <Box display={'flex'} alignItems={'center'} gap={1}>
-      <BsMic color={'green'} size={'1.1rem'} />
+      <BsMic size={'1.1rem'} />
       <Text>{t('voiceMsg')}</Text>
       <Text>{secondsToDurationConverter(Number(duration))}</Text>
     </Box>

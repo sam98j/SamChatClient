@@ -12,13 +12,13 @@ import { useSearchParams } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { setChatMessagesBatchNo, setOpenedChat } from '@/redux/chats.slice';
 import { getChatMessages, getUsrOnlineStatus } from '@/apis/chats.api';
-import ChatMassage from '@/components/ChatMassage';
 import { setCurrentRoute } from '@/redux/system.slice';
 import { AnyAction } from '@reduxjs/toolkit';
 import ChatInput from '@/components/ChatInput/ChatInput';
 import { groupChatMessagesByDate } from '@/utils/chat.util';
 import { ChatMessage } from '@/interfaces/chat.interface';
 import { useRouter } from 'next/router';
+import ChatMessagesLoader from '@/components/ChatMessagesLoader';
 
 const Chat = () => {
   // get local
@@ -28,18 +28,25 @@ const Chat = () => {
   // use ref
   const chatRef = useRef<HTMLDivElement>(null);
   // data from the store
-  const { chatMessages, chatName, openedChat, chats, messagesBatchNo } = useSelector((state: RootState) => {
-    return {
-      openedChat: state.chat.openedChat,
-      chatMessages: state.chat.chatMessages,
-      chatName: state.system.currentRoute,
-      chats: state.chat.chats,
-      messagesBatchNo: state.chat.chatMessagesBatchNo,
-    };
-  });
-  chatRef.current?.addEventListener('scroll', () => {
-    if (chatRef.current?.scrollTop === 0) {
-      console.log('fetching new messages');
+  const { chatMessages, chatName, openedChat, chats, messagesBatchNo, isLastChatMessagesBatch } = useSelector(
+    (state: RootState) => {
+      return {
+        openedChat: state.chat.openedChat,
+        chatMessages: state.chat.chatMessages,
+        chatName: state.system.currentRoute,
+        chats: state.chat.chats,
+        messagesBatchNo: state.chat.chatMessagesBatchNo,
+        isLastChatMessagesBatch: state.chat.isLastChatMessagesBatch,
+      };
+    }
+  );
+  // when usr scroll throwout the messages
+  chatRef.current?.addEventListener('scrollend', () => {
+    // when usr reach last oldest message
+    if (isLastChatMessagesBatch) return;
+    if (chatRef.current?.scrollTop === 0 && !isLastChatMessagesBatch) {
+      // terminate if it's last batch of chat messages
+      console.log('fetching new messages', isLastChatMessagesBatch);
       // get chat messages based on page no
       dispatch(
         getChatMessages({ chatUsrId: parmas.get('id')!, msgBatch: messagesBatchNo + 1 }) as unknown as AnyAction
@@ -47,7 +54,9 @@ const Chat = () => {
       dispatch(setChatMessagesBatchNo(messagesBatchNo + 1));
     }
   });
+  // url parmas
   const parmas = useSearchParams();
+  // split chat messages with dates
   const messages = groupChatMessagesByDate(chatMessages as ChatMessage[], locale as never)!;
   // open chat state
   const [cachedOpenedChat] = useState(() => chats?.filter((chat) => chat.usrid === (parmas.get('id') as string))[0]);
@@ -91,10 +100,11 @@ const Chat = () => {
         <title>{chatName}</title>
       </Head>
       <div className={styles.chat} ref={chatRef}>
-        {/* chat messages */}
-        {chatMessages === null ? (
-          <Spinner className={styles.spinner} />
-        ) : chatMessages.length === 0 ? (
+        {/* if chat messages is loading */}
+        {chatMessages === null ? <Spinner className={styles.spinner} /> : ''}
+        {/* if chat messages not loading and there is no messages */}
+        {chatMessages !== null && chatMessages.length === 0 ? (
+          // no messages avatar
           <Box className={styles.imgContainer}>
             <NextImage src={NoMessageDrow} alt='' />
             <Text textColor={'gray'} fontSize={'1.5rem'}>
@@ -102,19 +112,10 @@ const Chat = () => {
             </Text>
           </Box>
         ) : (
-          messages.dates?.map((date, i) => {
-            return (
-              <>
-                <Text textAlign={'center'} textColor={'gray'}>
-                  {date}
-                </Text>
-                {messages?.messages[i]?.map((msg: ChatMessage) => (
-                  <ChatMassage messageData={msg} key={''} />
-                ))}
-              </>
-            );
-          })
+          ''
         )}
+        {/* load chat messages */}
+        {messages !== undefined ? <ChatMessagesLoader messages={messages} /> : ''}
         {/* chat footer */}
         <ChatInput />
       </div>

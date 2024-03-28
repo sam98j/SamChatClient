@@ -7,7 +7,6 @@ export interface SystemState {
   isNewChatScreenOpen: boolean;
   currentRoute: string;
   prefLanguage: string;
-  isChatUsrTyping: boolean;
   newIncomingMsg: ChatMessage | null;
   attchFileMenuOpen: boolean;
 }
@@ -17,7 +16,6 @@ const initialState: SystemState = {
   isNewChatScreenOpen: false,
   currentRoute: '',
   prefLanguage: 'en',
-  isChatUsrTyping: false,
   newIncomingMsg: null,
   attchFileMenuOpen: false,
 };
@@ -35,9 +33,6 @@ export const systemSlice = createSlice({
     },
     setLang: (state, action: PayloadAction<string>) => {
       state.prefLanguage = action.payload;
-    },
-    setChatUsrTypingStatus(state, action: PayloadAction<boolean>) {
-      state.isChatUsrTyping = action.payload;
     },
     setNewIncomingMsg(state, action: PayloadAction<ChatMessage>) {
       state.newIncomingMsg = action.payload;

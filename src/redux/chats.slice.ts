@@ -19,6 +19,7 @@ export interface ChatProfile {
 export interface ChatState {
   chats: SingleChat[] | null | undefined;
   chatMessages: ChatMessage[] | null;
+  isLastChatMessagesBatch: boolean | null;
   openedChat: { id: string; usrname: string; avatar: string } | null | undefined;
   isChatUsrDoingAction: {
     action: ChatUserActions | null;
@@ -29,9 +30,11 @@ export interface ChatState {
   messageToBeMarketAsReaded: null | { msgId: string; senderId: string };
   currentChatPorfile: null | ChatProfile;
   chatMessagesBatchNo: number;
+  aggreUnRededMsgs: number;
 }
 // inital state
 const initialState: ChatState = {
+  isLastChatMessagesBatch: null,
   chats: null,
   chatMessages: [],
   openedChat: undefined,
@@ -41,6 +44,7 @@ const initialState: ChatState = {
   messageToBeMarketAsReaded: null,
   currentChatPorfile: null,
   chatMessagesBatchNo: 1,
+  aggreUnRededMsgs: 0,
 };
 
 // create state slcie and export it
@@ -123,6 +127,12 @@ export const chatSlice = createSlice({
       console.log('message pushed');
       state.chatMessages?.push(action.payload);
     },
+    // set aggreated un readed message
+    setAggreUnReadedMsg: (state, action: PayloadAction<number>) => {
+      // terminate if no chats
+      if (!action.payload) return;
+      state.aggreUnRededMsgs = state.aggreUnRededMsgs + action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getUserChats.fulfilled, (state, action) => {
@@ -134,7 +144,8 @@ export const chatSlice = createSlice({
       state.chatMessages = [];
     });
     builder.addCase(getChatMessages.fulfilled, (state, action) => {
-      const chatMessages = action.payload;
+      const { chatMessages, isLastBatch } = action.payload;
+      state.isLastChatMessagesBatch = isLastBatch;
       state.chatMessages = chatMessages;
     });
     builder.addCase(getChatMessages.pending, (state) => {
@@ -156,6 +167,7 @@ export const {
   setChatUsrDoingAction,
   setChatUsrStatus,
   setMessageStatus,
+  setAggreUnReadedMsg,
   setCurrentUsrDoingAction,
   setMessageToBeMarketAsReaded,
   addNewChat,

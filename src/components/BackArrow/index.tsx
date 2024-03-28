@@ -24,7 +24,7 @@ const BackArrow = () => {
     return {
       currentUsr: state.auth.currentUser,
       currentRoute: state.system.currentRoute,
-      chatName: state.chat.currentChatPorfile?.name,
+      chatName: state.chat.currentChatPorfile?.name.split(' ')[0],
     };
   });
   return (

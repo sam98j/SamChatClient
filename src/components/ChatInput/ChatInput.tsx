@@ -9,7 +9,6 @@ import useTranslation from 'next-translate/useTranslation';
 import { IoSend } from 'react-icons/io5';
 import { ChatMessage, ChatUserActions, MessagesTypes } from '@/interfaces/chat.interface';
 import { useDispatch } from 'react-redux';
-import { setCurrentUsrDoingAction, addMessageToChat } from '@/redux/chats.slice';
 import VoiceMemoRecorder from '@/utils/voiceMemoRecorder';
 import { voiceMemoTimer } from '@/utils/chat.util';
 import getBlobDuration from 'get-blob-duration';
@@ -20,6 +19,7 @@ import { RootState } from '@/redux/store';
 import { useRouter } from 'next/router';
 import AtachFile from '../AtachFile';
 import { setAttchFileMenuOpen } from '@/redux/system.slice';
+import { addMessageToChat, setCurrentUsrDoingAction } from '@/redux/chats.slice';
 const { start, stop, cancel } = VoiceMemoRecorder();
 
 const ChatInput = () => {

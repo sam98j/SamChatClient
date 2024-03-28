@@ -15,16 +15,9 @@ const NewChatUser: React.FC<{
   return (
     <Link
       href={`/chat?id=${usr._id}`}
-      onClick={() =>
-        dispatch(setOpenedChat({ id: usr._id!, usrname: usr.name! }))
-      }
+      onClick={() => dispatch(setOpenedChat({ id: usr._id!, usrname: usr.name!, avatar: usr.avatar }))}
     >
-      <Box
-        display={'flex'}
-        gap={5}
-        marginTop={5}
-        onClick={() => dispatch(changeNewChatScrStatus(false))}
-      >
+      <Box display={'flex'} gap={5} marginTop={5} onClick={() => dispatch(changeNewChatScrStatus(false))}>
         <Avatar name='name' src={usr.avatar} />
         <Box>
           <Heading fontSize={'md'}>{usr.name}</Heading>

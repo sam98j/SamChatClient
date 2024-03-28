@@ -31,6 +31,7 @@ export default function Home() {
   };
   useEffect(() => {
     dispatch(setCurrentRoute(routesNamesTra('chats')));
+    if (chats) return;
     const userToken = localStorage.getItem('access_token');
     dispatch(getUserChats(userToken) as unknown as AnyAction);
   }, []);

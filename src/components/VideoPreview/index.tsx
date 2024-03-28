@@ -8,7 +8,7 @@ const VideoPreview = () => {
   const { t } = useTranslation('chatCard');
   return (
     <Box display={'flex'} alignItems={'center'} gap={'2'}>
-      <HiOutlineVideoCamera color='green' size={'1.3rem'} />
+      <HiOutlineVideoCamera size={'1.3rem'} />
       <Text>{t('video')}</Text>
     </Box>
   );

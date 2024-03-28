@@ -50,17 +50,9 @@ const Profile = () => {
           padding={'30px'}
           gap={5}
         >
-          <Avatar
-            src='https://xsgames.co/randomusers/avatar.php?g=female'
-            size={'2xl'}
-          />
+          <Avatar src={usrProfiledata.usrProfile?.avatar} size={'2xl'} />
           {/* name */}
-          <Text
-            fontSize={'2xl'}
-            fontWeight={'black'}
-            margin={'0'}
-            lineHeight={'0'}
-          >
+          <Text fontSize={'2xl'} fontWeight={'black'} margin={'0'} lineHeight={'0'}>
             {usrProfiledata.usrProfile?.name}
           </Text>
           <Text lineHeight={'0'} textColor={'gray'}>
@@ -68,13 +60,7 @@ const Profile = () => {
           </Text>
         </Box>
         {/* signout btn */}
-        <Box
-          position={'absolute'}
-          bottom={'0px'}
-          left={'0'}
-          width={'100%'}
-          padding={'20px'}
-        >
+        <Box position={'absolute'} bottom={'0px'} left={'0'} width={'100%'} padding={'20px'}>
           <Button colorScheme='red' width={'100%'} onClick={handleClick}>
             SingOut
           </Button>

@@ -1,0 +1,13 @@
+{
+  "content_list": {
+    "media": "Media",
+    "links": "Links",
+    "docs": "Documents",
+    "voice_notes": "Voice Notes"
+  },
+  "chat_options": {
+    "video_call": "Video Call",
+    "voice_call": "Voice Call",
+    "mute": "Mute"
+  }
+}
