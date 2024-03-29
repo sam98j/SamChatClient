@@ -23,14 +23,18 @@ import { addMessageToChat, setCurrentUsrDoingAction } from '@/redux/chats.slice'
 const { start, stop, cancel } = VoiceMemoRecorder();
 
 const ChatInput = () => {
+  // input text
+  const [inputText, setInputText] = useState('');
+  // is voice recording
+  const [isRec, setIsReco] = useState(false);
+  // timer
+  const [timer, setTimer] = useState('00:00');
+  // timer interval
+  const [timerInterval, setTimerInterval] = useState<NodeJS.Timer>();
   // redux dispatch method
   const dispatch = useDispatch();
   // locales
   const { locale } = useRouter();
-  // input text
-  const [inputText, setInputText] = useState('');
-  // timer interval
-  const [timerInterval, setTimerInterval] = useState<NodeJS.Timer>();
   // current logged usr
   const { attachFileMenuOpen, currentUsr } = useSelector((state: RootState) => {
     return { currentUsr: state.auth.currentUser, attachFileMenuOpen: state.system.attchFileMenuOpen };
@@ -39,18 +43,12 @@ const ChatInput = () => {
   const parmas = useSearchParams();
   // translatios
   const { t } = useTranslation('chatScreen');
-  // is voice recording
-  const [isRec, setIsReco] = useState(false);
-  // timer
-  const [timer, setTimer] = useState('00:00');
   // handleInputFocus
   const handleInputFocus = () => dispatch(setCurrentUsrDoingAction(ChatUserActions.TYPEING));
   // handleInputBlur
   const handleInputBlur = () => dispatch(setCurrentUsrDoingAction(null));
   // inputChangeHandler
-  const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputText(event.target.value);
-  };
+  const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => setInputText(event.target.value);
   // start recording voice
   const startRecVoiceMemoHandler = async () => {
     // tell the server about is currently recording voice to inform another usr in the chat
@@ -84,21 +82,27 @@ const ChatInput = () => {
   const sendVoiceMessage = async (message: ChatMessage) => {
     // send voice msg if it's recording and input is empty
     if (!isRec || inputText) return;
+    // make current usr doing nothing
     dispatch(setCurrentUsrDoingAction(null));
+    // stop voice memo counter
     clearInterval(timerInterval);
     const blob = await stop();
     const reader = new FileReader();
+    // read row voice data as data url
     reader.readAsDataURL(blob as Blob);
     // voice note reader load handler
     const voiceLoadHandler = async (e: ProgressEvent<FileReader>) => {
+      // get voice memo duration in seconds from blob data (row data)
       const duration = await getBlobDuration(e.target?.result as string);
-      // new Audio(e.target?.result as string, {ty});
-      const voiceNoteMessage = {
-        ...message,
-        voiceNoteDuration: String(Math.round(duration)),
-        content: e.target?.result as string,
-        type: MessagesTypes.VOICENOTE,
-      } as ChatMessage;
+      // voiceNoteDuration
+      const voiceNoteDuration = String(Math.round(duration));
+      // voice message content
+      const content = e.target?.result as string;
+      // msg type
+      const type = MessagesTypes.VOICENOTE;
+      // voice note message
+      const voiceNoteMessage: ChatMessage = { ...message, voiceNoteDuration, content, type };
+      // add message to the chat
       dispatch(addMessageToChat(voiceNoteMessage));
       // set isRec
       setIsReco(false);
@@ -106,7 +110,7 @@ const ChatInput = () => {
     // on voice reader load
     reader.addEventListener('load', voiceLoadHandler);
   };
-  // handleSendBtnClick
+  // handleSendBtnClick Icon Click Action
   const handleSendBtnClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     // chat message
@@ -118,14 +122,11 @@ const ChatInput = () => {
       status: null,
     } as ChatMessage;
     // if text message
-    if (inputText && !isRec) {
-      sendTextMessage(message);
-      return;
-    }
+    if (inputText && !isRec) return sendTextMessage(message);
     // if voice message
     sendVoiceMessage(message);
   };
-  // handleAttachFile
+  // handleAttachFile Icon Click action
   const handleAttachFile = () => {
     const attchFileMenuStatus = attachFileMenuOpen ? false : true;
     dispatch(setAttchFileMenuOpen(attchFileMenuStatus));

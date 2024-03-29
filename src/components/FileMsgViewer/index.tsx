@@ -3,7 +3,8 @@ import styles from './styles.module.scss';
 import { Box, Text } from '@chakra-ui/react';
 import { BsFilePdf } from 'react-icons/bs';
 
-const FileMsgViewer = () => {
+const FileMsgViewer: React.FC<{ fileContent: string }> = ({ fileContent }) => {
+  typeof fileContent;
   return (
     <Box
       className={styles.fileMsgViewer}
