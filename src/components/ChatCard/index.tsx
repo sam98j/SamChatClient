@@ -17,6 +17,7 @@ import VoiceMemoPreview from '../VoiceMemoPreview';
 import { shrinkMsg } from '@/utils/chat.util';
 import PhotoPreview from '../PhotoPreview';
 import VideoPreview from '../VideoPreview';
+import FilePreview from '../FilePreview';
 
 const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
   // use dispatch
@@ -24,7 +25,7 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
   // localize lang
   const { locale } = useRouter();
   // Messages types
-  const { TEXT, VOICENOTE, PHOTO, VIDEO } = MessagesTypes;
+  const { TEXT, VOICENOTE, PHOTO, VIDEO, FILE } = MessagesTypes;
   // search params
   const searchParams = useSearchParams();
   // get data from store
@@ -56,7 +57,7 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
   // listen for the new incoming msg
   useEffect(() => {
     if (!newIncomingMsg || newIncomingMsg.senderId !== chat.usrid) return;
-    const { date, senderId, content: lastMsgText, type, status, voiceNoteDuration } = newIncomingMsg;
+    const { date, senderId, content: lastMsgText, fileName, type, status, voiceNoteDuration } = newIncomingMsg;
     // incoming msg date
     const incomingMsgDate = new Date(date);
     setPreveiwData({
@@ -64,6 +65,7 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
       senderId,
       lastMsgText,
       type,
+      fileName,
       status: status,
       voiceNoteDuration,
       unReadedMsgs: previewData?.unReadedMsgs as number,
@@ -119,6 +121,8 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
             {previewData && previewData.type === PHOTO ? <PhotoPreview /> : ''}
             {/* video message preview*/}
             {previewData && previewData.type === VIDEO ? <VideoPreview /> : ''}
+            {/* file message preview */}
+            {previewData && previewData.type === FILE ? <FilePreview fileName={previewData.fileName!} /> : ''}
             {/* loading */}
             {!previewData ? <Box height={'10px'} width={'100%'} bgColor={'gray.100'} borderRadius={'10px'}></Box> : ''}
           </Text>

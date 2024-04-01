@@ -17,3 +17,13 @@ export function chunkFile(file: string) {
   }
   return chunks;
 }
+// get file size
+export function getFileSize(dataUrl: string) {
+  // Remove the data URI prefix
+  const base64String = dataUrl.split(',')[1];
+  // Use TextDecoder instead of atob
+  const decoder = new TextDecoder();
+  const decodedString = decoder.decode(Uint8Array.from(atob(base64String), (c) => c.charCodeAt(0)));
+
+  return String(Math.round(decodedString.length / 1024));
+}

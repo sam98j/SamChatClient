@@ -12,6 +12,7 @@ import { v4 as uuid } from 'uuid';
 import { useSearchParams } from 'next/navigation';
 import { addMessageToChat } from '@/redux/chats.slice';
 import { setAttchFileMenuOpen } from '@/redux/system.slice';
+import { getFileSize } from '@/utils/files';
 
 const AtachFile = () => {
   // localiztion method
@@ -47,6 +48,8 @@ const AtachFile = () => {
         date: new Date().toString(),
         receiverId: params.get('id') as string,
         senderId: currentUser as string,
+        fileName: file.name,
+        fileSize: getFileSize(rowFile as string),
         status: null,
         content: rowFile as string,
         type: changeEvent.target.name as MessagesTypes,

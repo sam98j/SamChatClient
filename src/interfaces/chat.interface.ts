@@ -22,6 +22,8 @@ export interface ChatMessage {
   content: string;
   type: MessagesTypes;
   senderId: string;
+  fileName: string | null;
+  fileSize: string | null;
   receiverId: string;
   status: MessageStatus | null;
   date: string;

@@ -20,6 +20,7 @@ import { useRouter } from 'next/router';
 import AtachFile from '../AtachFile';
 import { setAttchFileMenuOpen } from '@/redux/system.slice';
 import { addMessageToChat, setCurrentUsrDoingAction } from '@/redux/chats.slice';
+import { getFileSize } from '@/utils/files';
 const { start, stop, cancel } = VoiceMemoRecorder();
 
 const ChatInput = () => {
@@ -73,8 +74,12 @@ const ChatInput = () => {
   const sendTextMessage = (message: ChatMessage) => {
     // create meassge
     if (!inputText) return;
+    // text message file name (null)
+    const fileName = null;
+    // text message file size (null)
+    const fileSize = null;
     // push message to the chat
-    dispatch(addMessageToChat({ ...message, content: inputText, type: MessagesTypes.TEXT }));
+    dispatch(addMessageToChat({ ...message, content: inputText, type: MessagesTypes.TEXT, fileName, fileSize }));
     // clear the input
     setInputText('');
   };
@@ -98,10 +103,14 @@ const ChatInput = () => {
       const voiceNoteDuration = String(Math.round(duration));
       // voice message content
       const content = e.target?.result as string;
+      // voice message file name (null)
+      const fileName = `AUDIO-${message.senderId}-${message.receiverId}${String(Math.random())}`;
+      // voice message file size (null)
+      const fileSize = getFileSize(content);
       // msg type
       const type = MessagesTypes.VOICENOTE;
       // voice note message
-      const voiceNoteMessage: ChatMessage = { ...message, voiceNoteDuration, content, type };
+      const voiceNoteMessage: ChatMessage = { ...message, voiceNoteDuration, content, type, fileName, fileSize };
       // add message to the chat
       dispatch(addMessageToChat(voiceNoteMessage));
       // set isRec

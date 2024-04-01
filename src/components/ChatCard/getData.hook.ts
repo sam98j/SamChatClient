@@ -6,6 +6,7 @@ export interface ChatPreviewData {
   lastMsgText: string;
   unReadedMsgs: number;
   type: MessagesTypes;
+  fileName: string | null;
   voiceNoteDuration: string;
   senderId: string;
   status: MessageStatus | null;

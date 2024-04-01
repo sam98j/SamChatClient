@@ -9,6 +9,8 @@ import { secondsToDurationConverter } from '@/utils/voiceMemoRec';
 const VoiceMemoPlayer: React.FC<{
   data: { src: string; sendedByMe: boolean; voiceNoteDuration: string };
 }> = ({ data }) => {
+  // api url
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const { sendedByMe, src, voiceNoteDuration } = data;
   // audio ref
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -52,7 +54,7 @@ const VoiceMemoPlayer: React.FC<{
         </Text>
       </Box>
       <audio ref={audioRef}>
-        <source src={src} type='audio/webm' />
+        <source src={apiUrl + src} type='audio/webm' />
       </audio>
     </div>
   );

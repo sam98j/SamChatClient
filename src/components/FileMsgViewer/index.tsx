@@ -2,9 +2,13 @@ import React from 'react';
 import styles from './styles.module.scss';
 import { Box, Text } from '@chakra-ui/react';
 import { BsFilePdf } from 'react-icons/bs';
+import Link from 'next/link';
 
-const FileMsgViewer: React.FC<{ fileContent: string }> = ({ fileContent }) => {
-  typeof fileContent;
+const FileMsgViewer: React.FC<{ fileName: string; fileSize: string; fileUrl: string }> = (props) => {
+  // api url
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  // destruct component props
+  const { fileName, fileSize, fileUrl } = props;
   return (
     <Box
       className={styles.fileMsgViewer}
@@ -15,13 +19,16 @@ const FileMsgViewer: React.FC<{ fileContent: string }> = ({ fileContent }) => {
       padding={'5px'}
       borderRadius={'5px'}
     >
-      {/* File Icon */}
-      <BsFilePdf size={'1.5rem'} color='orange' />
-      {/* file data */}
-      <Box>
-        <Text>اسعار القطاعي.pdf</Text>
-        <Text>2 صفحة - 500 كيلو بايت - pdf</Text>
-      </Box>
+      <Link href={apiUrl + fileUrl} download={true}>
+        {/* File Icon */}
+        {/* file data */}
+        <Box>
+          <Text display={'flex'} alignItems={'center'}>
+            <BsFilePdf size={'1.5rem'} color='orange' />
+            {fileName} - <span>{fileSize} كيلو بايت</span>
+          </Text>
+        </Box>
+      </Link>
     </Box>
   );
 };

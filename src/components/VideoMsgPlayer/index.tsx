@@ -15,6 +15,8 @@ import { secondsToDurationConverter } from '@/utils/voiceMemoRec';
 // import { secondsToDurationConverter } from '@/utils/voiceMemoRec';
 
 const VideoMsgPlayer: FC<{ url: string; sendedByMe: boolean; date: string }> = ({ url, sendedByMe, date }) => {
+  // api url
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   // state
   const [isOpen, setIsOpen] = useState(false);
   // localiztion method
@@ -85,7 +87,7 @@ const VideoMsgPlayer: FC<{ url: string; sendedByMe: boolean; date: string }> = (
       {/* viewer body */}
       <div className={styles.viewerBody}>
         <video onClick={handleClick} ref={videoRef}>
-          <source src={url} />
+          <source src={apiUrl + url} />
         </video>
       </div>
       {/* viewer footer */}
