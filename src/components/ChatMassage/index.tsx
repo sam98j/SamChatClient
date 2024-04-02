@@ -16,13 +16,23 @@ import FileMsgViewer from '../FileMsgViewer';
 import VideoMsgPlayer from '../VideoMsgPlayer';
 
 const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) => {
+  // api url
+  const apiHost = process.env.NEXT_PUBLIC_API_URL;
   // messages types
   const { TEXT, VOICENOTE, PHOTO, FILE, VIDEO } = MessagesTypes;
   // current app lang
   const { locale } = useRouter();
   // redux dispatch function
   const dispatch = useDispatch();
+  // message data
   const { content, senderId, status, date, type, voiceNoteDuration, fileName, fileSize } = messageData;
+  // evaluate message content
+  const [chatMessageContent] = useState(() => {
+    // the it's text message or message's status is pending do not edit the content
+    if (type === TEXT || status === null) return content;
+    // otherwize
+    return `${apiHost}${content}`;
+  });
   // msg time
   const msgTime = getTime(date, TimeUnits.time);
   // fetch data from redux store
@@ -35,7 +45,9 @@ const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) =>
     if (currentUsr === senderId) return;
     // check if message is readed
     if (status === MessageStatus.READED) return;
+    // mark recived message as readed
     dispatch(setMessageStatus({ msgId: messageData._id, status: MessageStatus.READED }));
+    //
     dispatch(setMessageToBeMarketAsReaded({ msgData: { msgId: messageData._id, senderId: senderId } }));
   }, []);
   return (
@@ -49,18 +61,18 @@ const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) =>
       <Text>
         {/* voice message */}
         {type === VOICENOTE ? (
-          <VoiceMemoPlayer data={{ sendedByMe: sendedByme, src: content, voiceNoteDuration }} />
+          <VoiceMemoPlayer data={{ sendedByMe: sendedByme, src: chatMessageContent, voiceNoteDuration }} />
         ) : (
           ''
         )}
         {/* text message */}
         {type === TEXT ? content : ''}
         {/* message type photo */}
-        {type === PHOTO ? <ImageMsgViewer msgUrl={content} sendedByMe={sendedByme} date={date} /> : ''}
+        {type === PHOTO ? <ImageMsgViewer url={chatMessageContent} sendedByMe={sendedByme} date={date} /> : ''}
         {/* message type file */}
-        {type === FILE ? <FileMsgViewer fileUrl={content} fileName={fileName!} fileSize={fileSize!} /> : ''}
+        {type === FILE ? <FileMsgViewer url={chatMessageContent} name={fileName!} size={fileSize!} /> : ''}
         {/* message type video */}
-        {type === VIDEO ? <VideoMsgPlayer url={content} date={date} sendedByMe={sendedByme} /> : ''}
+        {type === VIDEO ? <VideoMsgPlayer url={chatMessageContent} date={date} sendedByMe={sendedByme} /> : ''}
       </Text>
       {/* msg footer appear  in all messages types*/}
       <Box display={'flex'} justifyContent={'flex-end'} marginTop={'5px'}>

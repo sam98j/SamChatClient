@@ -4,11 +4,9 @@ import { Box, Text } from '@chakra-ui/react';
 import { BsFilePdf } from 'react-icons/bs';
 import Link from 'next/link';
 
-const FileMsgViewer: React.FC<{ fileName: string; fileSize: string; fileUrl: string }> = (props) => {
-  // api url
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const FileMsgViewer: React.FC<{ name: string; size: string; url: string }> = (props) => {
   // destruct component props
-  const { fileName, fileSize, fileUrl } = props;
+  const { name, size, url } = props;
   return (
     <Box
       className={styles.fileMsgViewer}
@@ -19,13 +17,13 @@ const FileMsgViewer: React.FC<{ fileName: string; fileSize: string; fileUrl: str
       padding={'5px'}
       borderRadius={'5px'}
     >
-      <Link href={apiUrl + fileUrl} download={true}>
+      <Link href={url} download={true}>
         {/* File Icon */}
         {/* file data */}
         <Box>
           <Text display={'flex'} alignItems={'center'}>
             <BsFilePdf size={'1.5rem'} color='orange' />
-            {fileName} - <span>{fileSize} كيلو بايت</span>
+            {name} - <span>{size} كيلو بايت</span>
           </Text>
         </Box>
       </Link>

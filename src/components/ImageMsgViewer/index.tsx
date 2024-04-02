@@ -11,9 +11,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { TimeUnits, getTime } from '@/utils/time';
 
-const ImageMsgViewer: FC<{ msgUrl: string; sendedByMe: boolean; date: string }> = ({ msgUrl, sendedByMe, date }) => {
-  // api url
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const ImageMsgViewer: FC<{ url: string; sendedByMe: boolean; date: string }> = ({ url, sendedByMe, date }) => {
   // state
   const [isOpen, setIsOpen] = useState(false);
   // localiztion method
@@ -49,7 +47,7 @@ const ImageMsgViewer: FC<{ msgUrl: string; sendedByMe: boolean; date: string }> 
       </div>
       {/* viewer body */}
       <div className={styles.viewerBody}>
-        <Image src={apiUrl + msgUrl} alt='msg' width={250} height={300} onClick={handleClick} />
+        <Image src={url} alt='msg' width={250} height={300} onClick={handleClick} />
       </div>
       {/* viewer footer */}
       <div className={styles.viewerFooter}></div>
