@@ -7,11 +7,9 @@ import { BsFillPauseFill, BsFillPlayFill } from 'react-icons/bs';
 import { secondsToDurationConverter } from '@/utils/voiceMemoRec';
 
 const VoiceMemoPlayer: React.FC<{
-  data: { src: string; sendedByMe: boolean; voiceNoteDuration: string };
+  data: { src: string; sendedByMe: boolean; duration: string };
 }> = ({ data }) => {
-  // api url
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  const { sendedByMe, src, voiceNoteDuration } = data;
+  const { sendedByMe, src, duration } = data;
   // audio ref
   const audioRef = useRef<HTMLAudioElement>(null);
   // timeline ref
@@ -30,8 +28,8 @@ const VoiceMemoPlayer: React.FC<{
     setAudioPlaying(true);
     const interval = setInterval(() => {
       timer++;
-      timeLineRef.current?.setAttribute('style', `width:${(timer / Number(voiceNoteDuration)) * 100}%`);
-      if (timer === Number(voiceNoteDuration)) {
+      timeLineRef.current?.setAttribute('style', `width:${(timer / Number(duration)) * 100}%`);
+      if (timer === Number(duration)) {
         clearInterval(interval);
         setAudioPlaying(false);
       }
@@ -41,7 +39,7 @@ const VoiceMemoPlayer: React.FC<{
     <div className={styles.voice_memo_rec} sended-by-me={String(sendedByMe)}>
       <IconButton
         isRound={true}
-        colorScheme={sendedByMe ? 'messenger' : 'whiteAlpha'}
+        colorScheme='blue'
         aria-label=''
         icon={<Icon as={isAudioPlaying ? BsFillPauseFill : BsFillPlayFill} onClick={audioPlayHandler} boxSize={'7'} />}
       />
@@ -50,11 +48,11 @@ const VoiceMemoPlayer: React.FC<{
           <span ref={timeLineRef} className={styles.time_line_filler}></span>
         </div>
         <Text lineHeight={'0'} fontSize={'sm'} className={styles.timer} textColor={'gray'}>
-          {secondsToDurationConverter(Number(voiceNoteDuration))}
+          {secondsToDurationConverter(Number(duration))}
         </Text>
       </Box>
       <audio ref={audioRef}>
-        <source src={apiUrl + src} type='audio/webm' />
+        <source src={src} type='audio/webm' />
       </audio>
     </div>
   );

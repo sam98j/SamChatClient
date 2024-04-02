@@ -15,6 +15,8 @@ import useTranslation from 'next-translate/useTranslation';
 import ImageMsgViewer from '@/components/ImageMsgViewer';
 
 const ChatProfile = () => {
+  // api url
+  const apiHost = process.env.NEXT_PUBLIC_API_URL;
   // content list
   const [contentList, setContentList] = useState<ChatMessage[]>([]);
   // localization
@@ -129,7 +131,7 @@ const ChatProfile = () => {
         <Box display={'flex'} gap={'1'} flexWrap={'wrap'} margin={'5px -20px'} className={styles.list_content}>
           {contentList.map((msg) => (
             <Box className={styles.list_content_item} key={msg._id}>
-              <ImageMsgViewer msgUrl={msg.content} date={msg.date} sendedByMe={true} />
+              <ImageMsgViewer url={apiHost + msg.content} date={msg.date} sendedByMe={true} />
             </Box>
           ))}
         </Box>

@@ -25,7 +25,7 @@ const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) =>
   // redux dispatch function
   const dispatch = useDispatch();
   // message data
-  const { content, senderId, status, date, type, voiceNoteDuration, fileName, fileSize } = messageData;
+  const { content, senderId, status, date, type, voiceNoteDuration: duration, fileName, fileSize } = messageData;
   // evaluate message content
   const [chatMessageContent] = useState(() => {
     // the it's text message or message's status is pending do not edit the content
@@ -38,7 +38,7 @@ const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) =>
   // fetch data from redux store
   const currentUsr = useSelector((state: RootState) => state.auth.currentUser);
   // check for the the message sender
-  const [{ sendedByme }] = useState({ sendedByme: currentUsr === senderId });
+  const [{ sendedByMe }] = useState({ sendedByMe: currentUsr === senderId });
   // component mount
   useEffect(() => {
     // check if the current usr is not the sender
@@ -53,32 +53,27 @@ const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) =>
   return (
     <div
       className={styles.bubble}
-      sended-by-me={`${String(sendedByme)}`}
+      sended-by-me={`${String(sendedByMe)}`}
       message-status={String(status)}
       pref-lang={locale}
     >
       {/* chat text  */}
       <Text>
-        {/* voice message */}
-        {type === VOICENOTE ? (
-          <VoiceMemoPlayer data={{ sendedByMe: sendedByme, src: chatMessageContent, voiceNoteDuration }} />
-        ) : (
-          ''
-        )}
         {/* text message */}
         {type === TEXT ? content : ''}
+        {/* voice message */}
+        {type === VOICENOTE ? <VoiceMemoPlayer data={{ sendedByMe, src: chatMessageContent, duration }} /> : ''}
         {/* message type photo */}
-        {type === PHOTO ? <ImageMsgViewer url={chatMessageContent} sendedByMe={sendedByme} date={date} /> : ''}
+        {type === PHOTO ? <ImageMsgViewer url={chatMessageContent} sendedByMe={sendedByMe} date={date} /> : ''}
         {/* message type file */}
         {type === FILE ? <FileMsgViewer url={chatMessageContent} name={fileName!} size={fileSize!} /> : ''}
         {/* message type video */}
-        {type === VIDEO ? <VideoMsgPlayer url={chatMessageContent} date={date} sendedByMe={sendedByme} /> : ''}
+        {type === VIDEO ? <VideoMsgPlayer url={chatMessageContent} date={date} sendedByMe={sendedByMe} /> : ''}
       </Text>
       {/* msg footer appear  in all messages types*/}
       <Box display={'flex'} justifyContent={'flex-end'} marginTop={'5px'}>
-        <Text color={'gray'} className={styles.msg_time} width={'fit-content'}>
-          {msgTime}
-        </Text>
+        {/* message time */}
+        <Text className={styles.msg_time}>{msgTime}</Text>
         {/* when status is null show clock icon */}
         <MessageStatusIcon data={{ msgStatus: status!, senderId: senderId }} />
       </Box>
