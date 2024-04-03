@@ -24,9 +24,8 @@ const ChatProfile = () => {
   // dispatch redux fun
   const dispatch = useDispatch();
   // get route name
-  const { chatName, chatPorfile, chatMessages } = useSelector((state: RootState) => {
+  const { chatPorfile, chatMessages } = useSelector((state: RootState) => {
     return {
-      chatName: state.system.currentRoute,
       chatPorfile: state.chat.currentChatPorfile,
       chatMessages: state.chat.chatMessages,
     };
@@ -53,13 +52,14 @@ const ChatProfile = () => {
     const listContentType = e.currentTarget.id;
     // filter chat messages based on message type
     const chatMessagesTypeBased = chatMessages.filter((msg) => msg.type === listContentType);
+    // set content list
     setContentList(chatMessagesTypeBased);
     console.log(chatMessagesTypeBased);
   };
   return (
     <>
       <Head>
-        <title>{chatName}</title>
+        <title>{`${chatPorfile?.name} | ${t('profile')}`}</title>
       </Head>
       <Box
         height='calc(100% - 50px)'
@@ -129,6 +129,7 @@ const ChatProfile = () => {
         </List>
         {/* list content */}
         <Box display={'flex'} gap={'1'} flexWrap={'wrap'} margin={'5px -20px'} className={styles.list_content}>
+          {/* loop throwght content list it maybe PHOTS, FILE, Video */}
           {contentList.map((msg) => (
             <Box className={styles.list_content_item} key={msg._id}>
               <ImageMsgViewer url={apiHost + msg.content} date={msg.date} sendedByMe={true} />

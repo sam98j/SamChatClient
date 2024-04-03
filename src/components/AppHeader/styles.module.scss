@@ -4,28 +4,8 @@
   height: 50px;
   padding: 0.7rem;
   background-color: transparent;
-  .create_new_chat_btn {
-    display: flex;
-    justify-content: flex-end;
-    width: 6rem;
-  }
   // hide the header in login page
   &[is-usr-loggedin='true'] {
     display: none;
-  }
-  .screen_name {
-    height: 0px;
-  }
-  // the screen name
-  &[is-chat-open='false'] {
-    .screen_name {
-      text-align: center;
-      height: initial;
-    }
-  }
-  &[is-chat-open='true'] {
-    .create_new_chat_btn {
-      display: none;
-    }
   }
 }

@@ -1,0 +1,7 @@
+.create_new_chat_btn {
+  &[is-chat-open='true'] {
+    .create_new_chat_btn {
+      display: none;
+    }
+  }
+}
