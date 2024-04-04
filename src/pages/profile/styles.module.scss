@@ -1,3 +1,9 @@
 .profile {
-    height: calc(100dvh - 50px);
+  height: calc(100dvh - 50px);
+  padding: 1rem 2rem;
+  input:disabled,
+  input {
+    text-align: left;
+    cursor: pointer;
+  }
 }
