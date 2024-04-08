@@ -6,4 +6,17 @@
     text-align: left;
     cursor: pointer;
   }
+  .loading_spinner {
+    animation: animateSpinner 1s linear infinite;
+  }
+
+  // animation
+  @keyframes animateSpinner {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
 }

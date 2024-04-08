@@ -8,7 +8,7 @@ module.exports = nextTranslate({
     remotePatterns: [
       {
         protocol: 'http',
-        hostname: '192.168.238.78',
+        hostname: '192.168.131.78',
         port: '2000',
         pathname: '/**',
       },
