@@ -1,6 +1,7 @@
 import { RootState, store, wrapper } from '@/redux/store';
 import React, { useState } from 'react';
 import '@/styles/globals.css';
+import styles from './index.module.scss';
 import { ChakraProvider } from '@chakra-ui/react';
 import type { AppProps } from 'next/app';
 import { Provider } from 'react-redux';
@@ -158,7 +159,7 @@ function App({ Component, pageProps }: AppProps) {
       </Head>
       <ChakraProvider theme={theme}>
         <Provider store={store}>
-          <div style={{ height: '100dvh', overflow: 'hidden' }}>
+          <div className={styles.app}>
             {currentUser !== null ? <AppHeader /> : ''}
             {currentUser === null ? '' : <Component {...pageProps} />}
             {currentUser === null ? <AppLogo /> : ''}

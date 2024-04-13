@@ -45,11 +45,11 @@ const AppHeader = () => {
       {/* back Arr */}
       <BackArrow />
       {/* Screen name */}
+      {currentUsr && openedChat ? <ChatAvatar avatar={openedChat.avatar} /> : ''}
       {currentUsr ? <ScreenName /> : ''}
       {/* add new chat btn */}
       <StartNewChatBtn />
       {/* voice call, avatar, video call */}
-      {currentUsr && openedChat ? <ChatAvatar avatar={openedChat.avatar} /> : ''}
       {/* chat calls */}
       {currentUsr && openedChat ? <ChatCalls /> : ''}
       {/* hide login and sign up if there is no loggedin user */}

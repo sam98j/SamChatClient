@@ -1,13 +1,14 @@
 @import './stylesmodile';
+@import '../../styles/variables';
 
 .chats {
-  /* padding: 10px; */
   height: calc(100dvh - 50px);
   overflow-y: scroll;
   scroll-behavior: smooth;
   scroll-padding-bottom: 220px;
   // position: relative;
-  padding: 20px;
+  padding-right: $main-padding;
+  padding-left: $main-padding;
   padding-bottom: 60px;
   .imgContainer {
     display: flex;

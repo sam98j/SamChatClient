@@ -20,29 +20,29 @@ const BackArrow = () => {
   // current app lang
   const { locale } = useRouter();
   // get current usr
-  const { currentUsr, currentRoute, chatName } = useSelector((state: RootState) => {
+  const { currentUsr, currentRoute } = useSelector((state: RootState) => {
     return {
       currentUsr: state.auth.currentUser,
       currentRoute: state.system.currentRoute,
       chatName: state.chat.currentChatPorfile?.name.split(' ')[0],
     };
   });
+  // is Edit Btn Visable
+  const isEditBtnVisable = pathname === '/chats' && currentUsr;
+  // back Arrow href
+  const backArrowHref = currentRoute !== 'chatProfile' ? '/chats' : `/chat?id=${params.get('id')}`;
   return (
     <Box className={styles.back_arr_container} pref-lang={locale}>
       {/* if user is not logged in  */}
-      {Boolean(pathname !== '/chats') && Boolean(currentUsr) ? (
-        <Link
-          href={currentRoute !== 'chatProfile' ? '/chats' : `/chat?id=${params.get('id')}`}
-          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-        >
+      {pathname !== '/chats' && currentUsr ? (
+        <Link href={backArrowHref} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <Icon as={HiOutlineChevronLeft} color={'messenger.500'} boxSize={'6'} />
-          <Text textColor={'messenger.500'}>{currentRoute !== 'chatProfile' ? t('prev_nav') : chatName}</Text>
         </Link>
       ) : (
         ''
       )}
       {/* show edit btn in the chats screen */}
-      {pathname === '/chats' && currentUsr ? (
+      {isEditBtnVisable ? (
         <Text textColor={'messenger.500'} fontSize={'lg'}>
           {t('edit_btn')}
         </Text>

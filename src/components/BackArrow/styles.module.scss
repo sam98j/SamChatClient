@@ -1,7 +1,7 @@
 .back_arr_container {
   display: flex;
   justify-content: flex-start;
-  width: 6rem;
+  width: fit-content;
   &[pref-lang='ar'] {
     a {
       svg {

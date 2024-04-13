@@ -1,8 +1,11 @@
 @import './_styles.ar.module';
+@import '../../styles/variables';
 
 .appHeader {
   height: 50px;
-  padding: 0.7rem;
+  padding-left: $main-padding;
+  padding-right: $main-padding;
+
   background-color: transparent;
   // hide the header in login page
   &[is-usr-loggedin='true'] {

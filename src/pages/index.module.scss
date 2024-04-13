@@ -1,37 +1,6 @@
-.home {
-  height: calc(100dvh - 50px);
-  display: flex;
-  overflow: hidden !important;
-  @media (max-width: 500px) {
-    .illustration {
-      display: none;
-    }
-  }
-  &:before {
-    position: absolute;
-    content: '';
-    width: 150px;
-    height: 150px;
-    background-color: rgb(233, 130, 233);
-    opacity: 0.1;
-    filter: blur(1rem);
-    z-index: -100;
-    border-radius: 30%;
-    left: -20px;
-    top: -20px;
-  }
-  .container {
-    height: calc(100% - 50px);
-    display: flex;
-    flex-direction: column;
-    padding: 50px 60px;
-    gap: 3px;
-  }
-  // illustration
-  .illustration {
-    img {
-      height: 100rem;
-      width: 100rem;
-    }
-  }
+@import '../styles/variables';
+
+.app {
+  height: 100dvh;
+  overflow: hidden;
 }

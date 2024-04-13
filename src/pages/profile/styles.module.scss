@@ -1,6 +1,8 @@
+@import '../../styles/variables';
+
 .profile {
   height: calc(100dvh - 50px);
-  padding: 1rem 2rem;
+  padding: 1rem calc($main-padding + 1rem);
   input:disabled,
   input {
     text-align: left;
