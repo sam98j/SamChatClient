@@ -3,7 +3,7 @@ import useTranslation from 'next-translate/useTranslation';
 import React from 'react';
 import { BsImage } from 'react-icons/bs';
 
-const PhotoPreview = () => {
+const ImagePreview = () => {
   // localization method
   const { t } = useTranslation('chatCard');
   return (
@@ -14,4 +14,4 @@ const PhotoPreview = () => {
   );
 };
 
-export default PhotoPreview;
+export default ImagePreview;

@@ -14,7 +14,7 @@ import { addMessageToChat } from '@/redux/chats.slice';
 import { setAttchFileMenuOpen } from '@/redux/system.slice';
 import { getFileSize } from '@/utils/files';
 
-const AtachFile = () => {
+const AttachFile = () => {
   // localiztion method
   const { t } = useTranslation('chatScreen');
   // dispatch store method
@@ -64,8 +64,8 @@ const AtachFile = () => {
   return (
     <div className={styles.attach_file_menu} is-menu-open={String(attachFileMenuOpen)}>
       {/* insert Photo */}
-      <InputGroup>
-        <FormControl display={'flex'} alignItems={'center'} gap={'2px'}>
+      <InputGroup className={styles.input_group}>
+        <FormControl className={styles.form_control}>
           <IconButton aria-label='imagebtn' isRound={true}>
             <BsImage color='orange' />
           </IconButton>
@@ -79,8 +79,8 @@ const AtachFile = () => {
         </FormControl>
       </InputGroup>
       {/* Insert Video */}
-      <InputGroup>
-        <FormControl display={'flex'} alignItems={'center'} gap={'2px'}>
+      <InputGroup className={styles.input_group}>
+        <FormControl className={styles.form_control}>
           <IconButton aria-label='imagebtn' isRound={true}>
             <BsCameraVideo color='blue' />
           </IconButton>
@@ -94,8 +94,8 @@ const AtachFile = () => {
         </FormControl>
       </InputGroup>
       {/* Insert File */}
-      <InputGroup>
-        <FormControl display={'flex'} alignItems={'center'} gap={'2px'}>
+      <InputGroup className={styles.input_group}>
+        <FormControl className={styles.form_control}>
           <IconButton aria-label='imagebtn' isRound={true}>
             <BsFilePdf color='green' />
           </IconButton>
@@ -112,4 +112,4 @@ const AtachFile = () => {
   );
 };
 
-export default AtachFile;
+export default AttachFile;

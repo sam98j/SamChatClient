@@ -1,8 +1,9 @@
+/* eslint-disable react/no-unknown-property */
 import { Box, IconButton, Input, InputGroup, InputRightElement, Text } from '@chakra-ui/react';
 import styles from './styles.module.scss';
 import React, { useState } from 'react';
 import { Icon } from '@chakra-ui/icons';
-import { BsMic, BsStopFill } from 'react-icons/bs';
+import { BsMic, BsSoundwave, BsStopFill } from 'react-icons/bs';
 import { ImAttachment } from 'react-icons/im';
 import { BiSticker } from 'react-icons/bi';
 import useTranslation from 'next-translate/useTranslation';
@@ -17,7 +18,7 @@ import { useSearchParams } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useRouter } from 'next/router';
-import AtachFile from '../AtachFile';
+import AttachFile from '../AttachFile';
 import { setAttchFileMenuOpen } from '@/redux/system.slice';
 import { addMessageToChat, setCurrentUsrDoingAction } from '@/redux/chats.slice';
 import { getFileSize } from '@/utils/files';
@@ -120,8 +121,7 @@ const ChatInput = () => {
     reader.addEventListener('load', voiceLoadHandler);
   };
   // handleSendBtnClick Icon Click Action
-  const handleSendBtnClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
+  const handleSendBtnClick = async () => {
     // chat message
     const message = {
       _id: uuid(),
@@ -140,17 +140,15 @@ const ChatInput = () => {
     const attchFileMenuStatus = attachFileMenuOpen ? false : true;
     dispatch(setAttchFileMenuOpen(attchFileMenuStatus));
   };
+  // display send message btn in tow case (text input is has a text or usr is recording msg)
+  const showSendMsgBtn = isRec || inputText;
+  // decide to render attachment or flashing mic icon
+  const MicOrAttchIcon = isRec ? BsMic : ImAttachment;
+  //
   return (
-    <Box
-      className={styles.footer}
-      bgColor={'gray.50'}
-      gap={4}
-      padding={'10px'}
-      display={'flex'}
-      alignItems={'center'}
-      pref-lang={locale}
-    >
-      <AtachFile />
+    <div className={styles.footer} pref-lang={locale}>
+      {/* attach file menu */}
+      <AttachFile />
       {/* attach and flashing mic */}
       <IconButton
         aria-label=''
@@ -159,12 +157,14 @@ const ChatInput = () => {
         className={styles.mic_atta_icon}
         onClick={handleAttachFile}
       >
-        <Icon as={isRec ? BsMic : ImAttachment} boxSize={5} color={'messenger.500'} />
+        <MicOrAttchIcon />
       </IconButton>
+      {/* voice message timer */}
       <Box flexGrow={'1'} textColor={'gray'} display={!isRec ? 'none' : 'flex'}>
         <Text> {timer} </Text>
         <Text>{t('rec_voice')}</Text>
       </Box>
+      {/* write text message box */}
       <InputGroup display={isRec ? 'none' : 'initial'}>
         <InputRightElement className={styles.input_inner_icon}>
           <Icon as={BiSticker} boxSize={5} color={'messenger.500'} />
@@ -180,41 +180,13 @@ const ChatInput = () => {
           onBlur={handleInputBlur}
         />
       </InputGroup>
-      {isRec ? (
-        <IconButton
-          icon={<Icon as={BsStopFill} />}
-          isRound={true}
-          aria-label=''
-          colorScheme={'red'}
-          onClick={stopRecVoiceMemoHandler}
-        />
-      ) : (
-        ''
-      )}
-      {!isRec && !inputText ? (
-        <IconButton
-          icon={<Icon as={BsMic} boxSize={5} />}
-          isRound={true}
-          aria-label=''
-          colorScheme={'messenger'}
-          onClick={startRecVoiceMemoHandler}
-        />
-      ) : (
-        ''
-      )}
-      {isRec || inputText ? (
-        <IconButton
-          onClick={handleSendBtnClick}
-          isRound={true}
-          className={styles.send_btn}
-          icon={<Icon as={IoSend} boxSize={5} color={'white'} />}
-          aria-label=''
-          colorScheme={'messenger'}
-        />
-      ) : (
-        ''
-      )}
-    </Box>
+      {/* btn to stop voice recording */}
+      {isRec ? <BsStopFill onClick={stopRecVoiceMemoHandler} color='red' size='2rem' /> : ''}
+      {/* start recording voice message btn */}
+      {!isRec && !inputText ? <BsSoundwave onClick={startRecVoiceMemoHandler} color='#1e90ff' size={'2.5rem'} /> : ''}
+      {/* send message btn */}
+      {showSendMsgBtn ? <IoSend onClick={handleSendBtnClick} className={styles.send_btn} size='1.5rem' /> : ''}
+    </div>
   );
 };
 

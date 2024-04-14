@@ -15,7 +15,7 @@ import { useDispatch } from 'react-redux';
 import { TimeUnits, getTime } from '@/utils/time';
 import VoiceMemoPreview from '../VoiceMemoPreview';
 import { shrinkMsg } from '@/utils/chat.util';
-import PhotoPreview from '../PhotoPreview';
+import ImagePreview from '../ImagePreview';
 import VideoPreview from '../VideoPreview';
 import FilePreview from '../FilePreview';
 
@@ -118,7 +118,7 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
               ''
             )}
             {/* photo message */}
-            {previewData && previewData.type === PHOTO ? <PhotoPreview /> : ''}
+            {previewData && previewData.type === PHOTO ? <ImagePreview /> : ''}
             {/* video message preview*/}
             {previewData && previewData.type === VIDEO ? <VideoPreview /> : ''}
             {/* file message preview */}

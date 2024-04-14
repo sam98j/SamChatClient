@@ -5,22 +5,35 @@
   bottom: 0;
   left: 0;
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.507);
+  backdrop-filter: blur(10px);
+  padding: 5px 10px;
+  gap: 10px;
+  // send message btn
+  .send_btn {
+    color: #1e90ff;
+  }
   .mic_atta_icon[is-voice-rec='true'] {
     svg {
       color: red;
-      @keyframes flashing {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-          transform: scale(1.1);
-        }
-      }
       animation-name: flashing;
       animation-duration: 1s;
       animation-iteration-count: infinite;
       animation-timing-function: linear;
     }
+  }
+}
+
+// flashing anime
+@keyframes flashing {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.1);
   }
 }
