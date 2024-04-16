@@ -1,7 +1,7 @@
 .bubble {
-    &[pref-lang="ar"] {
-        &[sended-by-me="false"]{
-            margin-right: auto;
-        }
+  &[pref-lang='ar'] {
+    &[sended-by-me='false'] {
+      margin-right: auto;
     }
+  }
 }

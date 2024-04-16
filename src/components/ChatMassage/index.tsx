@@ -16,8 +16,6 @@ import FileMsgViewer from '../FileMsgViewer';
 import VideoMsgPlayer from '../VideoMsgPlayer';
 
 const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) => {
-  // api url
-  const apiHost = process.env.NEXT_PUBLIC_API_URL;
   // messages types
   const { TEXT, VOICENOTE, PHOTO, FILE, VIDEO } = MessagesTypes;
   // current app lang
@@ -25,20 +23,13 @@ const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) =>
   // redux dispatch function
   const dispatch = useDispatch();
   // message data
-  const { content, senderId, status, date, type, voiceNoteDuration: duration, fileName, fileSize } = messageData;
-  // evaluate message content
-  const [chatMessageContent] = useState(() => {
-    // the it's text message or message's status is pending do not edit the content
-    if (type === TEXT || status === null) return content;
-    // otherwize
-    return `${apiHost}${content}`;
-  });
+  const { content, senderId, status, date, type, voiceNoteDuration, fileName, fileSize } = messageData;
   // msg time
   const msgTime = getTime(date, TimeUnits.time);
   // fetch data from redux store
   const currentUsr = useSelector((state: RootState) => state.auth.currentUser);
   // check for the the message sender
-  const [{ sendedByMe }] = useState({ sendedByMe: currentUsr === senderId });
+  const [sendedByMe] = useState(String(currentUsr === senderId));
   // component mount
   useEffect(() => {
     // check if the current usr is not the sender
@@ -51,24 +42,19 @@ const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) =>
     dispatch(setMessageToBeMarketAsReaded({ msgData: { msgId: messageData._id, senderId: senderId } }));
   }, []);
   return (
-    <div
-      className={styles.bubble}
-      sended-by-me={`${String(sendedByMe)}`}
-      message-status={String(status)}
-      pref-lang={locale}
-    >
+    <div className={styles.bubble} sended-by-me={sendedByMe} message-status={String(status)} pref-lang={locale}>
       {/* chat text  */}
       <Text>
         {/* text message */}
         {type === TEXT ? content : ''}
         {/* voice message */}
-        {type === VOICENOTE ? <VoiceMemoPlayer data={{ sendedByMe, src: chatMessageContent, duration }} /> : ''}
+        {type === VOICENOTE ? <VoiceMemoPlayer data={{ voiceNoteDuration, content, senderId }} /> : ''}
         {/* message type photo */}
-        {type === PHOTO ? <ImageMsgViewer url={chatMessageContent} sendedByMe={sendedByMe} date={date} /> : ''}
+        {type === PHOTO ? <ImageMsgViewer data={{ senderId, date, content }} /> : ''}
         {/* message type file */}
-        {type === FILE ? <FileMsgViewer url={chatMessageContent} name={fileName!} size={fileSize!} /> : ''}
+        {type === FILE ? <FileMsgViewer data={{ fileName, fileSize, content }} /> : ''}
         {/* message type video */}
-        {type === VIDEO ? <VideoMsgPlayer url={chatMessageContent} date={date} sendedByMe={sendedByMe} /> : ''}
+        {type === VIDEO ? <VideoMsgPlayer data={{ content, date, senderId }} /> : ''}
       </Text>
       {/* msg footer appear  in all messages types*/}
       <Box display={'flex'} justifyContent={'flex-end'} marginTop={'5px'}>

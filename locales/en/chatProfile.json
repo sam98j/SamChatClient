@@ -1,6 +1,7 @@
 {
   "content_list": {
-    "media": "Media",
+    "photos": "Photos",
+    "video": "Video",
     "links": "Links",
     "docs": "Documents",
     "voice_notes": "Voice Notes"

@@ -1,6 +1,7 @@
 {
   "content_list": {
-    "media": "الوسائط",
+    "photos": "صور",
+    "video": "فيديو",
     "links": "الروابط",
     "docs": "المستندات",
     "voice_notes": "الرسائل الصوتية"

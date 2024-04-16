@@ -10,14 +10,33 @@ import useTranslation from 'next-translate/useTranslation';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { TimeUnits, getTime } from '@/utils/time';
+import { ChatMessage } from '@/interfaces/chat.interface';
 
-const ImageMsgViewer: FC<{ url: string; sendedByMe: boolean; date: string }> = ({ url, sendedByMe, date }) => {
+type Props = Pick<ChatMessage, 'content' | 'senderId' | 'date'>;
+
+const ImageMsgViewer: FC<{ data: Props }> = ({ data }) => {
+  // destruct props
+  const { content, date, senderId } = data;
+  // api url
+  const apiHost = process.env.NEXT_PUBLIC_API_URL;
+  // redux store
+  const { chatUsr, loggedInUsrId } = useSelector((state: RootState) => ({
+    chatUsr: state.chat.openedChat?.usrname,
+    loggedInUsrId: state.auth.currentUser,
+  }));
+  // is Message sended by the current usr
+  const sendedByMe = loggedInUsrId === senderId;
+  // image url
+  const [imgUrl] = useState(() => {
+    // check if content contain http
+    if (content.includes('data:')) return content;
+    // otherwize
+    return `${apiHost}${content}`;
+  });
   // state
   const [isOpen, setIsOpen] = useState(false);
   // localiztion method
   const { t } = useTranslation('chatScreen');
-  // redux store
-  const chatUsr = useSelector((state: RootState) => state.chat.openedChat?.usrname);
   // app lang
   const { locale } = useRouter();
   // handle onclick
@@ -47,7 +66,7 @@ const ImageMsgViewer: FC<{ url: string; sendedByMe: boolean; date: string }> = (
       </div>
       {/* viewer body */}
       <div className={styles.viewerBody}>
-        <Image src={url} alt='msg' width={250} height={300} onClick={handleClick} />
+        <Image src={imgUrl} alt='msg' width={250} height={300} onClick={handleClick} />
       </div>
       {/* viewer footer */}
       <div className={styles.viewerFooter}></div>

@@ -12,9 +12,32 @@ import { CiMenuKebab, CiSettings } from 'react-icons/ci';
 import { BsFullscreen, BsPlay } from 'react-icons/bs';
 import { TbPictureInPicture, TbRewindBackward10, TbRewindForward10 } from 'react-icons/tb';
 import { secondsToDurationConverter } from '@/utils/voiceMemoRec';
+import { ChatMessage } from '@/interfaces/chat.interface';
 // import { secondsToDurationConverter } from '@/utils/voiceMemoRec';
 
-const VideoMsgPlayer: FC<{ url: string; sendedByMe: boolean; date: string }> = ({ url, sendedByMe, date }) => {
+// props
+type Props = Pick<ChatMessage, 'content' | 'senderId' | 'date'>;
+
+const VideoMsgPlayer: FC<{ data: Props }> = ({ data }) => {
+  // api url
+  const apiHost = process.env.NEXT_PUBLIC_API_URL;
+  // destruct props
+  const { content, date, senderId } = data;
+  // get data from redux store
+  const { chatUsr, currentUsr } = useSelector((state: RootState) => ({
+    chatUsr: state.chat.openedChat?.usrname,
+    currentUsr: state.auth.currentUser,
+  }));
+  // is video is sended by the current loggedIn usr
+  const sendedByMe = currentUsr === senderId;
+  // vido url
+  const [videoUrl] = useState(() => {
+    // check for content is data url or link
+    // check if content contain http
+    if (content.includes('data:')) return content;
+    // otherwize
+    return `${apiHost}${content}`;
+  });
   // state
   const [isOpen, setIsOpen] = useState(false);
   // localiztion method
@@ -25,8 +48,6 @@ const VideoMsgPlayer: FC<{ url: string; sendedByMe: boolean; date: string }> = (
   const videoRef = useRef<HTMLVideoElement>(null);
   // timeLine ref
   const timeLineRef = useRef<HTMLSpanElement>(null);
-  // redux store
-  const chatUsr = useSelector((state: RootState) => state.chat.openedChat?.usrname);
   // app lang
   const { locale } = useRouter();
   // handle onclick
@@ -85,7 +106,7 @@ const VideoMsgPlayer: FC<{ url: string; sendedByMe: boolean; date: string }> = (
       {/* viewer body */}
       <div className={styles.viewerBody}>
         <video onClick={handleClick} ref={videoRef}>
-          <source src={url} />
+          <source src={videoUrl} />
         </video>
       </div>
       {/* viewer footer */}

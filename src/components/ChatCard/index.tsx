@@ -20,6 +20,13 @@ import VideoPreview from '../VideoPreview';
 import FilePreview from '../FilePreview';
 
 const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  // chat avatar
+  const [chatAvatar] = useState(() => {
+    // check for avatar exist
+    if (!chat.avatar) return '';
+    return `${apiUrl}${chat.avatar}`;
+  });
   // use dispatch
   const dispatch = useDispatch();
   // localize lang
@@ -93,7 +100,7 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
         className={styles.chatCard}
       >
         {/* chat avatar */}
-        <Avatar name='Hosam Alden' src={chat.avatar} />
+        <Avatar name='Hosam Alden' src={chatAvatar} />
         <Box flexGrow={'1'}>
           {/* chat usr name */}
           <Heading size={'sm'} marginBottom={'5px'} textColor={'messenger.500'}>

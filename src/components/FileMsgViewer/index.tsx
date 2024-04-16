@@ -1,12 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './styles.module.scss';
 import { Box, Text } from '@chakra-ui/react';
 import { BsFilePdf } from 'react-icons/bs';
 import Link from 'next/link';
+import { ChatMessage } from '@/interfaces/chat.interface';
 
-const FileMsgViewer: React.FC<{ name: string; size: string; url: string }> = (props) => {
+// Props
+type Props = Pick<ChatMessage, 'content' | 'fileName' | 'fileSize'>;
+
+const FileMsgViewer: React.FC<{ data: Props }> = ({ data }) => {
+  // api url
+  const apiHost = process.env.NEXT_PUBLIC_API_URL;
   // destruct component props
-  const { name, size, url } = props;
+  const { content, fileName, fileSize } = data;
+  // file url
+  const [fileUrl] = useState(() => {
+    // check if content contain http
+    if (content.includes('data:')) return content;
+    // otherwize
+    return `${apiHost}${content}`;
+  });
   return (
     <Box
       className={styles.fileMsgViewer}
@@ -17,13 +30,13 @@ const FileMsgViewer: React.FC<{ name: string; size: string; url: string }> = (pr
       padding={'5px'}
       borderRadius={'5px'}
     >
-      <Link href={url} download={true}>
+      <Link href={fileUrl} download={true}>
         {/* File Icon */}
         {/* file data */}
         <Box>
           <Text display={'flex'} alignItems={'center'}>
             <BsFilePdf size={'1.5rem'} color='orange' />
-            {name} - <span>{size} كيلو بايت</span>
+            {fileName} - <span>{fileSize} كيلو بايت</span>
           </Text>
         </Box>
       </Link>

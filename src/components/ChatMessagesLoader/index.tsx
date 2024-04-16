@@ -11,7 +11,17 @@ const ChatMessagesLoader: FC<{ messages: MessagesGroubedByDate }> = ({ messages 
       {messages.dates?.map((date, i) => {
         return (
           <>
-            <Text textAlign={'center'} textColor={'gray'}>
+            <Text
+              textAlign={'center'}
+              textColor={'blue.500'}
+              marginTop={'30px'}
+              bgColor={'blue.50'}
+              rounded={'xl'}
+              padding={'3px'}
+              width={'fit-content'}
+              marginLeft={'auto'}
+              marginRight={'auto'}
+            >
               {date}
             </Text>
             {messages.messages[i].map((msg: ChatMessage) => (

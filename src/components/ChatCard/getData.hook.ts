@@ -25,6 +25,7 @@ const useChatsApi = () => {
     if (apiRes.status >= 500 || apiRes.status >= 400) {
       return null;
     }
+    // chat preveiw data
     return (await apiRes.json()) as ChatPreviewData;
   };
   return { fetchChatPreviewData };

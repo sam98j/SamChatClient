@@ -5,17 +5,35 @@ import { Box, IconButton, Text } from '@chakra-ui/react';
 import { Icon } from '@chakra-ui/icons';
 import { BsFillPauseFill, BsFillPlayFill } from 'react-icons/bs';
 import { secondsToDurationConverter } from '@/utils/voiceMemoRec';
+import { ChatMessage } from '@/interfaces/chat.interface';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
-const VoiceMemoPlayer: React.FC<{
-  data: { src: string; sendedByMe: boolean; duration: string };
-}> = ({ data }) => {
-  const { sendedByMe, src, duration } = data;
+type Props = Pick<ChatMessage, 'senderId' | 'voiceNoteDuration' | 'content'>;
+
+const VoiceMemoPlayer: React.FC<{ data: Props }> = ({ data }) => {
+  // api url
+  const apiHost = process.env.NEXT_PUBLIC_API_URL;
+  // destruct props
+  const { senderId, content, voiceNoteDuration: duration } = data;
+  // get data from redux store
+  const { currentUsr } = useSelector((state: RootState) => ({ currentUsr: state.auth.currentUser }));
+  // is voice note is sended by current loogedIn usr ?
+  const sendedByMe = senderId === currentUsr;
+  // audio content or url
+  const [audioUrl] = useState(() => {
+    // check if content contain http
+    if (content.includes('data:')) return content;
+    // otherwize
+    return `${apiHost}${content}`;
+  });
   // audio ref
   const audioRef = useRef<HTMLAudioElement>(null);
   // timeline ref
   const timeLineRef = useRef<HTMLSpanElement>(null);
   // is audio playing
   const [isAudioPlaying, setAudioPlaying] = useState(false);
+  // audio timer
   let timer = 0;
   // component mount
   useEffect(() => {
@@ -52,7 +70,7 @@ const VoiceMemoPlayer: React.FC<{
         </Text>
       </Box>
       <audio ref={audioRef}>
-        <source src={src} type='audio/webm' />
+        <source src={audioUrl} type='audio/webm' />
       </audio>
     </div>
   );

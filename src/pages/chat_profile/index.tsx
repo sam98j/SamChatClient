@@ -13,23 +13,36 @@ import styles from './styles.module.scss';
 import { ChatMessage, MessagesTypes } from '@/interfaces/chat.interface';
 import useTranslation from 'next-translate/useTranslation';
 import ImageMsgViewer from '@/components/ImageMsgViewer';
+import VideoMsgPlayer from '@/components/VideoMsgPlayer';
+import VoiceMemoPlayer from '@/components/VoiceMemoPlayer';
+import FileMsgViewer from '@/components/FileMsgViewer';
 
 const ChatProfile = () => {
   // api url
   const apiHost = process.env.NEXT_PUBLIC_API_URL;
-  // content list
-  const [contentList, setContentList] = useState<ChatMessage[]>([]);
-  // localization
-  const { t } = useTranslation('chatProfile');
-  // dispatch redux fun
-  const dispatch = useDispatch();
-  // get route name
+  // data from redux store
   const { chatPorfile, chatMessages } = useSelector((state: RootState) => {
     return {
       chatPorfile: state.chat.currentChatPorfile,
       chatMessages: state.chat.chatMessages,
     };
   });
+  // chat avatar
+  const [avatar_url] = useState(() => {
+    // check for avatar exist
+    if (!chatPorfile?.avatar) return '';
+    return `${apiHost}${chatPorfile.avatar}`;
+  });
+  // destruct messages  types
+  const { VIDEO, PHOTO, FILE, VOICENOTE } = MessagesTypes;
+  // what kind of messages has been displayed
+  const [displayedMsgsTypes, setDisplayedMsgsTypes] = useState(PHOTO);
+  // content list
+  const [contentList, setContentList] = useState<ChatMessage[]>([]);
+  // localization
+  const { t } = useTranslation('chatProfile');
+  // dispatch redux fun
+  const dispatch = useDispatch();
   // url query params
   const params = useSearchParams();
   // component did mount
@@ -41,7 +54,8 @@ const ChatProfile = () => {
     // terminate if no chatMessages
     if (!chatMessages) return;
     // filter chat messages based on message type
-    const chatMessagesTypeBased = chatMessages.filter((msg) => msg.type === MessagesTypes.PHOTO);
+    const chatMessagesTypeBased = chatMessages.filter((msg) => msg.type === PHOTO);
+    // set content list
     setContentList(chatMessagesTypeBased);
   }, []);
   // listContentTypeHandler
@@ -49,94 +63,92 @@ const ChatProfile = () => {
     // terminate if no chatMessages
     if (!chatMessages) return;
     // list content type
-    const listContentType = e.currentTarget.id;
+    const listContentType = e.currentTarget.id as MessagesTypes;
     // filter chat messages based on message type
     const chatMessagesTypeBased = chatMessages.filter((msg) => msg.type === listContentType);
     // set content list
     setContentList(chatMessagesTypeBased);
-    console.log(chatMessagesTypeBased);
+    // set what kind of messages are displaing now
+    setDisplayedMsgsTypes(listContentType);
   };
   return (
     <>
       <Head>
         <title>{`${chatPorfile?.name} | ${t('profile')}`}</title>
       </Head>
-      <Box
-        height='calc(100% - 50px)'
-        display={'flex'}
-        flexDirection={'column'}
-        alignItems={'center'}
-        padding={'30px'}
-        gap={5}
-        className={styles.chat_profile}
-      >
-        <Avatar src={chatPorfile?.avatar} size={'2xl'} />
+      <div className={styles.chat_profile}>
+        {/* chat avatar */}
+        <Avatar src={avatar_url} size={'2xl'} />
         {/* name */}
-        <Text fontSize={'2xl'} fontWeight={'black'} margin={'0'} lineHeight={'0'}>
+        <Text fontSize={'2xl'} fontWeight={'black'}>
           {chatPorfile?.name}
         </Text>
-        <Text lineHeight={'0'} marginBottom={'10px'} textColor={'gray'}>
+        {/* chat email */}
+        <Text marginBottom={'10px'} textColor={'gray'}>
           {chatPorfile?.email}
         </Text>
         {/* chat calls */}
         <ChatCalls />
         {/* media links and docs */}
-        <List
-          display={'flex'}
-          gap={2}
-          width={'100%'}
-          justifyContent={'space-between'}
-          alignItems={'center'}
-          marginTop={5}
-          className={styles.list_content_type_container}
-        >
+        <List className={styles.list_content_type_container}>
           {/* Content Type media photos, videos */}
           <ListItem
-            id={MessagesTypes.PHOTO}
+            id={PHOTO}
             className={styles.list_content_type}
-            is-active={'true'}
+            is-active={displayedMsgsTypes === PHOTO ? 'true' : 'false'}
             onClick={listContentTypeHandler}
           >
-            {t('content_list.media')}
+            {t('content_list.photos')}
           </ListItem>
-          {/* Content type links */}
+          {/* video */}
           <ListItem
-            id={'linksId'}
+            id={VIDEO}
             className={styles.list_content_type}
-            is-active={'false'}
+            is-active={displayedMsgsTypes === VIDEO ? 'true' : 'false'}
             onClick={listContentTypeHandler}
           >
-            {t('content_list.links')}
+            {t('content_list.video')}
           </ListItem>
           {/* Content type docs */}
           <ListItem
-            id={MessagesTypes.FILE}
+            id={FILE}
+            is-active={displayedMsgsTypes === FILE ? 'true' : 'false'}
             className={styles.list_content_type}
-            is-active={'false'}
             onClick={listContentTypeHandler}
           >
             {t('content_list.docs')}
           </ListItem>
           {/* voice notes */}
           <ListItem
-            id={MessagesTypes.FILE}
+            id={VOICENOTE}
             className={styles.list_content_type}
-            is-active={'false'}
+            is-active={displayedMsgsTypes === VOICENOTE ? 'true' : 'false'}
             onClick={listContentTypeHandler}
           >
             {t('content_list.voice_notes')}
           </ListItem>
         </List>
         {/* list content */}
-        <Box display={'flex'} gap={'1'} flexWrap={'wrap'} margin={'5px -20px'} className={styles.list_content}>
+        <Box className={styles.list_content} msgs-type={displayedMsgsTypes}>
           {/* loop throwght content list it maybe PHOTS, FILE, Video */}
-          {contentList.map((msg) => (
-            <Box className={styles.list_content_item} key={msg._id}>
-              <ImageMsgViewer url={apiHost + msg.content} date={msg.date} sendedByMe={true} />
-            </Box>
-          ))}
+          {contentList.map((msg) => {
+            // destruct message
+            const { content, senderId, date, voiceNoteDuration, fileSize, fileName } = msg;
+            return (
+              <Box className={styles.list_content_item} key={msg._id}>
+                {/* display images */}
+                {displayedMsgsTypes === PHOTO ? <ImageMsgViewer data={{ content, senderId, date }} /> : ''}
+                {/* display video */}
+                {displayedMsgsTypes === VIDEO ? <VideoMsgPlayer data={{ content, senderId, date }} /> : ''}
+                {/* display voice notes */}
+                {displayedMsgsTypes === VOICENOTE ? <VoiceMemoPlayer data={{ content, senderId, voiceNoteDuration }} /> : ''}
+                {/* display flie */}
+                {displayedMsgsTypes === FILE ? <FileMsgViewer data={{ content, fileName, fileSize }} /> : ''}
+              </Box>
+            );
+          })}
         </Box>
-      </Box>
+      </div>
     </>
   );
 };
