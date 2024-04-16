@@ -4,7 +4,7 @@ import styles from './styles.module.scss';
 import { Box, IconButton, Text } from '@chakra-ui/react';
 import { Icon } from '@chakra-ui/icons';
 import { BsFillPauseFill, BsFillPlayFill } from 'react-icons/bs';
-import { secondsToDurationConverter } from '@/utils/voiceMemoRec';
+import { secondsToDurationConverter } from '@/utils/time';
 import { ChatMessage } from '@/interfaces/chat.interface';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';

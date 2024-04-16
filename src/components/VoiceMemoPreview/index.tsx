@@ -1,4 +1,4 @@
-import { secondsToDurationConverter } from '@/utils/voiceMemoRec';
+import { secondsToDurationConverter } from '@/utils/time';
 import { Box, Text } from '@chakra-ui/react';
 import useTranslation from 'next-translate/useTranslation';
 import React, { FC } from 'react';

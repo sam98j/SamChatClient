@@ -29,13 +29,12 @@ export function getTime(stringDate: string, timeUnit: TimeUnits, local: never = 
   const hours = dateObj.getHours().toString();
   // minites
   const minites = dateObj.getUTCMinutes().toString();
-  console.log({ dayOfWeek, dayOfMonth, month, hours, minites });
   // if time unit is time
   if (timeUnit === TimeUnits.time) return timeFormater({ hours, minites });
   // if time unit is date
   if (timeUnit === TimeUnits.date) return `${dayOfWeek} ${dayOfMonth} ${month}`;
   // in case of full time
-  if (timeUnit === TimeUnits.fullTime) return `${dayOfWeek} ${dayOfMonth} ${timeFormater({ hours, minites })}`;
+  if (timeUnit === TimeUnits.fullTime) return `${dayOfWeek} ${dayOfMonth} ${month} ${timeFormater({ hours, minites })}`;
 }
 
 // time formater
@@ -46,3 +45,11 @@ function timeFormater(data: { hours: string; minites: string }) {
   if (!data) return '';
   return `${hours.length !== 1 ? hours : `0${hours}`}:${minites.length !== 1 ? minites : `0${minites}`}`;
 }
+
+// convert seconds to duration
+export const secondsToDurationConverter = (sec: number) => {
+  const minites = sec >= 60 ? String(Math.round(sec / 60)) : '00';
+  let seconds = sec >= 60 ? String(Math.round(sec % 60)) : Math.round(sec);
+  Number(seconds) < 10 ? (seconds = `0${seconds}`) : '';
+  return `${minites}:${seconds}`;
+};

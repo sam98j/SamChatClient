@@ -11,7 +11,7 @@ import { TimeUnits, getTime } from '@/utils/time';
 import { CiMenuKebab, CiSettings } from 'react-icons/ci';
 import { BsFullscreen, BsPlay } from 'react-icons/bs';
 import { TbPictureInPicture, TbRewindBackward10, TbRewindForward10 } from 'react-icons/tb';
-import { secondsToDurationConverter } from '@/utils/voiceMemoRec';
+import { secondsToDurationConverter } from '@/utils/time';
 import { ChatMessage } from '@/interfaces/chat.interface';
 // import { secondsToDurationConverter } from '@/utils/voiceMemoRec';
 
