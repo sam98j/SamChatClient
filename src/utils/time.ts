@@ -5,6 +5,7 @@ export enum TimeUnits {
 }
 
 export function getTime(stringDate: string, timeUnit: TimeUnits, local: never = 'en' as never) {
+  // terminate if there is no date provided
   if (!stringDate) return '';
   // week's days
   const weekDays = {
@@ -18,24 +19,30 @@ export function getTime(stringDate: string, timeUnit: TimeUnits, local: never = 
   };
   //create new date object from string
   const dateObj = new Date(stringDate);
+  // day of the week
+  const dayOfWeek = weekDays[local][dateObj.getUTCDay()];
+  // day of month
+  const dayOfMonth = dateObj.getUTCDate();
+  // month it self
+  const month = months[local][dateObj.getUTCMonth()];
+  // hourse
+  const hours = dateObj.getHours().toString();
+  // minites
+  const minites = dateObj.getUTCMinutes().toString();
+  console.log({ dayOfWeek, dayOfMonth, month, hours, minites });
   // if time unit is time
-  if (timeUnit === TimeUnits.time) {
-    // time hour
-    const timeHoure = dateObj.getHours().toString();
-    // time minutes
-    const timeMinutes = dateObj.getMinutes().toString();
-    return `${timeHoure.length !== 1 ? timeHoure : `0${timeHoure}`}:${
-      timeMinutes.length !== 1 ? timeMinutes : `0${timeMinutes}`
-    }`;
-  }
+  if (timeUnit === TimeUnits.time) return timeFormater({ hours, minites });
   // if time unit is date
-  if (timeUnit === TimeUnits.date) {
-    return `${weekDays[local][dateObj.getUTCDay()]} ${dateObj.getUTCDate()} ${months[local][dateObj.getUTCMonth()]}`;
-  }
+  if (timeUnit === TimeUnits.date) return `${dayOfWeek} ${dayOfMonth} ${month}`;
   // in case of full time
-  if (timeUnit === TimeUnits.fullTime) {
-    return `${weekDays[local][dateObj.getUTCDay()]} ${dateObj.getUTCDate()} ${
-      months[local][dateObj.getUTCMonth()]
-    } ${dateObj.getHours()}:${dateObj.getUTCMinutes()}`;
-  }
+  if (timeUnit === TimeUnits.fullTime) return `${dayOfWeek} ${dayOfMonth} ${timeFormater({ hours, minites })}`;
+}
+
+// time formater
+function timeFormater(data: { hours: string; minites: string }) {
+  // destruct time data
+  const { hours, minites } = data;
+  // check if data is falsy
+  if (!data) return '';
+  return `${hours.length !== 1 ? hours : `0${hours}`}:${minites.length !== 1 ? minites : `0${minites}`}`;
 }
