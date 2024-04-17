@@ -27,12 +27,12 @@ const VoiceMemoPlayer: React.FC<{ data: Props }> = ({ data }) => {
     // otherwize
     return `${apiHost}${content}`;
   });
+  // is audio playing
+  const [isAudioPlaying, setAudioPlaying] = useState(false);
   // audio ref
   const audioRef = useRef<HTMLAudioElement>(null);
   // timeline ref
   const timeLineRef = useRef<HTMLSpanElement>(null);
-  // is audio playing
-  const [isAudioPlaying, setAudioPlaying] = useState(false);
   // audio timer
   let timer = 0;
   // component mount
