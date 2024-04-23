@@ -16,10 +16,24 @@ import { setCurrentRoute } from '@/redux/system.slice';
 import useTranslation from 'next-translate/useTranslation';
 import { getUsrProfileData, updateUsrProfileData } from '@/apis/usrprofile.api';
 import { PhoneIcon } from '@chakra-ui/icons';
-import { IsProfileDataEditDisabled, IsProfileDataFieldLoading } from './interface';
+// import { IsProfileDataEditDisabled, IsProfileDataFieldLoading } from './interface';
 import { ImSpinner3 } from 'react-icons/im';
 import { AnyAction } from '@reduxjs/toolkit';
 import { setProfileFieldUpdateStatus } from '@/redux/profile.slice';
+
+export interface IsProfileDataEditDisabled {
+  name: boolean;
+  email: boolean;
+  phone: boolean;
+  usrname: boolean;
+}
+
+export interface IsProfileDataFieldLoading {
+  name: boolean;
+  email: boolean;
+  phone: boolean;
+  usrname: boolean;
+}
 
 const Profile = () => {
   // local state
@@ -124,16 +138,8 @@ const Profile = () => {
               <HiOutlineMail color='gray' />
             </InputLeftElement>
             <InputRightElement>
-              {!isEmailLoading && !fieldUpdateStatus ? (
-                <FiEdit2 onClick={editProfileDataFieldHandler} id='email' />
-              ) : (
-                ''
-              )}
-              {isEmailLoading && !fieldUpdateStatus ? (
-                <ImSpinner3 color='blue' className={styles.loading_spinner} />
-              ) : (
-                ''
-              )}
+              {!isEmailLoading && !fieldUpdateStatus ? <FiEdit2 onClick={editProfileDataFieldHandler} id='email' /> : ''}
+              {isEmailLoading && !fieldUpdateStatus ? <ImSpinner3 color='blue' className={styles.loading_spinner} /> : ''}
               {/* error icon */}
               {fieldUpdateStatus && fieldUpdateStatus.err ? <VscError color='red' /> : ''}
               {/* no error icon */}

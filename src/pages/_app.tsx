@@ -151,6 +151,13 @@ function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     const userToken = localStorage.getItem('access_token');
     dispatch(getUserChats(userToken) as unknown as AnyAction);
+    // regester service worker
+    if (!('serviceWorker' in navigator)) return;
+    // regester service worker
+    navigator.serviceWorker
+      .register('/service.workr.js')
+      .then(() => console.log('service worker regestered succ'))
+      .catch((err) => console.log(err));
   }, []);
   return (
     <>
