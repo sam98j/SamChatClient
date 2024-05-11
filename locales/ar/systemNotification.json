@@ -1,0 +1,6 @@
+{
+  "notificationStatus": { "faild": "فشل", "succ": "نجاح" },
+  "voiceRecorderMsgs": {
+    "httpErrMsg": "لايمكنك تسجيل الصوت باستخدام بروتوكول http"
+  }
+}

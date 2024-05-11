@@ -31,6 +31,7 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { io, Socket } from 'socket.io-client';
 import { setNewIncomingMsg } from '@/redux/system.slice';
 import useChatMessagesSender from '@/Hooks/useChatMsgSender';
+import SystemNotifications from '@/components/SystemNotifications/SystemNotifications';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 // chakra theme
 const theme = extendTheme({ fonts: { body: '"Baloo Bhaijaan 2", cursive' } });
@@ -50,6 +51,8 @@ function App({ Component, pageProps }: AppProps) {
   const dispatch = useDispatch();
   // auth state
   const currentUser = useSelector((state: RootState) => state.auth.currentUser);
+  // system notifications
+  const systemNotifications = useSelector((state: RootState) => state.system.notifications);
   // chat state
   const { openedChat, isCurrentUsrDoingAction, messageToBeMarketAsReaded, chatMessages } = useSelector(
     (state: RootState) => state.chat
@@ -167,6 +170,11 @@ function App({ Component, pageProps }: AppProps) {
       <ChakraProvider theme={theme}>
         <Provider store={store}>
           <div className={styles.app}>
+            {/* system notifications */}
+            {systemNotifications && (
+              <SystemNotifications data={{ err: systemNotifications.err, msg: systemNotifications.msg }} />
+            )}
+            {/* appHeader */}
             {currentUser !== null ? <AppHeader /> : ''}
             {currentUser === null ? '' : <Component {...pageProps} />}
             {currentUser === null ? <AppLogo /> : ''}

@@ -10,7 +10,7 @@ import useTranslation from 'next-translate/useTranslation';
 import { IoSend } from 'react-icons/io5';
 import { ChatMessage, ChatUserActions, MessagesTypes } from '@/interfaces/chat.interface';
 import { useDispatch } from 'react-redux';
-import VoiceMemoRecorder from '@/utils/voiceMemoRecorder';
+import { useVoiceMemoRecorder } from '@/Hooks/useVoiceMemoRecorder';
 import { voiceMemoTimer } from '@/utils/chat.util';
 import getBlobDuration from 'get-blob-duration';
 import { v4 as uuid } from 'uuid';
@@ -19,12 +19,12 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useRouter } from 'next/router';
 import AttachFile from '../AttachFile';
-import { setAttchFileMenuOpen } from '@/redux/system.slice';
+import { setAttchFileMenuOpen, setSystemNotification } from '@/redux/system.slice';
 import { addMessageToChat, setCurrentUsrDoingAction } from '@/redux/chats.slice';
 import { getFileSize } from '@/utils/files';
-const { start, stop, cancel } = VoiceMemoRecorder();
 
 const ChatInput = () => {
+  const { start, stop, cancel } = useVoiceMemoRecorder();
   // input text
   const [inputText, setInputText] = useState('');
   // is voice recording
@@ -53,13 +53,19 @@ const ChatInput = () => {
   const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => setInputText(event.target.value);
   // start recording voice
   const startRecVoiceMemoHandler = async () => {
-    // tell the server about is currently recording voice to inform another usr in the chat
-    dispatch(setCurrentUsrDoingAction(ChatUserActions.RECORDING_VOICE));
     // start recording voice
-    await start();
-    // set voice recording state
-    setIsReco(true);
-    setTimerInterval(voiceMemoTimer(setTimer));
+    try {
+      await start();
+      // tell the server about is currently recording voice to inform another usr in the chat
+      dispatch(setCurrentUsrDoingAction(ChatUserActions.RECORDING_VOICE));
+      // set voice recording state
+      setIsReco(true);
+      setTimerInterval(voiceMemoTimer(setTimer));
+    } catch (err) {
+      // init voice recorder err
+      const { message: msg } = err as Error;
+      dispatch(setSystemNotification({ err: true, msg }));
+    }
   };
   // handle stop recrding vioice
   const stopRecVoiceMemoHandler = () => {

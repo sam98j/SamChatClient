@@ -1,0 +1,6 @@
+{
+  "notificationStatus": { "faild": "Faild", "succ": "Success" },
+  "voiceRecorderMsgs": {
+    "httpErrMsg": "You cannot recording voice in http domain"
+  }
+}

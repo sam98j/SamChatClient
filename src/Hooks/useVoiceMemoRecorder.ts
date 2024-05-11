@@ -1,15 +1,21 @@
-const VoiceMemoRecorder = () => {
-  // audio blobs
-  let audioBlobs: Blob[] = [];
-  // media recorder instance
-  let mediaRecorder: MediaRecorder | null = null;
-  // stream being captured
-  let streamBeingCaptured: MediaStream | null = null;
+import useTranslation from 'next-translate/useTranslation';
+
+// audio blobs
+let audioBlobs: Blob[] = [];
+// media recorder instance
+let mediaRecorder: MediaRecorder | null = null;
+// stream being captured
+let streamBeingCaptured: MediaStream | null = null;
+
+export const useVoiceMemoRecorder = () => {
+  // translations
+  const { t } = useTranslation('systemNotification');
   // // start recorder voice method
   const start = async () => {
     // check for MediaDevices API, and getUserMedia Support
     if (!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) {
-      return Promise.reject(new Error('Not Supp'));
+      const error = new Error(t('voiceRecorderMsgs.httpErrMsg'));
+      throw error;
     }
     // return stream
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -26,14 +32,12 @@ const VoiceMemoRecorder = () => {
     return stream;
   };
   // // stop recordeing voice method
-  const stop = () => {
+  const stop = async () => {
     return new Promise((resolve) => {
       // save the audio type
       const mimeType = mediaRecorder?.mimeType;
       // listen to the stop event
       mediaRecorder?.addEventListener('stop', () => {
-        console.log(mimeType);
-        // create audio blob
         const audioBlob = new Blob(audioBlobs, { type: mimeType });
         resolve(audioBlob);
       });
@@ -60,5 +64,3 @@ const VoiceMemoRecorder = () => {
   };
   return { start, stop, cancel };
 };
-
-export default VoiceMemoRecorder;

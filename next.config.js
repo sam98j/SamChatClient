@@ -14,13 +14,4 @@ module.exports = nextTranslate({
       },
     ],
   },
-  async redirects() {
-    return [
-      // {
-      //     source: '/profile',
-      //     destination: '/',
-      //     permanent: true,
-      // }
-    ];
-  },
 });

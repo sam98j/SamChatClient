@@ -1,13 +1,5 @@
 /* eslint-disable react/no-unknown-property */
-import {
-  FormControl,
-  FormHelperText,
-  Input,
-  Button,
-  Checkbox,
-  InputLeftElement,
-  InputGroup,
-} from '@chakra-ui/react';
+import { FormControl, FormHelperText, Input, Button, Checkbox, InputLeftElement, InputGroup } from '@chakra-ui/react';
 import { HiOutlineMail, HiLockOpen } from 'react-icons/hi';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -20,7 +12,6 @@ import { RootState } from '@/redux/store';
 import { useDispatch } from 'react-redux';
 import { loginUser } from '@/apis/auth.api';
 import { Spinner } from '@chakra-ui/react';
-import LoginAlerts from '@/components/LoginAlerts/LoginAlerts';
 import { useRouter } from 'next/router';
 import LanguageSwitcher from '@/components/LangSwitcher/LangSwitcher';
 import useTranslation from 'next-translate/useTranslation';
@@ -78,7 +69,6 @@ const Login = () => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <div className={styles.login} pref-lang={locale}>
-        {apiResMessage ? <LoginAlerts response={apiResMessage} /> : ''}
         {/* Login Form */}
         <form onSubmit={handleFormSubmition}>
           <div className={styles.formHeader}>
@@ -121,9 +111,7 @@ const Login = () => {
             </FormControl>
           </InputGroup>
           <div className={styles.areaContainer}>
-            <Checkbox className={styles.checkBox}>
-              {t('remember_me_btn_text')}
-            </Checkbox>
+            <Checkbox className={styles.checkBox}>{t('remember_me_btn_text')}</Checkbox>
             <a href=''>{t('forget_password_link_text')}</a>
           </div>
           {/* submit btn */}
@@ -138,19 +126,12 @@ const Login = () => {
               {!isLoading ? (
                 <p>{t('login_btn_text')}</p>
               ) : (
-                <Spinner
-                  thickness='2px'
-                  speed='0.65s'
-                  emptyColor='white'
-                  color='blue'
-                  size='sm'
-                />
+                <Spinner thickness='2px' speed='0.65s' emptyColor='white' color='blue' size='sm' />
               )}
             </Button>
           </div>
           <p className={styles.createAccountLink}>
-            {t('dont_have_account_msg')}{' '}
-            <Link href='/signup'>{t('create_account_link_text')}</Link>
+            {t('dont_have_account_msg')} <Link href='/signup'>{t('create_account_link_text')}</Link>
           </p>
           {/* bottom area */}
           <div className=''>

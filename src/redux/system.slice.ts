@@ -9,6 +9,7 @@ export interface SystemState {
   prefLanguage: string;
   newIncomingMsg: ChatMessage | null;
   attchFileMenuOpen: boolean;
+  notifications: { err: boolean; msg: string } | null;
 }
 
 // inital state
@@ -18,6 +19,7 @@ const initialState: SystemState = {
   prefLanguage: 'en',
   newIncomingMsg: null,
   attchFileMenuOpen: false,
+  notifications: null,
 };
 
 // create state slcie and export it
@@ -40,8 +42,13 @@ export const systemSlice = createSlice({
     setAttchFileMenuOpen(state, action: PayloadAction<boolean>) {
       state.attchFileMenuOpen = action.payload;
     },
+    // show / hide notification
+    setSystemNotification(state, action: PayloadAction<{ err: boolean; msg: string } | null>) {
+      state.notifications = action.payload;
+    },
   },
 });
-export const { changeNewChatScrStatus, setCurrentRoute, setNewIncomingMsg, setAttchFileMenuOpen } = systemSlice.actions;
+export const { changeNewChatScrStatus, setCurrentRoute, setNewIncomingMsg, setAttchFileMenuOpen, setSystemNotification } =
+  systemSlice.actions;
 // export the reducer function
 export default systemSlice.reducer;

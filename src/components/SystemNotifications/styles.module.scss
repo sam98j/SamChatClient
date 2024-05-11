@@ -1,0 +1,12 @@
+.loginAlerts {
+  width: 95vw !important;
+  height: 100px;
+  border-radius: 20px;
+  position: absolute !important;
+  top: 10px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  z-index: 5;
+  backdrop-filter: blur(10px);
+  // color: #ff000028;
+}
