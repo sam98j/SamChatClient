@@ -16,7 +16,7 @@ jobs:
           script: |
             cd ~/apps/samchat/SamChatClient
             git pull origin master
-          # npm install --only=prod
-          # npm run build --if-present
-          # pm2 restart samchat
+            npm install --only=prod
+            npm run build --if-present
+            pm2 restart samchat
           # cd ~/apps/samchat/SamChatClient && git pull origin master && npm install --only=prod && npm run build --if-present && pm2 stop samchat
