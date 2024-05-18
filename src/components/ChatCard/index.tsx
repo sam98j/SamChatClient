@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Avatar, Box, Heading, SkeletonCircle, Text } from '@chakra-ui/react';
+import { Avatar, Box, SkeletonCircle, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { SingleChat, setOpenedChat } from '@/redux/chats.slice';
@@ -103,9 +103,9 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
         <Avatar name='Hosam Alden' src={chatAvatar} />
         <Box flexGrow={'1'}>
           {/* chat usr name */}
-          <Heading size={'sm'} marginBottom={'5px'} textColor={'messenger.500'} fontFamily={'"Baloo Bhaijaan 2"'}>
+          <Text size={'sm'} marginBottom={'5px'} textColor={'messenger.500'} fontFamily={'"Baloo Bhaijaan 2"'}>
             {chat.usrname}
-          </Heading>
+          </Text>
           {/* usr actions (usr typing, recording voice) */}
           <Text className={styles.chat_usr_actions}>
             <ChatUsrActions />
