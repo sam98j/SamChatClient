@@ -13,7 +13,7 @@ module.exports = nextTranslate({
         pathname: '/**',
       },
       {
-        protocol: 'http',
+        protocol: 'https',
         hostname: 'api.chat.samapps.xyz',
         pathname: '/**',
       },
