@@ -1,8 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './styles.module.scss';
-import { Box, IconButton, Text } from '@chakra-ui/react';
-import { Icon } from '@chakra-ui/icons';
+import { Box, Text } from '@chakra-ui/react';
 import { BsFillPauseFill, BsFillPlayFill } from 'react-icons/bs';
 import { secondsToDurationConverter } from '@/utils/time';
 import { ChatMessage } from '@/interfaces/chat.interface';
@@ -29,6 +28,8 @@ const VoiceMemoPlayer: React.FC<{ data: Props }> = ({ data }) => {
   });
   // is audio playing
   const [isAudioPlaying, setAudioPlaying] = useState(false);
+  // play and pause icon
+  const PlayPauseIcon = isAudioPlaying ? BsFillPauseFill : BsFillPlayFill;
   // audio ref
   const audioRef = useRef<HTMLAudioElement>(null);
   // timeline ref
@@ -55,12 +56,7 @@ const VoiceMemoPlayer: React.FC<{ data: Props }> = ({ data }) => {
   };
   return (
     <div className={styles.voice_memo_rec} sended-by-me={String(sendedByMe)}>
-      <IconButton
-        isRound={true}
-        colorScheme='blue'
-        aria-label=''
-        icon={<Icon as={isAudioPlaying ? BsFillPauseFill : BsFillPlayFill} onClick={audioPlayHandler} boxSize={'7'} />}
-      />
+      <PlayPauseIcon onClick={audioPlayHandler} size={'2rem'} />
       <Box display={'flex'} flexDirection={'column'} gap={'4'}>
         <div className={styles.time_line}>
           <span ref={timeLineRef} className={styles.time_line_filler}></span>

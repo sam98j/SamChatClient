@@ -27,9 +27,6 @@
   // if the message is not sended by the current user
   &[sended-by-me='false'] {
     border-bottom-left-radius: 0;
-    .msg_time {
-      color: #000;
-    }
     background-color: rgba(30, 143, 255, 0.2);
     color: #000;
   }

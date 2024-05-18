@@ -6,7 +6,7 @@
   direction: ltr;
   &[sended-by-me='false'] {
     .time_line {
-      background-color: white !important;
+      background-color: rgb(44, 44, 44) !important;
     }
     .timer {
       color: white;

@@ -57,9 +57,11 @@ const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) =>
         {type === VIDEO ? <VideoMsgPlayer data={{ content, date, senderId }} /> : ''}
       </Text>
       {/* msg footer appear  in all messages types*/}
-      <Box display={'flex'} justifyContent={'flex-end'} marginTop={'5px'}>
+      <Box display={'flex'} justifyContent={'flex-end'} marginTop={'2px'} alignItems={'center'}>
         {/* message time */}
-        <Text className={styles.msg_time}>{msgTime}</Text>
+        <Text className={styles.msg_time} fontSize={'sm'}>
+          {msgTime}
+        </Text>
         {/* when status is null show clock icon */}
         <MessageStatusIcon data={{ msgStatus: status!, senderId: senderId }} />
       </Box>

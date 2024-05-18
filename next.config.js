@@ -8,8 +8,14 @@ module.exports = nextTranslate({
     remotePatterns: [
       {
         protocol: 'http',
-        hostname: '192.168.86.78',
+        hostname: '192.168.216.78',
         port: '2000',
+        pathname: '/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'api.chat.samapps.xyz',
+        port: '80',
         pathname: '/**',
       },
     ],
