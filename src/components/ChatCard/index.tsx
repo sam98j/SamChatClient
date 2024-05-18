@@ -103,7 +103,7 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
         <Avatar name='Hosam Alden' src={chatAvatar} />
         <Box flexGrow={'1'}>
           {/* chat usr name */}
-          <Text size={'sm'} marginBottom={'5px'} textColor={'messenger.500'} fontFamily={'"Baloo Bhaijaan 2"'}>
+          <Text fontSize={'md'} marginBottom={'5px'} textColor={'messenger.500'} fontFamily={'"Baloo Bhaijaan 2"'}>
             {chat.usrname}
           </Text>
           {/* usr actions (usr typing, recording voice) */}
