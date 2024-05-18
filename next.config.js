@@ -15,7 +15,6 @@ module.exports = nextTranslate({
       {
         protocol: 'http',
         hostname: 'api.chat.samapps.xyz',
-        port: '80',
         pathname: '/**',
       },
     ],
