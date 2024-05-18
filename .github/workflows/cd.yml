@@ -18,7 +18,7 @@ jobs:
             git pull origin master
             export NVM_DIR=~/.nvm
             source ~/.nvm/nvm.sh
-            npm install --only=prod
+            npm install
             npm run build --if-present
             pm2 restart samchat
           # cd ~/apps/samchat/SamChatClient && git pull origin master && npm install --only=prod && npm run build --if-present && pm2 stop samchat
