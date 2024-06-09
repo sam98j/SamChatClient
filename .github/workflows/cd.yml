@@ -20,5 +20,5 @@ jobs:
             source ~/.nvm/nvm.sh
             npm install
             npm run build --if-present
-            pm2 restart samchat
+            pm2 restart samchatclient
           # cd ~/apps/samchat/SamChatClient && git pull origin master && npm install --only=prod && npm run build --if-present && pm2 stop samchat
