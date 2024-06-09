@@ -36,6 +36,7 @@ export interface IsProfileDataFieldLoading {
 }
 
 const Profile = () => {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   // local state
   const [isProfileDataEditDisabled, setProfileDataEditDisabled] = useState<IsProfileDataEditDisabled>({
     name: true,
@@ -121,7 +122,7 @@ const Profile = () => {
       <div className={styles.profile}>
         {/* main */}
         <Box display={'flex'} flexDirection={'column'} alignItems={'center'} padding={'30px'} gap={5}>
-          <Avatar src={usrProfiledata.usrProfile?.avatar} size={'2xl'} />
+          <Avatar src={`${API_URL}${usrProfiledata.usrProfile?.avatar}`} size={'2xl'} />
           {/* name */}
           <Text fontSize={'2xl'} fontWeight={'black'} margin={'0'} lineHeight={'0'}>
             {usrProfiledata.usrProfile?.name}
