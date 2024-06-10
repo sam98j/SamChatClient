@@ -162,6 +162,15 @@ function App({ Component, pageProps }: AppProps) {
       .then(() => console.log('service worker regestered succ'))
       .catch((err) => console.log(err));
   }, []);
+  // regester service worker
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker
+        .register('/sw.js')
+        .then((registration) => console.log('Service worker scope is: ', registration.scope))
+        .catch((err) => console.log(err));
+    }
+  }, []);
   return (
     <>
       <Head>
