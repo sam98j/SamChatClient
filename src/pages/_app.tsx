@@ -158,7 +158,7 @@ function App({ Component, pageProps }: AppProps) {
     if (!('serviceWorker' in navigator)) return;
     // regester service worker
     navigator.serviceWorker
-      .register('/service.workr.js')
+      .register('/service.worker.js')
       .then(() => console.log('service worker regestered succ'))
       .catch((err) => console.log(err));
   }, []);
