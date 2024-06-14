@@ -1,6 +1,9 @@
+const NEXT_PUBLIC_API_URL = 'http://api.chat.samapps.xyz';
+// const NEXT_PUBLIC_API_URL = 'http://192.168.48.78:2000';
+
 const urlBase64ToUnit8Array = (base64String) => {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
   const rawData = atob(base64);
   const outputArray = new Uint8Array(rawData.length);
   for (let i = 0; i < rawData.length; ++i) {
@@ -8,12 +11,11 @@ const urlBase64ToUnit8Array = (base64String) => {
   }
   return outputArray;
 };
-
 const saveSubscription = async (access_token, subscription) => {
   console.log(access_token);
 
   //   console.log(access_token);
-  const API_URl = 'http://192.168.48.78:2000';
+  const API_URl = NEXT_PUBLIC_API_URL;
   const response = await fetch(`${API_URl}/users/save-subscription`, {
     method: 'post',
     headers: { 'Content-type': 'application/json', authorization: access_token },
@@ -32,7 +34,7 @@ self.addEventListener('push', (e) => {
   const { senderImg, senderName, msgText } = e.data.json();
   self.registration.showNotification(senderName, {
     body: msgText,
-    icon: `http://192.168.48.78:2000${senderImg}`,
+    icon: `${NEXT_PUBLIC_API_URL}${senderImg}`,
   });
 });
 
