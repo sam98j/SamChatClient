@@ -1,5 +1,5 @@
 const NEXT_PUBLIC_API_URL = 'https://api.chat.samapps.xyz';
-// const NEXT_PUBLIC_API_URL = 'http://192.168.48.78:2000';
+// const NEXT_PUBLIC_API_URL = 'http://192.168.149.78:2000';
 
 const urlBase64ToUnit8Array = (base64String) => {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -12,9 +12,6 @@ const urlBase64ToUnit8Array = (base64String) => {
   return outputArray;
 };
 const saveSubscription = async (access_token, subscription) => {
-  console.log(access_token);
-
-  //   console.log(access_token);
   const API_URl = NEXT_PUBLIC_API_URL;
   const response = await fetch(`${API_URl}/users/save-subscription`, {
     method: 'post',
@@ -24,7 +21,6 @@ const saveSubscription = async (access_token, subscription) => {
 
   return response.json();
 };
-
 // listen to service worker install event
 self.addEventListener('install', () => console.log('service worker installed succ'));
 // listen for activate event
@@ -39,7 +35,6 @@ self.addEventListener('push', (e) => {
 });
 
 self.addEventListener('message', async (e) => {
-  console.log('message event ');
   if (e.data.action !== 'access_token') return;
   // jwt token
   const access_token = e.data.value;

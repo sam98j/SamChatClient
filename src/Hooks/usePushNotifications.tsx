@@ -15,7 +15,7 @@ const usePushNotifications = () => {
     const pushNotificationState = localStorage.getItem('push_notification_state');
     // check if it's not null
     if (pushNotificationState !== null) return;
-    // set  pushNotificationState
+    // // set  pushNotificationState
     localStorage.setItem('push_notification_state', notificationPermission);
     // send access token to the service worker
     serviceWorkerRegesteration.active?.postMessage({
