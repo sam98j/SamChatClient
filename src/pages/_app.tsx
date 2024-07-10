@@ -157,21 +157,11 @@ function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     const userToken = localStorage.getItem('access_token');
     dispatch(getUserChats(userToken) as unknown as AnyAction);
-<<<<<<< HEAD
-    // regester service worker
-    if (!('serviceWorker' in navigator)) return;
-    // regester service worker
-    navigator.serviceWorker
-      .register('/service.worker.js')
-      .then(() => console.log('service worker regestered succ'))
-      .catch((err) => console.log(err));
-=======
   }, []);
   // subscripe for push notifications and regester service worker
   useEffect(() => {
     enablePushNotification();
     // Notification
->>>>>>> sw
   }, []);
   return (
     <>
