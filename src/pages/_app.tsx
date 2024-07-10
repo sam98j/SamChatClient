@@ -32,6 +32,7 @@ import { io, Socket } from 'socket.io-client';
 import { setNewIncomingMsg } from '@/redux/system.slice';
 import useChatMessagesSender from '@/Hooks/useChatMsgSender';
 import SystemNotifications from '@/components/SystemNotifications/SystemNotifications';
+import usePushNotifications from '@/Hooks/usePushNotifications';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 // chakra theme
 const theme = extendTheme({ fonts: { body: '"Baloo Bhaijaan 2", cursive' } });
@@ -41,6 +42,8 @@ function App({ Component, pageProps }: AppProps) {
   const [socketClient, setSocket] = useState<Socket | null>(null);
   // multichunk msg
   const { sendChatMessage } = useChatMessagesSender(socketClient as Socket);
+  // use push notifications
+  const { enablePushNotification } = usePushNotifications();
   // use path
   const pathname = usePathname();
   // router
@@ -154,6 +157,7 @@ function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     const userToken = localStorage.getItem('access_token');
     dispatch(getUserChats(userToken) as unknown as AnyAction);
+<<<<<<< HEAD
     // regester service worker
     if (!('serviceWorker' in navigator)) return;
     // regester service worker
@@ -161,6 +165,13 @@ function App({ Component, pageProps }: AppProps) {
       .register('/service.worker.js')
       .then(() => console.log('service worker regestered succ'))
       .catch((err) => console.log(err));
+=======
+  }, []);
+  // subscripe for push notifications and regester service worker
+  useEffect(() => {
+    enablePushNotification();
+    // Notification
+>>>>>>> sw
   }, []);
   return (
     <>
