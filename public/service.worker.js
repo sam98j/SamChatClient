@@ -1,5 +1,5 @@
-const NEXT_PUBLIC_API_URL = 'https://api.chat.samapps.xyz';
-// const NEXT_PUBLIC_API_URL = 'http://192.168.149.78:2000';
+// const NEXT_PUBLIC_API_URL = 'https://api.chat.samapps.xyz';
+const NEXT_PUBLIC_API_URL = 'http://192.168.48.78:2000';
 
 const urlBase64ToUnit8Array = (base64String) => {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
