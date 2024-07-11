@@ -4,7 +4,9 @@ import React from 'react';
 export default function Document() {
   return (
     <Html>
-      <Head></Head>
+      <Head>
+        <link rel='manifest' href='/manifest.json' />
+      </Head>
       <body>
         <Main />
         <NextScript />
