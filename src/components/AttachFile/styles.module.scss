@@ -3,12 +3,13 @@
   // height: fit-content;
   padding: 10px 10px;
   display: flex;
-  justify-content: center;
+  // justify-content: center;
   gap: 10px;
   margin: 10px;
   border-radius: 1rem;
   background-color: white;
-  box-shadow: 0px 0px 3px 0px gray;
+  box-shadow: 0px 0px 3px 0px lightgray;
+  flex-wrap: wrap;
   // backdrop-filter: blur(20px);
   bottom: 100%;
   // input_group

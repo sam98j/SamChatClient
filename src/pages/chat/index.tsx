@@ -12,7 +12,7 @@ import { useSearchParams } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { setChatMessagesBatchNo, setOpenedChat } from '@/redux/chats.slice';
 import { getChatMessages, getUsrOnlineStatus } from '@/apis/chats.api';
-import { setCurrentRoute } from '@/redux/system.slice';
+import { setAttchFileMenuOpen, setCurrentRoute } from '@/redux/system.slice';
 import { AnyAction } from '@reduxjs/toolkit';
 import ChatInput from '@/components/ChatInput/ChatInput';
 import { groupChatMessagesByDate } from '@/utils/chat.util';
@@ -28,8 +28,8 @@ const Chat = () => {
   // use ref
   const chatRef = useRef<HTMLDivElement>(null);
   // data from the store
-  const { chatMessages, chatName, openedChat, chats, messagesBatchNo, isLastChatMessagesBatch } = useSelector(
-    (state: RootState) => {
+  const { chatMessages, chatName, openedChat, chats, messagesBatchNo, isLastChatMessagesBatch, isAttachFileMenuOpened } =
+    useSelector((state: RootState) => {
       return {
         openedChat: state.chat.openedChat,
         chatMessages: state.chat.chatMessages,
@@ -37,9 +37,9 @@ const Chat = () => {
         chats: state.chat.chats,
         messagesBatchNo: state.chat.chatMessagesBatchNo,
         isLastChatMessagesBatch: state.chat.isLastChatMessagesBatch,
+        isAttachFileMenuOpened: state.system.attchFileMenuOpen,
       };
-    }
-  );
+    });
   // when usr scroll throwout the messages
   chatRef.current?.addEventListener('scrollend', () => {
     // when usr reach last oldest message
@@ -48,11 +48,17 @@ const Chat = () => {
       // terminate if it's last batch of chat messages
       console.log('fetching new messages', isLastChatMessagesBatch);
       // get chat messages based on page no
-      dispatch(
-        getChatMessages({ chatUsrId: parmas.get('id')!, msgBatch: messagesBatchNo + 1 }) as unknown as AnyAction
-      );
+      dispatch(getChatMessages({ chatUsrId: parmas.get('id')!, msgBatch: messagesBatchNo + 1 }) as unknown as AnyAction);
       dispatch(setChatMessagesBatchNo(messagesBatchNo + 1));
     }
+  });
+  // when usr click on chat screen
+  chatRef.current?.addEventListener('click', () => {
+    // check if attach file menu is closed
+    if (!isAttachFileMenuOpened) return;
+    // if it's opened then close it
+    dispatch(setAttchFileMenuOpen(false));
+    console.log('chat clicked');
   });
   // url parmas
   const parmas = useSearchParams();
