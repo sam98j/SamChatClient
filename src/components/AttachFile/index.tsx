@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unknown-property */
-import React, { ChangeEvent, useRef } from 'react';
+import React, { ChangeEvent } from 'react';
 import styles from './styles.module.scss';
 import { FormControl, IconButton, Input, InputGroup } from '@chakra-ui/react';
 import { BsCameraVideo, BsFilePdf, BsImage, BsMusicNote } from 'react-icons/bs';
