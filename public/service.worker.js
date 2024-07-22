@@ -1,5 +1,13 @@
 // const NEXT_PUBLIC_API_URL = 'https://api.chat.samapps.xyz';
-const NEXT_PUBLIC_API_URL = 'http://192.168.48.78:2000';
+// const NEXT_PUBLIC_API_URL = 'http://192.168.48.78:2000';
+const NEXT_PUBLIC_API_URL = 'https://samchat.onrender.com';
+// caches name
+const cacheName = 'v1';
+// assets
+const assets = [
+  '/ar/chats',
+  'https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400;600;800&family=Rubik:ital,wght@0,300;0,500;1,700&display=swap',
+];
 
 const urlBase64ToUnit8Array = (base64String) => {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -22,7 +30,9 @@ const saveSubscription = async (access_token, subscription) => {
   return response.json();
 };
 // listen to service worker install event
-self.addEventListener('install', () => console.log('service worker installed succ'));
+self.addEventListener('install', (event) => {
+  event.waitUntil(caches.open(cacheName).then((cache) => cache.addAll(assets)));
+});
 // listen for activate event
 self.addEventListener('activate', async () => console.log('activated'));
 
@@ -45,4 +55,9 @@ self.addEventListener('message', async (e) => {
   });
   const response = await saveSubscription(access_token, subscription);
   console.log(response);
+});
+
+// fetch event
+self.addEventListener('fetch', (e) => {
+  console.log('network fetch', e);
 });

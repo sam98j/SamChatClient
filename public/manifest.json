@@ -1,11 +1,13 @@
 {
   "name": "SamChat",
+  "id": "SamChat_uniqeId",
   "short_name": "SamChat",
   "theme_color": "#ffffff",
   "description": "SamChat is a free, web-based messaging app that allows you to stay in touch with friends and family from anywhere in the world. With SamChat, you can send text messages, make voice calls, and video chat. You can also share photos, videos, and files.",
   "background_color": "#ffffff",
   "display": "standalone",
   "orientation": "portrait",
+  "categories": ["communication", "messaging"],
   "scope": "/",
   "start_url": "/",
   "icons": [
