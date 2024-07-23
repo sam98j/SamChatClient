@@ -14,9 +14,7 @@ const CreateChat = () => {
   // redux store dispatch function
   const dispatch = useDispatch();
   // redux store
-  const isModalOpen = useSelector(
-    (state: RootState) => state.system.isNewChatScreenOpen
-  );
+  const isModalOpen = useSelector((state: RootState) => state.system.isNewChatScreenOpen);
   const { fetchUsers } = useUsersApi();
   // use effect
   // componet state
@@ -46,15 +44,9 @@ const CreateChat = () => {
     });
   };
   return (
-    <div
-      className={styles.create_chat_container}
-      is-opened={String(isModalOpen)}
-    >
+    <div className={styles.create_chat_container} is-opened={String(isModalOpen)}>
       {/* close modal  */}
-      <div
-        style={{ height: '100%' }}
-        onClick={() => dispatch(changeNewChatScrStatus(false))}
-      ></div>
+      <div style={{ height: '100%' }} onClick={() => dispatch(changeNewChatScrStatus(false))}></div>
       {/* create chat modal */}
       <div className={styles.create_chat}>
         {/* Search Input */}

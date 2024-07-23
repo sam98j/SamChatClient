@@ -10,6 +10,8 @@ const NewChatUser: React.FC<{
   usr: Omit<LoggedInUserData, 'email'>;
   searchqr: string;
 }> = ({ usr, searchqr }) => {
+  // api url
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   // redux store dispatch function
   const dispatch = useDispatch();
   return (
@@ -18,7 +20,7 @@ const NewChatUser: React.FC<{
       onClick={() => dispatch(setOpenedChat({ id: usr._id!, usrname: usr.name!, avatar: usr.avatar }))}
     >
       <Box display={'flex'} gap={5} marginTop={5} onClick={() => dispatch(changeNewChatScrStatus(false))}>
-        <Avatar name='name' src={usr.avatar} />
+        <Avatar name='name' src={`${apiUrl}${usr.avatar}`} />
         <Box>
           <Heading fontSize={'md'}>{usr.name}</Heading>
           <Text textColor={'gray'} display={'flex'}>
