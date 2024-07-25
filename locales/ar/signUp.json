@@ -1,15 +1,18 @@
 {
-    "pageName": "سام شات | انشاء حساب",
-    "greeting": "مرحبا بك في سام شات",
-    "emailPlaceholder": "البريد الاكتروني",
-    "namePlaceholder": "الإسم الكامل",
-    "passwordPlaceholder": "كلمة المرور",
-    "re-enterPasswordPlaceholder": "إعادة ادخال كلمة المرور",
-    "usernamePlaceholder": "اسم المستخدم",
-    "signUpBtnText": "إنشاء حساب",
-    "createYourAccountText": "قم بإنشاء حسابك الآن",
-    "choseImageInputPlaceholder": "اختر صورتك",
-    "chosenImageText": "لم تقم بإختيار اي صورة",
-    "loginText": "هل لديك حساب ؟",
-    "loginLinkText": "قم بتسجيل الدخول لحسابك"
+  "pageName": "سام شات | انشاء حساب",
+  "greeting": "مرحبا بك في سام شات",
+  "emailPlaceholder": "البريد الاكتروني",
+  "namePlaceholder": "الإسم الكامل",
+  "passwordPlaceholder": "كلمة المرور",
+  "re-enterPasswordPlaceholder": "إعادة ادخال كلمة المرور",
+  "usernamePlaceholder": "اسم المستخدم",
+  "signUpBtnText": "إنشاء حساب",
+  "createYourAccountText": "قم بإنشاء حسابك الآن",
+  "choseImageInputPlaceholder": "اختر صورتك",
+  "chosenImageText": "لم تقم بإختيار اي صورة",
+  "loginText": "هل لديك حساب ؟",
+  "loginLinkText": "قم بتسجيل الدخول لحسابك",
+  "signUpWithSocialMedia": {
+    "signUpWithGoogle": "التسجيل باستخدام قوقل"
+  }
 }

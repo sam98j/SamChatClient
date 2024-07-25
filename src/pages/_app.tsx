@@ -33,11 +33,13 @@ import { setNewIncomingMsg } from '@/redux/system.slice';
 import useChatMessagesSender from '@/Hooks/useChatMsgSender';
 import SystemNotifications from '@/components/SystemNotifications/SystemNotifications';
 import usePushNotifications from '@/Hooks/usePushNotifications';
+import { SessionProvider } from 'next-auth/react';
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 // chakra theme
 const theme = extendTheme({ fonts: { body: '"Baloo Bhaijaan 2", cursive' } });
 
-function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps: session, ...pageProps }: AppProps) {
   // socket instance
   const [socketClient, setSocket] = useState<Socket | null>(null);
   // multichunk msg
@@ -148,10 +150,10 @@ function App({ Component, pageProps }: AppProps) {
       push('/chats');
       return;
     }
-    if (currentUser === undefined) {
-      push('/');
-      return;
-    }
+    // if (currentUser === undefined) {
+    //   push('/');
+    //   return;
+    // }
   }, [currentUser]);
   // authentecate the user
   useEffect(() => {
@@ -169,19 +171,21 @@ function App({ Component, pageProps }: AppProps) {
         <link rel='shortcut icon' href='/favicon.ico' />
       </Head>
       <ChakraProvider theme={theme}>
-        <Provider store={store}>
-          <div className={styles.app}>
-            {/* system notifications */}
-            {systemNotifications && (
-              <SystemNotifications data={{ err: systemNotifications.err, msg: systemNotifications.msg }} />
-            )}
-            {/* appHeader */}
-            {currentUser !== null ? <AppHeader /> : ''}
-            {currentUser === null ? '' : <Component {...pageProps} />}
-            {currentUser === null ? <AppLogo /> : ''}
-            <CreateChat />
-          </div>
-        </Provider>
+        <SessionProvider session={session}>
+          <Provider store={store}>
+            <div className={styles.app}>
+              {/* system notifications */}
+              {systemNotifications && (
+                <SystemNotifications data={{ err: systemNotifications.err, msg: systemNotifications.msg }} />
+              )}
+              {/* appHeader */}
+              {currentUser !== null ? <AppHeader /> : ''}
+              {currentUser === null ? '' : <Component {...pageProps} />}
+              {currentUser === null ? <AppLogo /> : ''}
+              <CreateChat />
+            </div>
+          </Provider>
+        </SessionProvider>
       </ChakraProvider>
     </>
   );

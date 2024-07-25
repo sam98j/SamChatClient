@@ -17,6 +17,11 @@ module.exports = nextTranslate({
         hostname: 'api.chat.samapps.xyz',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'https://samchat.onrender.com',
+        pathname: '/**',
+      },
     ],
   },
 });

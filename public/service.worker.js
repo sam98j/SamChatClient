@@ -59,5 +59,5 @@ self.addEventListener('message', async (e) => {
 
 // fetch event
 self.addEventListener('fetch', (e) => {
-  console.log('network fetch', e);
+  // console.log('network fetch', e);
 });

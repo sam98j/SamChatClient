@@ -1,15 +1,18 @@
 {
-    "pageName": "SamChat | SignUp",
-    "greeting": "Welcome To SamChat",
-    "emailPlaceholder": "Email",
-    "namePlaceholder": "Full Name",
-    "passwordPlaceholder": "Password",
-    "re-enterPasswordPlaceholder": "Re-enter Passowrd",
-    "usernamePlaceholder": "User Name",
-    "signUpBtnText": "SignUp",
-    "createYourAccountText": "Create your Accout Now !",
-    "choseImageInputPlaceholder": "Choose your photo",
-    "chosenImageText": "no chosen image",
-    "loginText": "Already have an Account ?",
-    "loginLinkText": "login to your account"
+  "pageName": "SamChat | SignUp",
+  "greeting": "Welcome To SamChat",
+  "emailPlaceholder": "Email",
+  "namePlaceholder": "Full Name",
+  "passwordPlaceholder": "Password",
+  "re-enterPasswordPlaceholder": "Re-enter Passowrd",
+  "usernamePlaceholder": "User Name",
+  "signUpBtnText": "SignUp",
+  "createYourAccountText": "Create your Accout Now !",
+  "choseImageInputPlaceholder": "Choose your photo",
+  "chosenImageText": "no chosen image",
+  "loginText": "Already have an Account ?",
+  "loginLinkText": "login to your account",
+  "signUpWithSocialMedia": {
+    "signUpWithGoogle": "Sign up With Google"
+  }
 }

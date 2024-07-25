@@ -1,19 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styles from './styles.module.scss';
 import Head from 'next/head';
-import {
-  Box,
-  Button,
-  FormControl,
-  Icon,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Button, FormControl, Icon, Input, InputGroup, InputLeftElement, Text } from '@chakra-ui/react';
 import AppLogo from '@/components/AppLogo';
 import { HiOutlineCamera, HiOutlineKey, HiOutlineMail } from 'react-icons/hi';
 import { BsPersonCircle } from 'react-icons/bs';
+import { FcGoogle } from 'react-icons/fc';
 import { SignUpDto } from '@/interfaces/auth.interface';
 import { useDispatch } from 'react-redux';
 import { signUpApi } from '@/apis/auth.api';
@@ -24,10 +16,13 @@ import { useRouter } from 'next/router';
 import LanguageSwitcher from '@/components/LangSwitcher/LangSwitcher';
 import useTranslation from 'next-translate/useTranslation';
 import Link from 'next/link';
+import { signIn, useSession, signOut } from 'next-auth/react';
 
 const SignUp = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation('signUp');
+  const { data, status } = useSession();
+  console.log(status, data?.user);
   const { push, locale } = useRouter();
   const user = useSelector((state: RootState) => state.auth.currentUser);
   const [isLoading, setIsLoading] = useState(false);
@@ -86,6 +81,36 @@ const SignUp = () => {
         <Text fontWeight={'bold'} fontSize={'x-large'}>
           {t('greeting')}
         </Text>
+        {/* social media auth providers */}
+        <Box
+          width={'100%'}
+          display={'flex'}
+          alignItems={'center'}
+          justifyContent={'center'}
+          border={'1px solid lightgray'}
+          borderRadius={'5px'}
+          padding={'.5rem 0'}
+          gap={'5px'}
+        >
+          <FcGoogle />
+          <button onClick={async () => await signIn('google')} className={styles.signup_with_google_btn}>
+            {t('signUpWithSocialMedia.signUpWithGoogle')}
+          </button>
+        </Box>
+        <Box
+          width={'100%'}
+          display={'flex'}
+          alignItems={'center'}
+          justifyContent={'center'}
+          border={'1px solid lightgray'}
+          borderRadius={'5px'}
+          padding={'.5rem 0'}
+          gap={'5px'}
+        >
+          <button onClick={() => signOut()} className={styles.signup_with_google_btn}>
+            sign out
+          </button>
+        </Box>
         <Text fontSize={'lg'}>{t('createYourAccountText')}</Text>
         {/* form */}
         <form onSubmit={handleSubmition} id='form'>
@@ -175,9 +200,7 @@ const SignUp = () => {
                 accept='image/png, image/jpeg'
                 id='profile_img'
                 name='profile_img'
-                selected-file-name={
-                  selectedUserImage ? selectedUserImage : t('chosenImageText')
-                }
+                selected-file-name={selectedUserImage ? selectedUserImage : t('chosenImageText')}
                 input-placeholder={t('choseImageInputPlaceholder')}
                 onChange={handleInputChange}
               />
