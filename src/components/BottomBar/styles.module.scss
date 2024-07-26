@@ -1,10 +1,12 @@
 .bottom_bar {
-    .icon_box {
-        height: 100%;
-        display: flex;
-        align-items: center;
-        flex-direction: column;
-        justify-content: center;
-        color: gray;
-    }
+  background-color: rgba(255, 255, 255, 0.699);
+  backdrop-filter: blur(20px);
+  .icon_box {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    color: gray;
+  }
 }

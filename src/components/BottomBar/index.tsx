@@ -16,7 +16,6 @@ const BottomBar = () => {
       left={'0px'}
       height={'50px'}
       width={'100%'}
-      backgroundColor={'gray.50'}
       display={'flex'}
       justifyContent={'space-around'}
       className={styles.bottom_bar}
