@@ -35,10 +35,10 @@ import SystemNotifications from '@/components/SystemNotifications/SystemNotifica
 import usePushNotifications from '@/Hooks/usePushNotifications';
 import { SessionProvider } from 'next-auth/react';
 
-// chakra theme
-const theme = extendTheme({ fonts: { body: '"Baloo Bhaijaan 2", cursive' } });
-
 function App({ Component, ...pageProps }: AppProps) {
+  // chakra theme
+  const theme = extendTheme({ fonts: { body: '"Baloo Bhaijaan 2", cursive' } });
+  // back end api
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   // socket instance
   const [socketClient, setSocket] = useState<Socket | null>(null);
