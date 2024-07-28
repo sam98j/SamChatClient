@@ -12,13 +12,11 @@ export interface LoggedInUserData {
   usrname?: string;
   chatId?: string;
 }
-
 // state slice shape
 export interface AuthState {
   currentUser: string | null | undefined;
   apiResMessage: { err: boolean; msg: string } | null;
 }
-
 // logUserInSuccData
 export interface LogUserInSuccData {
   access_token: string;

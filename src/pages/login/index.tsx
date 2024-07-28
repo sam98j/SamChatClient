@@ -22,8 +22,11 @@ import { resetAuthApiRes } from '@/redux/auth.slice';
 import { BsGoogle } from 'react-icons/bs';
 import { signIn, useSession } from 'next-auth/react';
 import { GoogleSignInSession } from '@/interfaces/auth.interface';
+import { LoginDTO } from '@/interfaces/pages.interface';
 
 const Login = () => {
+  // React Redux dispatch Function
+  const dispatch = useDispatch();
   // google sign in session
   const { data: session } = useSession();
   // sign in With Google Handler
@@ -42,10 +45,7 @@ const Login = () => {
   // router
   const { locale, push } = useRouter();
   // component Local state
-  const [userCred, setUserCred] = useState<{
-    email: string;
-    password: string;
-  }>({ email: '', password: '' });
+  const [userCred, setUserCred] = useState<LoginDTO>({ email: '', password: '' });
   // is loading
   const [isLoading, setIsLoading] = useState(false);
   // get data from the redux store
@@ -54,37 +54,29 @@ const Login = () => {
   // handle Input Change
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
-    setUserCred({
-      ...userCred,
-      [event.target.name]: event.target.value,
-    });
+    // set component state
+    setUserCred({ ...userCred, [event.target.name]: event.target.value });
   };
   // handle form Submition
   const handleFormSubmition = (event: React.FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
-    Dispatch(loginUser(userCred) as unknown as AnyAction);
+    dispatch(loginUser(userCred) as unknown as AnyAction);
   };
   // redirec the user when loggedIn succ
   useEffect(() => {
-    if (apiResMessage) {
-      setIsLoading(false);
-    }
+    if (apiResMessage) setIsLoading(false);
     // check if the current user is logged in
-    if (apiResMessage?.err === false) {
-      // push('/chats');
-      Dispatch(resetAuthApiRes());
-      return;
-    }
+    if (apiResMessage?.err === false) dispatch(resetAuthApiRes());
   }, [apiResMessage]);
+  // google sign in session observer
   useEffect(() => {
     // terminate the proccess if no usr
     if (!session?.user) return;
     // handle google sign in
     googleSignInHandler();
   }, [session]);
-  // React Redux Dispatch Function
-  const Dispatch = useDispatch();
+
   return (
     <>
       <Head>
