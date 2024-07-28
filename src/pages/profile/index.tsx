@@ -39,7 +39,7 @@ export interface IsProfileDataFieldLoading {
 const Profile = () => {
   // google sign in session
   const { data: googleSignInSession } = useSession();
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  // const API_URL = process.env.NEXT_PUBLIC_API_URL;
   // local state
   const [isProfileDataEditDisabled, setProfileDataEditDisabled] = useState<IsProfileDataEditDisabled>({
     name: true,

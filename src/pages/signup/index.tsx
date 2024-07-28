@@ -5,7 +5,6 @@ import { Box, Button, FormControl, Icon, Input, InputGroup, InputLeftElement, Te
 import AppLogo from '@/components/AppLogo';
 import { HiOutlineCamera, HiOutlineKey, HiOutlineMail } from 'react-icons/hi';
 import { BsPersonCircle, BsGoogle } from 'react-icons/bs';
-import { FcGoogle } from 'react-icons/fc';
 import { GoogleSignInSession, SignUpDto } from '@/interfaces/auth.interface';
 import { useDispatch } from 'react-redux';
 import { signUpApi } from '@/apis/auth.api';
@@ -26,7 +25,7 @@ const SignUp = () => {
   // signUp With Google Handler
   const googleSignUpHandler = () => {
     // session with authToken
-    const { authToken, user } = { ...session } as GoogleSignInSession;
+    const { authToken } = { ...session } as GoogleSignInSession;
     // store token in local storage
     localStorage.setItem('access_token', `Bearer ${authToken}`);
     // terminate if no access token

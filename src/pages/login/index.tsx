@@ -29,7 +29,7 @@ const Login = () => {
   // sign in With Google Handler
   const googleSignInHandler = () => {
     // session with authToken
-    const { authToken, user } = { ...session } as GoogleSignInSession;
+    const { authToken } = { ...session } as GoogleSignInSession;
     // store token in local storage
     localStorage.setItem('access_token', `Bearer ${authToken}`);
     // terminate if no access token

@@ -39,7 +39,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 // chakra theme
 const theme = extendTheme({ fonts: { body: '"Baloo Bhaijaan 2", cursive' } });
 
-function App({ Component, pageProps: session, ...pageProps }: AppProps) {
+function App({ Component, ...pageProps }: AppProps) {
   // socket instance
   const [socketClient, setSocket] = useState<Socket | null>(null);
   // multichunk msg
