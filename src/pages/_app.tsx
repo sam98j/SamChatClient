@@ -43,7 +43,7 @@ function App({ Component, ...pageProps }: AppProps) {
   // socket instance
   const [socketClient, setSocket] = useState<Socket | null>(null);
   // multichunk msg
-  const { sendChatMessage } = useChatMessagesSender(socketClient as Socket);
+  const { sendChatMessage } = useChatMessagesSender(socketClient!);
   // use push notifications
   const { enablePushNotification } = usePushNotifications();
   // use path
@@ -91,6 +91,7 @@ function App({ Component, ...pageProps }: AppProps) {
   }, [currentUser, socketClient]);
   // listen for message to be mark as readed
   useEffect(() => {
+    // TODO: refacotring mark message as readed
     // terminate if there is no message
     if (!messageToBeMarketAsReaded) return;
     // destructe
@@ -104,6 +105,7 @@ function App({ Component, ...pageProps }: AppProps) {
     if (currentUser === undefined) socketClient?.disconnect();
     // terminate if usr is logged out
     if (!currentUser) return;
+    // make socket io connection
     const socket = io(`${apiUrl}`, { query: { client_id: currentUser } });
     // set socket
     setSocket(socket);
@@ -155,13 +157,12 @@ function App({ Component, ...pageProps }: AppProps) {
   }, [currentUser, apiResponse]);
   // authentecate the user
   useEffect(() => {
+    // get usr auth token from local storage
     const userToken = localStorage.getItem('access_token');
+    // get usr chats
     dispatch(getUserChats(userToken) as unknown as AnyAction);
-  }, []);
-  // subscripe for push notifications and regester service worker
-  useEffect(() => {
+    // subscripe for push notifications and regester service worker
     enablePushNotification();
-    // Notification
   }, []);
   return (
     <>
