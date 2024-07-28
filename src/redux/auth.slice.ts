@@ -42,6 +42,7 @@ export const authSlice = createSlice({
     resetAuthApiRes: (state) => {
       state.apiResMessage = null;
     },
+    setCurrentUser: (state, action) => (state.currentUser = action.payload),
   },
   extraReducers: (builder) => {
     builder.addCase(loginUser.fulfilled, (state, action) => {
@@ -70,14 +71,11 @@ export const authSlice = createSlice({
         return;
       }
       state.currentUser = action.payload.user._id;
-      localStorage.setItem(
-        'access_token',
-        `Bearer ${action.payload.access_token}`
-      );
+      localStorage.setItem('access_token', `Bearer ${action.payload.access_token}`);
     });
   },
 });
 
-export const { logout, resetAuthApiRes } = authSlice.actions;
+export const { logout, resetAuthApiRes, setCurrentUser } = authSlice.actions;
 // export the reducer function
 export default authSlice.reducer;

@@ -171,7 +171,7 @@ function App({ Component, pageProps: session, ...pageProps }: AppProps) {
         <link rel='shortcut icon' href='/favicon.ico' />
       </Head>
       <ChakraProvider theme={theme}>
-        <SessionProvider session={session}>
+        <SessionProvider>
           <Provider store={store}>
             <div className={styles.app}>
               {/* system notifications */}

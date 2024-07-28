@@ -8,7 +8,7 @@ export const authOptions: AuthOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       httpOptions: {
-        timeout: 100000,
+        timeout: 40000,
       },
       authorization: {
         params: {
@@ -32,20 +32,16 @@ export const authOptions: AuthOptions = {
           },
         });
         const resParsed = await res.json();
-        console.log(res);
-
         token = Object.assign({}, token, {
           id_token: account.id_token,
         });
         token = Object.assign({}, token, {
           myToken: resParsed.access_token,
         });
-        return token;
       }
       return token;
-      // console.log("in jwt",token)
     },
-    async session({ session, token, user }) {
+    async session({ session, token }) {
       if (session) {
         session = Object.assign({}, session, {
           id_token: token.id_token,
@@ -55,10 +51,6 @@ export const authOptions: AuthOptions = {
         });
       }
       return session;
-    },
-    async signIn({ user }) {
-      //   console.log(user);
-      return true;
     },
   },
 };

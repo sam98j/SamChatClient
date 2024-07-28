@@ -20,6 +20,7 @@ import { PhoneIcon } from '@chakra-ui/icons';
 import { ImSpinner3 } from 'react-icons/im';
 import { AnyAction } from '@reduxjs/toolkit';
 import { setProfileFieldUpdateStatus } from '@/redux/profile.slice';
+import { useSession, signOut } from 'next-auth/react';
 
 export interface IsProfileDataEditDisabled {
   name: boolean;
@@ -36,6 +37,8 @@ export interface IsProfileDataFieldLoading {
 }
 
 const Profile = () => {
+  // google sign in session
+  const { data: googleSignInSession } = useSession();
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   // local state
   const [isProfileDataEditDisabled, setProfileDataEditDisabled] = useState<IsProfileDataEditDisabled>({
@@ -80,13 +83,13 @@ const Profile = () => {
     dispatch(getUsrProfileData(currentUser!) as unknown as never);
   }, []);
   // handleClick signout
-  const handleSingoutBtnClick = () => {
+  const handleSingoutBtnClick = async () => {
+    // check for googleSignInSession
+    if (googleSignInSession) await signOut();
+    // there is no googleSignInSession
     dispatch(logout());
     // check for current user auth state
-    if (!currentUser) {
-      console.log('push');
-      push('/');
-    }
+    if (!currentUser) push('/login');
   };
   // handle edit profile data field
   const editProfileDataFieldHandler = (e: React.MouseEvent<SVGAElement>) => {
@@ -122,7 +125,7 @@ const Profile = () => {
       <div className={styles.profile}>
         {/* main */}
         <Box display={'flex'} flexDirection={'column'} alignItems={'center'} padding={'30px'} gap={5}>
-          <Avatar src={`${API_URL}${usrProfiledata.usrProfile?.avatar}`} size={'2xl'} />
+          <Avatar src={`${usrProfiledata.usrProfile?.avatar}`} size={'2xl'} />
           {/* name */}
           <Text fontSize={'2xl'} fontWeight={'black'} margin={'0'} lineHeight={'0'}>
             {usrProfiledata.usrProfile?.name}

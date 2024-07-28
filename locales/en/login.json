@@ -1,15 +1,18 @@
 {
-    "app_name": "SamChat",
-    "welcome_text": "Welcome To SamChat",
-    "login_with_oauth": "Select the method to login",
-    "email_input_msg": "We'll never share your email.",
-    "remember_me_btn_text": "Remember Me",
-    "forget_password_link_text": "Forget Your Password ?",
-    "login_btn_text": "Login",
-    "dont_have_account_msg": "Don't hava an account?",
-    "create_account_link_text": "Create an Account",
-    "copy": "All Rights Reserved, SamChat",
-    "emailPlaceholder": "email",
-    "passwordPlaceholder": "password",
-    "pageName": "SamChat | Login"
+  "app_name": "SamChat",
+  "welcome_text": "Welcome To SamChat",
+  "login_with_oauth": "Select the method to login",
+  "email_input_msg": "We'll never share your email.",
+  "remember_me_btn_text": "Remember Me",
+  "forget_password_link_text": "Forget Your Password ?",
+  "login_btn_text": "Login",
+  "dont_have_account_msg": "Don't hava an account?",
+  "create_account_link_text": "Create an Account",
+  "copy": "All Rights Reserved, SamChat",
+  "emailPlaceholder": "email",
+  "passwordPlaceholder": "password",
+  "pageName": "SamChat | Login",
+  "signInWithSocialMedia": {
+    "signInWithGoogle": "Sign in With Google"
+  }
 }

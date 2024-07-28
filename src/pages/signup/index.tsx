@@ -4,9 +4,9 @@ import Head from 'next/head';
 import { Box, Button, FormControl, Icon, Input, InputGroup, InputLeftElement, Text } from '@chakra-ui/react';
 import AppLogo from '@/components/AppLogo';
 import { HiOutlineCamera, HiOutlineKey, HiOutlineMail } from 'react-icons/hi';
-import { BsPersonCircle } from 'react-icons/bs';
+import { BsPersonCircle, BsGoogle } from 'react-icons/bs';
 import { FcGoogle } from 'react-icons/fc';
-import { SignUpDto } from '@/interfaces/auth.interface';
+import { GoogleSignInSession, SignUpDto } from '@/interfaces/auth.interface';
 import { useDispatch } from 'react-redux';
 import { signUpApi } from '@/apis/auth.api';
 import { AnyAction } from '@reduxjs/toolkit';
@@ -19,10 +19,23 @@ import Link from 'next/link';
 import { signIn, useSession, signOut } from 'next-auth/react';
 
 const SignUp = () => {
+  // dispatch store function
   const dispatch = useDispatch();
+  // google sign up session
+  const { data: session } = useSession();
+  // signUp With Google Handler
+  const googleSignUpHandler = () => {
+    // session with authToken
+    const { authToken, user } = { ...session } as GoogleSignInSession;
+    // store token in local storage
+    localStorage.setItem('access_token', `Bearer ${authToken}`);
+    // terminate if no access token
+    if (!authToken) return;
+    // redirect the usr to chats screen
+    push('/chats');
+  };
+  // localization method
   const { t } = useTranslation('signUp');
-  const { data, status } = useSession();
-  console.log(status, data?.user);
   const { push, locale } = useRouter();
   const user = useSelector((state: RootState) => state.auth.currentUser);
   const [isLoading, setIsLoading] = useState(false);
@@ -51,12 +64,24 @@ const SignUp = () => {
       });
     }
   };
+  // when component did mount
+  useEffect(() => {
+    if (!session) return;
+    signOut();
+  }, []);
   // handleSubmition
   const handleSubmition = (e: React.FormEvent) => {
     e.preventDefault();
     dispatch(signUpApi(state) as unknown as AnyAction);
     setIsLoading(true);
   };
+  // google sign in session observer
+  useEffect(() => {
+    // terminate the proccess if no usr
+    if (!session?.user) return;
+    // handle google sign in
+    googleSignUpHandler();
+  }, [session]);
   useEffect(() => {
     if (user) {
       push('/chats');
@@ -87,28 +112,14 @@ const SignUp = () => {
           display={'flex'}
           alignItems={'center'}
           justifyContent={'center'}
-          border={'1px solid lightgray'}
           borderRadius={'5px'}
           padding={'.5rem 0'}
-          gap={'5px'}
+          backgroundColor={'blue.100'}
+          gap={'20px'}
         >
-          <FcGoogle />
+          <BsGoogle />
           <button onClick={async () => await signIn('google')} className={styles.signup_with_google_btn}>
             {t('signUpWithSocialMedia.signUpWithGoogle')}
-          </button>
-        </Box>
-        <Box
-          width={'100%'}
-          display={'flex'}
-          alignItems={'center'}
-          justifyContent={'center'}
-          border={'1px solid lightgray'}
-          borderRadius={'5px'}
-          padding={'.5rem 0'}
-          gap={'5px'}
-        >
-          <button onClick={() => signOut()} className={styles.signup_with_google_btn}>
-            sign out
           </button>
         </Box>
         <Text fontSize={'lg'}>{t('createYourAccountText')}</Text>
