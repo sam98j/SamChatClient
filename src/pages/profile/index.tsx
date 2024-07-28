@@ -2,7 +2,6 @@ import Head from 'next/head';
 import React, { useEffect, useState } from 'react';
 import styles from './styles.module.scss';
 import { Avatar, Box, Button, Input, InputGroup, InputLeftElement, InputRightElement, Text } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
 import { FiEdit2 } from 'react-icons/fi';
 import { FaRegUserCircle, FaRegCheckCircle } from 'react-icons/fa';
 import { HiOutlineMail } from 'react-icons/hi';
@@ -37,9 +36,18 @@ export interface IsProfileDataFieldLoading {
 }
 
 const Profile = () => {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   // google sign in session
   const { data: googleSignInSession } = useSession();
-  // const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  // get data from redux store
+  const { currentUser, usrProfiledata, fieldUpdateStatus, isOAuthActive } = useSelector((state: RootState) => {
+    return {
+      currentUser: state.auth.currentUser,
+      usrProfiledata: state.usrProfile,
+      fieldUpdateStatus: state.usrProfile.profileDataFieldUpdatingStatus,
+      isOAuthActive: state.auth.isOAuthActive,
+    };
+  });
   // local state
   const [isProfileDataEditDisabled, setProfileDataEditDisabled] = useState<IsProfileDataEditDisabled>({
     name: true,
@@ -47,6 +55,8 @@ const Profile = () => {
     phone: true,
     usrname: true,
   });
+  // compute usr profile url
+  const [usrAvatarUrl] = useState(() => `${isOAuthActive ? '' : API_URL}${usrProfiledata.usrProfile?.avatar}`);
   // local state destruct
   const { name, email, phone, usrname } = isProfileDataEditDisabled;
   // is profile data fields loading
@@ -65,18 +75,8 @@ const Profile = () => {
   } = isProfileDataFieldLoading;
   // translation
   const { t } = useTranslation('routesNames');
-  // router
-  const { push } = useRouter();
   // dispatch
   const dispatch = useDispatch();
-  // get data from redux store
-  const { currentUser, usrProfiledata, fieldUpdateStatus } = useSelector((state: RootState) => {
-    return {
-      currentUser: state.auth.currentUser,
-      usrProfiledata: state.usrProfile,
-      fieldUpdateStatus: state.usrProfile.profileDataFieldUpdatingStatus,
-    };
-  });
   // component did mount
   useEffect(() => {
     dispatch(setCurrentRoute(t('profile')));
@@ -88,8 +88,6 @@ const Profile = () => {
     if (googleSignInSession) await signOut();
     // there is no googleSignInSession
     dispatch(logout());
-    // check for current user auth state
-    if (!currentUser) push('/login');
   };
   // handle edit profile data field
   const editProfileDataFieldHandler = (e: React.MouseEvent<SVGAElement>) => {
@@ -125,7 +123,7 @@ const Profile = () => {
       <div className={styles.profile}>
         {/* main */}
         <Box display={'flex'} flexDirection={'column'} alignItems={'center'} padding={'30px'} gap={5}>
-          <Avatar src={`${usrProfiledata.usrProfile?.avatar}`} size={'2xl'} />
+          <Avatar src={usrAvatarUrl} size={'2xl'} />
           {/* name */}
           <Text fontSize={'2xl'} fontWeight={'black'} margin={'0'} lineHeight={'0'}>
             {usrProfiledata.usrProfile?.name}

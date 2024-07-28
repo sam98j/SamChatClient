@@ -9,13 +9,12 @@ import { GoogleSignInSession, SignUpDto } from '@/interfaces/auth.interface';
 import { useDispatch } from 'react-redux';
 import { signUpApi } from '@/apis/auth.api';
 import { AnyAction } from '@reduxjs/toolkit';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
 import { useRouter } from 'next/router';
 import LanguageSwitcher from '@/components/LangSwitcher/LangSwitcher';
 import useTranslation from 'next-translate/useTranslation';
 import Link from 'next/link';
 import { signIn, useSession, signOut } from 'next-auth/react';
+import { setOAuthActivationStatus } from '@/redux/auth.slice';
 
 const SignUp = () => {
   // dispatch store function
@@ -30,13 +29,14 @@ const SignUp = () => {
     localStorage.setItem('access_token', `Bearer ${authToken}`);
     // terminate if no access token
     if (!authToken) return;
+    // set Oauth Activation status
+    dispatch(setOAuthActivationStatus(true));
     // redirect the usr to chats screen
     push('/chats');
   };
   // localization method
   const { t } = useTranslation('signUp');
   const { push, locale } = useRouter();
-  const user = useSelector((state: RootState) => state.auth.currentUser);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedUserImage, seTselectedUserImage] = useState('');
   const [state, setState] = useState<SignUpDto>({
@@ -48,10 +48,8 @@ const SignUp = () => {
   });
   // handleInputChange
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setState({
-      ...state,
-      [e.target.name]: e.target.value,
-    });
+    // set component state
+    setState({ ...state, [e.target.name]: e.target.value });
     if (e.target.name === 'profile_img') {
       if (e.target.value) {
         const fileName = e.target.value.split('\\');
@@ -81,11 +79,6 @@ const SignUp = () => {
     // handle google sign in
     googleSignUpHandler();
   }, [session]);
-  useEffect(() => {
-    if (user) {
-      push('/chats');
-    }
-  }, [user]);
   return (
     <>
       <Head>

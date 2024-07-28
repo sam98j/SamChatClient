@@ -15,7 +15,8 @@ export interface LoggedInUserData {
 // state slice shape
 export interface AuthState {
   currentUser: string | null | undefined;
-  apiResMessage: { err: boolean; msg: string } | null;
+  apiResponse: { err: boolean; msg: string } | null;
+  isOAuthActive: boolean;
 }
 // logUserInSuccData
 export interface LogUserInSuccData {
@@ -25,7 +26,8 @@ export interface LogUserInSuccData {
 // inital state
 const initialState: AuthState = {
   currentUser: null,
-  apiResMessage: null,
+  apiResponse: null,
+  isOAuthActive: false,
 };
 
 // create state slcie and export it
@@ -36,11 +38,14 @@ export const authSlice = createSlice({
     logout: (state) => {
       localStorage.removeItem('access_token');
       state.currentUser = undefined;
+      // clear chat from local storage
+      localStorage.removeItem('chats');
     },
     resetAuthApiRes: (state) => {
-      state.apiResMessage = null;
+      state.apiResponse = null;
     },
     setCurrentUser: (state, action) => (state.currentUser = action.payload),
+    setOAuthActivationStatus: (state, action) => (state.isOAuthActive = action.payload),
   },
   extraReducers: (builder) => {
     builder.addCase(loginUser.fulfilled, (state, action) => {
@@ -48,14 +53,11 @@ export const authSlice = createSlice({
       // store the user access token in the localstorage
       localStorage.setItem('access_token', `Bearer ${access_token}`);
       state.currentUser = user._id;
-      state.apiResMessage = { err: false, msg: 'You Successfyl Logged In ...' };
+      state.apiResponse = { err: false, msg: 'You Successfyl Logged In ...' };
     });
     builder.addCase(loginUser.rejected, (state) => {
       state.currentUser = '';
-      state.apiResMessage = {
-        err: true,
-        msg: 'Some thing Went Wrong, Check You email or password',
-      };
+      state.apiResponse = { err: true, msg: 'Some thing Went Wrong, Check You email or password' };
     });
     builder.addCase(getUserChats.fulfilled, (state, action) => {
       state.currentUser = action.payload.userId;
@@ -65,15 +67,16 @@ export const authSlice = createSlice({
     });
     builder.addCase(signUpApi.fulfilled, (state, action) => {
       if (action.payload.message) {
-        state.apiResMessage = { err: true, msg: action.payload.message };
+        state.apiResponse = { err: true, msg: action.payload.message };
         return;
       }
       state.currentUser = action.payload.user._id;
       localStorage.setItem('access_token', `Bearer ${action.payload.access_token}`);
+      state.apiResponse = { err: false, msg: 'You Successfyl singed In ...' };
     });
   },
 });
 
-export const { logout, resetAuthApiRes, setCurrentUser } = authSlice.actions;
+export const { logout, resetAuthApiRes, setCurrentUser, setOAuthActivationStatus } = authSlice.actions;
 // export the reducer function
 export default authSlice.reducer;

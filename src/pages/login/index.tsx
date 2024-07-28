@@ -18,7 +18,7 @@ import useTranslation from 'next-translate/useTranslation';
 import { AnyAction } from '@reduxjs/toolkit';
 import Link from 'next/link';
 import { Icon } from '@chakra-ui/icons';
-import { resetAuthApiRes } from '@/redux/auth.slice';
+import { resetAuthApiRes, setOAuthActivationStatus } from '@/redux/auth.slice';
 import { BsGoogle } from 'react-icons/bs';
 import { signIn, useSession } from 'next-auth/react';
 import { GoogleSignInSession } from '@/interfaces/auth.interface';
@@ -37,6 +37,8 @@ const Login = () => {
     localStorage.setItem('access_token', `Bearer ${authToken}`);
     // terminate if no access token
     if (!authToken) return;
+    // set Oauth Activation status
+    dispatch(setOAuthActivationStatus(true));
     // redirect the usr to chats screen
     push('/chats');
   };
@@ -49,7 +51,7 @@ const Login = () => {
   // is loading
   const [isLoading, setIsLoading] = useState(false);
   // get data from the redux store
-  const { apiResMessage } = useSelector((state: RootState) => state.auth);
+  const { apiResponse } = useSelector((state: RootState) => state.auth);
   // Router
   // handle Input Change
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,10 +67,10 @@ const Login = () => {
   };
   // redirec the user when loggedIn succ
   useEffect(() => {
-    if (apiResMessage) setIsLoading(false);
-    // check if the current user is logged in
-    if (apiResMessage?.err === false) dispatch(resetAuthApiRes());
-  }, [apiResMessage]);
+    if (apiResponse) setIsLoading(false);
+    // reset api response
+    dispatch(resetAuthApiRes());
+  }, [apiResponse]);
   // google sign in session observer
   useEffect(() => {
     // terminate the proccess if no usr

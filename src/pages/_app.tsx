@@ -35,11 +35,11 @@ import SystemNotifications from '@/components/SystemNotifications/SystemNotifica
 import usePushNotifications from '@/Hooks/usePushNotifications';
 import { SessionProvider } from 'next-auth/react';
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 // chakra theme
 const theme = extendTheme({ fonts: { body: '"Baloo Bhaijaan 2", cursive' } });
 
 function App({ Component, ...pageProps }: AppProps) {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   // socket instance
   const [socketClient, setSocket] = useState<Socket | null>(null);
   // multichunk msg
@@ -55,7 +55,7 @@ function App({ Component, ...pageProps }: AppProps) {
   // store dispatch func
   const dispatch = useDispatch();
   // auth state
-  const currentUser = useSelector((state: RootState) => state.auth.currentUser);
+  const { apiResponse, currentUser } = useSelector((state: RootState) => state.auth);
   // system notifications
   const systemNotifications = useSelector((state: RootState) => state.system.notifications);
   // chat state
@@ -100,7 +100,9 @@ function App({ Component, ...pageProps }: AppProps) {
   }, [messageToBeMarketAsReaded]);
   // make socket connection
   useEffect(() => {
+    // disconnect the web socket when usr logged out
     if (currentUser === undefined) socketClient?.disconnect();
+    // terminate if usr is logged out
     if (!currentUser) return;
     const socket = io(`${apiUrl}`, { query: { client_id: currentUser } });
     // set socket
@@ -144,17 +146,13 @@ function App({ Component, ...pageProps }: AppProps) {
       if (data.status === MessageStatus.SENT) playSentMessageSound();
     });
   }, [currentUser, openedChat, socketClient]);
+  // usr auth observer
   useEffect(() => {
-    // check for user authentecation state before make a
-    if (currentUser) {
-      push('/chats');
-      return;
-    }
-    // if (currentUser === undefined) {
-    //   push('/');
-    //   return;
-    // }
-  }, [currentUser]);
+    // redirect the usr to chats after logged in
+    if (currentUser && apiResponse) push('/chats');
+    // go back to home page when usr looged out
+    if (currentUser === undefined) push('/');
+  }, [currentUser, apiResponse]);
   // authentecate the user
   useEffect(() => {
     const userToken = localStorage.getItem('access_token');
