@@ -62,15 +62,9 @@ const ImageMsgViewer: FC<{ data: Props }> = ({ data }) => {
     // set the width of the element
     photoMessageUploadProgressElement?.style.setProperty('width', `${fileMessageUploadIndicator}%`);
   }, [fileMessageUploadIndicator]);
-  // last message obsserver
-  useEffect(() => {
-    // terminate if no last message
-    if (!lastChatMessage) return;
-    setIsUploadProgressVisable(_id === lastChatMessage._id && lastChatMessage.status === null);
-  }, [lastChatMessage]);
+
   return (
     <div className={styles.imageMsgViewer} key={_id} is-open={String(isOpen)} pref-lang={locale}>
-      {/* Photo Upload Indicator */}
       <div className={styles.photoUploadIndicator} style={{ display: isUploadProgressVisable ? 'initial' : 'none' }}>
         <div className={styles.photoUploadProgress} ref={photoUploadProgressRef}></div>
       </div>
