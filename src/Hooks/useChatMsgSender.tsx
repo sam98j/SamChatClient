@@ -1,6 +1,8 @@
-import { ChatMessage } from '@/interfaces/chat.interface';
+import { ChatMessage, MessagesTypes } from '@/interfaces/chat.interface';
+import { setFileMessageUploadIndicator } from '@/redux/chats.slice';
 import { chunkFile } from '@/utils/files';
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Socket } from 'socket.io-client';
 
 // ChatMsgStatus Interface
@@ -9,6 +11,8 @@ interface ChatMsgStatus {
 }
 
 const useChatMessagesSender = (socket: Socket) => {
+  // dispatch method
+  const dispatch = useDispatch();
   // mulitChunksMessage
   const [chatMessage, setChatMessage] = useState<ChatMessage | null>(null);
   // multi chunks status
@@ -46,8 +50,12 @@ const useChatMessagesSender = (socket: Socket) => {
     const message = { ...chatMessage, content: chunks[chunkIndex] } as ChatMessage;
     // fire an socket event
     socket.emit('multi_chunks_message', { data: message, isLastChunk });
+    // check for invalid case
+    if (chatMessage!.type === MessagesTypes.TEXT) return;
     // increment chunk index
     setChunkIndex(chunkIndex + 1);
+    // send chatMessage chunks lenght to the redux store
+    dispatch(setFileMessageUploadIndicator(((chunkIndex + 1) / chunks?.length) * 100));
   }, [chunks, chatMsgStatus]);
   // listen for chunk delevery res
   useEffect(() => {

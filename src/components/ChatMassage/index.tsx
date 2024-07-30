@@ -23,7 +23,7 @@ const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) =>
   // redux dispatch function
   const dispatch = useDispatch();
   // message data
-  const { content, senderId, status, date, type, voiceNoteDuration, fileName, fileSize } = messageData;
+  const { content, senderId, status, date, type, voiceNoteDuration, fileName, fileSize, _id } = messageData;
   // msg time
   const msgTime = getTime(date, TimeUnits.time);
   // fetch data from redux store
@@ -50,7 +50,7 @@ const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) =>
         {/* voice message */}
         {type === VOICENOTE ? <VoiceMemoPlayer data={{ voiceNoteDuration, content, senderId }} /> : ''}
         {/* message type photo */}
-        {type === PHOTO ? <ImageMsgViewer data={{ senderId, date, content }} /> : ''}
+        {type === PHOTO ? <ImageMsgViewer data={{ senderId, date, content, _id }} /> : ''}
         {/* message type file */}
         {type === FILE ? <FileMsgViewer data={{ fileName, fileSize, content }} /> : ''}
         {/* message type video */}

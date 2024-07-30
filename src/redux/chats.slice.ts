@@ -31,9 +31,11 @@ export interface ChatState {
   currentChatPorfile: null | ChatProfile;
   chatMessagesBatchNo: number;
   aggreUnRededMsgs: number;
+  fileMessageUploadIndicator: number | null;
 }
 // inital state
 const initialState: ChatState = {
+  fileMessageUploadIndicator: null,
   isLastChatMessagesBatch: null,
   chats: null,
   chatMessages: [],
@@ -133,6 +135,11 @@ export const chatSlice = createSlice({
       if (!action.payload) return;
       state.aggreUnRededMsgs = state.aggreUnRededMsgs + action.payload;
     },
+    // setFileMessageUploadIndicator
+    setFileMessageUploadIndicator: (state, action) => {
+      console.log(action.payload);
+      state.fileMessageUploadIndicator = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getUserChats.fulfilled, (state, action) => {
@@ -174,6 +181,7 @@ export const {
   addMessageToChat,
   placeLastUpdatedChatToTheTop,
   searchForChat,
+  setFileMessageUploadIndicator,
   setChatMessagesBatchNo,
 } = chatSlice.actions;
 // export the reducer function
