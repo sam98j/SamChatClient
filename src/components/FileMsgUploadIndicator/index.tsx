@@ -10,15 +10,15 @@ interface Props {
 const FileMsgUploadIndicator: FC<Props> = ({ _id }) => {
   // file msg upload indicator ref
   const fileMsgUploadProgressRef = useRef<HTMLDivElement>(null);
-  // is photo upload progress visible
-  const [isUploadProgressVisable, setIsUploadProgressVisable] = useState(
-    () => _id === lastChatMessage._id && lastChatMessage.status === null
-  );
   // redux store
   const { lastChatMessage, fileMessageUploadIndicator } = useSelector((state: RootState) => ({
     fileMessageUploadIndicator: state.chat.fileMessageUploadIndicator,
     lastChatMessage: state.chat.chatMessages![state.chat.chatMessages?.length! - 1],
   }));
+  // is photo upload progress visible
+  const [isUploadProgressVisable, setIsUploadProgressVisable] = useState(
+    () => _id === lastChatMessage._id && lastChatMessage.status === null
+  );
   // last message obsserver
   useEffect(() => {
     // terminate if no last message

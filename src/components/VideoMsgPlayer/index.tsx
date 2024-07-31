@@ -13,16 +13,17 @@ import { BsFullscreen, BsPlay } from 'react-icons/bs';
 import { TbPictureInPicture, TbRewindBackward10, TbRewindForward10 } from 'react-icons/tb';
 import { secondsToDurationConverter } from '@/utils/time';
 import { ChatMessage } from '@/interfaces/chat.interface';
+import FileMsgUploadIndicator from '../FileMsgUploadIndicator';
 // import { secondsToDurationConverter } from '@/utils/voiceMemoRec';
 
 // props
-type Props = Pick<ChatMessage, 'content' | 'senderId' | 'date'>;
+type Props = Pick<ChatMessage, 'content' | 'senderId' | 'date' | '_id'>;
 
 const VideoMsgPlayer: FC<{ data: Props }> = ({ data }) => {
   // api url
   const apiHost = process.env.NEXT_PUBLIC_API_URL;
   // destruct props
-  const { content, date, senderId } = data;
+  const { content, date, senderId, _id } = data;
   // get data from redux store
   const { chatUsr, currentUsr } = useSelector((state: RootState) => ({
     chatUsr: state.chat.openedChat?.usrname,
@@ -82,6 +83,8 @@ const VideoMsgPlayer: FC<{ data: Props }> = ({ data }) => {
   const handleShare = () => {};
   return (
     <div className={styles.videoMsgViewer} is-open={String(isOpen)} pref-lang={locale}>
+      {/* video upload indicator */}
+      <FileMsgUploadIndicator _id={_id} />
       {/* viewer header */}
       <div className={styles.viewerHeader}>
         {/* back arrow */}

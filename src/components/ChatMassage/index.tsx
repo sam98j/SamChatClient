@@ -54,7 +54,7 @@ const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) =>
         {/* message type file */}
         {type === FILE ? <FileMsgViewer data={{ fileName, fileSize, content }} /> : ''}
         {/* message type video */}
-        {type === VIDEO ? <VideoMsgPlayer data={{ content, date, senderId }} /> : ''}
+        {type === VIDEO ? <VideoMsgPlayer data={{ content, date, senderId, _id }} /> : ''}
       </Text>
       {/* msg footer appear  in all messages types*/}
       <Box display={'flex'} justifyContent={'flex-end'} marginTop={'2px'} alignItems={'center'}>
