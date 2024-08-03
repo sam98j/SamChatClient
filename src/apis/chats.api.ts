@@ -1,5 +1,5 @@
 import { GetChatMessagesRes } from '@/interfaces/chat.interface';
-import { ChatProfile } from '@/redux/chats.slice';
+import { ChatMember, ChatProfile, SingleChat } from '@/redux/chats.slice';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -78,6 +78,28 @@ export const getChatProfile = createAsyncThunk('getChatProfile', async (chatId: 
   const response = await fetch(`${apiUrl}/users/chat_profile/${chatId}`, {
     method: 'GET',
     headers: { authorization: access_token! },
+  });
+  // check for internal serval error
+  if (response.status >= 500) {
+    return thunkAPI.rejectWithValue('Internal Server Error');
+  }
+  // if the clinet err
+  if (response.status >= 400) {
+    return thunkAPI.rejectWithValue('You Are Not Authente. Yet');
+  }
+  const resp = (await response.json()) as ChatProfile;
+  // there is no error
+  return resp;
+});
+// get chat profile
+export const createChatGroup = createAsyncThunk('createChatGroup', async (chat: SingleChat, thunkAPI) => {
+  // access token
+  const access_token = localStorage.getItem('access_token');
+  // get request
+  const response = await fetch(`${apiUrl}/users/create_group_chat`, {
+    method: 'POST',
+    headers: { authorization: access_token!, 'Content-type': 'application/json' },
+    body: JSON.stringify(chat),
   });
   // check for internal serval error
   if (response.status >= 500) {

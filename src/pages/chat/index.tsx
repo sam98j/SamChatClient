@@ -10,7 +10,7 @@ import NextImage from 'next/image';
 import NoMessageDrow from '../../../assets/vectors/undraw_new_message_re_fp03.svg';
 import { useSearchParams } from 'next/navigation';
 import { useDispatch } from 'react-redux';
-import { setChatMessagesBatchNo, setOpenedChat } from '@/redux/chats.slice';
+import { ChatTypes, setChatMessagesBatchNo, setChatUsrStatus, setOpenedChat } from '@/redux/chats.slice';
 import { getChatMessages, getUsrOnlineStatus } from '@/apis/chats.api';
 import { setAttchFileMenuOpen, setCurrentRoute } from '@/redux/system.slice';
 import { AnyAction } from '@reduxjs/toolkit';
@@ -65,7 +65,7 @@ const Chat = () => {
   // split chat messages with dates
   const messages = groupChatMessagesByDate(chatMessages as ChatMessage[], locale as never)!;
   // open chat state
-  const [cachedOpenedChat] = useState(() => chats?.filter((chat) => chat.usrid === (parmas.get('id') as string))[0]);
+  const [cachedOpenedChat] = useState(() => chats?.filter((chat) => chat._id === (parmas.get('id') as string))[0]);
   // scroll to the bottom of the view
   useEffect(() => {
     if (messagesBatchNo > 1) return;
@@ -75,16 +75,12 @@ const Chat = () => {
   useEffect(() => {
     // set opend chat
     if (!openedChat) {
-      dispatch(
-        setOpenedChat({
-          id: cachedOpenedChat?.usrid as string,
-          usrname: cachedOpenedChat?.usrname as string,
-          avatar: cachedOpenedChat?.avatar as string,
-        })
-      );
+      dispatch(setOpenedChat(cachedOpenedChat));
     }
     // get usr online status
-    dispatch(getUsrOnlineStatus(parmas.get('id')!) as unknown as AnyAction);
+    if (openedChat?.type === ChatTypes.INDIVISUAL) dispatch(getUsrOnlineStatus(parmas.get('id')!) as unknown as AnyAction);
+    // get usr online status
+    if (openedChat?.type === ChatTypes.GROUP) dispatch(setChatUsrStatus(null));
     // clean up when component unmount
     return function cleanUp() {
       dispatch(setOpenedChat(undefined));
@@ -97,7 +93,7 @@ const Chat = () => {
     // get chats messages
     dispatch(getChatMessages({ chatUsrId: parmas.get('id')!, msgBatch: messagesBatchNo }) as unknown as AnyAction);
     // set route name
-    dispatch(setCurrentRoute(openedChat!.usrname!));
+    dispatch(setCurrentRoute(openedChat!.name!));
   }, [openedChat]);
   // dummy messages
   return (

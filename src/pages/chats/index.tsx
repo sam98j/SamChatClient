@@ -26,9 +26,7 @@ export default function Home() {
   // get user chats
   const chats = useSelector((state: RootState) => state.chat.chats);
   // handleFormChange
-  const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(searchForChat(e.target.value));
-  };
+  const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => dispatch(searchForChat(e.target.value));
   useEffect(() => {
     dispatch(setCurrentRoute(routesNamesTra('chats')));
     if (chats) return;

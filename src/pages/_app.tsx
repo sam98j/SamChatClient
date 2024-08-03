@@ -34,6 +34,7 @@ import useChatMessagesSender from '@/Hooks/useChatMsgSender';
 import SystemNotifications from '@/components/SystemNotifications/SystemNotifications';
 import usePushNotifications from '@/Hooks/usePushNotifications';
 import { SessionProvider } from 'next-auth/react';
+import CreateChatGroupMenu from '@/components/CreateChatGroupMenu';
 
 function App({ Component, ...pageProps }: AppProps) {
   // chakra theme
@@ -54,6 +55,8 @@ function App({ Component, ...pageProps }: AppProps) {
   const parmas = useSearchParams();
   // store dispatch func
   const dispatch = useDispatch();
+  // system state
+  const { isCreateChatGroupMenuOpen } = useSelector((state: RootState) => state.system);
   // auth state
   const { apiResponse, currentUser } = useSelector((state: RootState) => state.auth);
   // system notifications
@@ -182,6 +185,8 @@ function App({ Component, ...pageProps }: AppProps) {
               {currentUser === null ? '' : <Component {...pageProps} />}
               {currentUser === null ? <AppLogo /> : ''}
               <CreateChat />
+              {/* CreateChatGroupMenu */}
+              {isCreateChatGroupMenuOpen ? <CreateChatGroupMenu /> : ''}
             </div>
           </Provider>
         </SessionProvider>

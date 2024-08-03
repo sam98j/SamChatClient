@@ -7,10 +7,15 @@ import { LoggedInUserData } from '@/redux/auth.slice';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useDispatch } from 'react-redux';
-import { changeNewChatScrStatus } from '@/redux/system.slice';
+import { changeNewChatScrStatus, setVisablityOfCreateChatGroupMenu } from '@/redux/system.slice';
 import SearchInput from '../SearchInput/SearchInput';
+import { Button, Text } from '@chakra-ui/react';
+import { MdOutlineGroups2 } from 'react-icons/md';
+import useTranslation from 'next-translate/useTranslation';
 
 const CreateChat = () => {
+  // translation method
+  const { t } = useTranslation('createChatGroupMenu');
   // redux store dispatch function
   const dispatch = useDispatch();
   // redux store
@@ -43,6 +48,11 @@ const CreateChat = () => {
       loading: false,
     });
   };
+  // createGroupChatBtnHandler
+  const createGroupChatBtnHandler = () => {
+    dispatch(setVisablityOfCreateChatGroupMenu(true));
+    dispatch(changeNewChatScrStatus(false));
+  };
   return (
     <div className={styles.create_chat_container} is-opened={String(isModalOpen)}>
       {/* close modal  */}
@@ -51,6 +61,21 @@ const CreateChat = () => {
       <div className={styles.create_chat}>
         {/* Search Input */}
         <SearchInput data={{ handleFormChange, loadingState: state.loading }} />
+        {/* create group chat btn */}
+        <Button
+          onClick={createGroupChatBtnHandler}
+          width={'full'}
+          borderRadius={'2xl'}
+          colorScheme='blue'
+          marginTop={'10px'}
+          display={'flex'}
+          alignItems={'center'}
+          gap={'10px'}
+          justifyContent={'flex-start'}
+        >
+          <MdOutlineGroups2 size={'1.5rem'} color='white' />
+          <Text>{t('createNewChatGroupBtn')}</Text>
+        </Button>
         {/* new Chat User */}
         {state.fetchedUsers.map((usr) => (
           <NewChatUser key={usr._id} usr={usr} searchqr={state.searchqr} />

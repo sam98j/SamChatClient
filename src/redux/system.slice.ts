@@ -5,6 +5,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 // state slice shape
 export interface SystemState {
   isNewChatScreenOpen: boolean;
+  isCreateChatGroupMenuOpen: boolean;
   currentRoute: string;
   prefLanguage: string;
   newIncomingMsg: ChatMessage | null;
@@ -19,6 +20,7 @@ const initialState: SystemState = {
   prefLanguage: 'en',
   newIncomingMsg: null,
   attchFileMenuOpen: false,
+  isCreateChatGroupMenuOpen: false,
   notifications: null,
 };
 
@@ -46,9 +48,19 @@ export const systemSlice = createSlice({
     setSystemNotification(state, action: PayloadAction<{ err: boolean; msg: string } | null>) {
       state.notifications = action.payload;
     },
+    // CreateChatGroupMenu
+    setVisablityOfCreateChatGroupMenu(state, action) {
+      state.isCreateChatGroupMenuOpen = action.payload;
+    },
   },
 });
-export const { changeNewChatScrStatus, setCurrentRoute, setNewIncomingMsg, setAttchFileMenuOpen, setSystemNotification } =
-  systemSlice.actions;
+export const {
+  changeNewChatScrStatus,
+  setVisablityOfCreateChatGroupMenu,
+  setCurrentRoute,
+  setNewIncomingMsg,
+  setAttchFileMenuOpen,
+  setSystemNotification,
+} = systemSlice.actions;
 // export the reducer function
 export default systemSlice.reducer;

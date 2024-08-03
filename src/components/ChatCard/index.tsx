@@ -40,14 +40,7 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
   // get data from store
   const isChatUsrDoingAction = useSelector((state: RootState) => state.chat.isChatUsrDoingAction);
   // handleCardClick
-  const handleCardClick = () =>
-    dispatch(
-      setOpenedChat({
-        id: chat.usrid,
-        usrname: chat.usrname,
-        avatar: chat.avatar,
-      })
-    );
+  const handleCardClick = () => dispatch(setOpenedChat(chat));
   // preview data
   const [previewData, setPreveiwData] = useState<ChatPreviewData>();
   // fetch preview data
@@ -63,7 +56,7 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
   );
   // listen for the new incoming msg
   useEffect(() => {
-    if (!newIncomingMsg || newIncomingMsg.senderId !== chat.usrid) return;
+    if (!newIncomingMsg || newIncomingMsg.senderId !== chat._id) return;
     const { date, senderId, content: lastMsgText, fileName, type, status, voiceNoteDuration } = newIncomingMsg;
     // incoming msg date
     const incomingMsgDate = new Date(date);
@@ -82,20 +75,20 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
   // componet did mount
   useEffect(() => {
     (async () => {
-      const data = await fetchChatPreviewData(chat.usrid);
+      const data = await fetchChatPreviewData(chat._id);
       if (!data) return;
       setPreveiwData({ ...data });
     })();
   }, []);
   return (
-    <Link href={`/chat?${createQueryString('id', chat.usrid)}`} onClick={handleCardClick}>
+    <Link href={`/chat?${createQueryString('id', chat._id)}`} onClick={handleCardClick}>
       <Box
         display={'flex'}
         gap={'3'}
         padding={'1.25rem 1.25rem 0rem 1.25rem'}
         pref-lang={locale}
         chat-usr-doing-actions={String(
-          Boolean(isChatUsrDoingAction.actionSender === chat.usrid && isChatUsrDoingAction.action !== null)
+          Boolean(isChatUsrDoingAction.actionSender === chat._id && isChatUsrDoingAction.action !== null)
         )}
         className={styles.chatCard}
       >
@@ -104,7 +97,7 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
         <Box flexGrow={'1'}>
           {/* chat usr name */}
           <Text fontSize={'md'} marginBottom={'5px'} textColor={'messenger.500'} fontFamily={'"Baloo Bhaijaan 2"'}>
-            {chat.usrname}
+            {chat.name}
           </Text>
           {/* usr actions (usr typing, recording voice) */}
           <Text className={styles.chat_usr_actions}>

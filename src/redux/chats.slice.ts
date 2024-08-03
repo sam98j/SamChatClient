@@ -1,13 +1,24 @@
-import { getChatMessages, getChatProfile, getUserChats, getUsrOnlineStatus } from '@/apis/chats.api';
+import { createChatGroup, getChatMessages, getChatProfile, getUserChats, getUsrOnlineStatus } from '@/apis/chats.api';
 import { ChatMessage, ChatUserActions, MessageStatus } from '@/interfaces/chat.interface';
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import { LoggedInUserData } from './auth.slice';
 
 // Single Chat
+// Chat's Types
+export enum ChatTypes {
+  'INDIVISUAL' = 'INDIVISUAL',
+  'GROUP' = 'GROUP',
+}
+// Chat's Member
+export type ChatMember = Pick<LoggedInUserData, '_id' | 'avatar' | 'name'>;
+// Chat
 export interface SingleChat {
-  usrid: string;
-  usrname: string;
+  _id: string;
+  name: string;
   avatar: string;
+  type: ChatTypes;
+  members: ChatMember[];
 }
 // chat profile
 export interface ChatProfile {
@@ -20,13 +31,13 @@ export interface ChatState {
   chats: SingleChat[] | null | undefined;
   chatMessages: ChatMessage[] | null;
   isLastChatMessagesBatch: boolean | null;
-  openedChat: { id: string; usrname: string; avatar: string } | null | undefined;
+  openedChat: SingleChat | null | undefined;
   isChatUsrDoingAction: {
     action: ChatUserActions | null;
     actionSender: string | null;
   };
   isCurrentUsrDoingAction: null | ChatUserActions;
-  chatUsrStatus: string;
+  chatUsrStatus: string | null;
   messageToBeMarketAsReaded: null | { msgId: string; senderId: string };
   currentChatPorfile: null | ChatProfile;
   chatMessagesBatchNo: number;
@@ -54,16 +65,20 @@ export const chatSlice = createSlice({
   name: 'chat',
   initialState,
   reducers: {
-    setOpenedChat: (state, action: PayloadAction<{ id: string; usrname: string; avatar: string } | undefined>) => {
+    setOpenedChat: (state, action: PayloadAction<SingleChat | undefined>) => {
       const openedChat = action.payload;
       state.openedChat = openedChat;
+    },
+    // set usr online statues
+    setChatUserStatus: (state, action) => {
+      state.chatUsrStatus = action.payload;
     },
     // change chat user typing state
     setChatUsrDoingAction: (state, action: PayloadAction<{ action: ChatUserActions; actionSender: string }>) => {
       state.isChatUsrDoingAction = action.payload;
     },
     // set chat usr status
-    setChatUsrStatus: (state, action: PayloadAction<string>) => {
+    setChatUsrStatus: (state, action: PayloadAction<string | null>) => {
       state.chatUsrStatus = action.payload;
     },
     // change message status
@@ -89,7 +104,7 @@ export const chatSlice = createSlice({
     // place last update chat to the top
     placeLastUpdatedChatToTheTop(state, action: PayloadAction<{ chatUsrId: string }>) {
       state.chats?.find((chat, index) => {
-        if (chat.usrid === action.payload.chatUsrId) {
+        if (chat._id === action.payload.chatUsrId) {
           const chatsFirstPart = state.chats?.slice(0, index);
           const chatsSecondPart = state.chats?.slice(index + 1);
           const updatedChat = state.chats?.slice(index, index + 1);
@@ -108,7 +123,7 @@ export const chatSlice = createSlice({
       // create regex
       const regex = new RegExp(action.payload, 'i');
       // filter chats
-      const fillteredChats = parsedCachedChats.filter(({ usrname }) => regex.test(usrname));
+      const fillteredChats = parsedCachedChats.filter(({ name }) => regex.test(name));
       // update chats state
       state.chats = fillteredChats;
       // if there is no query
@@ -166,6 +181,11 @@ export const chatSlice = createSlice({
     builder.addCase(getUsrOnlineStatus.fulfilled, (state, action: PayloadAction<string>) => {
       state.chatUsrStatus = action.payload;
     });
+    // create chat group
+    builder.addCase(createChatGroup.fulfilled, (state, action) => {
+      const res = action.payload;
+      console.log(res);
+    });
   },
 });
 
@@ -178,6 +198,7 @@ export const {
   setCurrentUsrDoingAction,
   setMessageToBeMarketAsReaded,
   addNewChat,
+  setChatUserStatus,
   addMessageToChat,
   placeLastUpdatedChatToTheTop,
   searchForChat,

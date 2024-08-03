@@ -5,6 +5,7 @@
     color: green;
   }
   .online {
+    text-wrap: wrap;
     color: gray;
   }
   &[is-chat-opened='false'] {
