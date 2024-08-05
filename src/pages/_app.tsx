@@ -109,19 +109,22 @@ function App({ Component, ...pageProps }: AppProps) {
     // terminate if usr is logged out
     if (!currentUser) return;
     // make socket io connection
-    const socket = io(`${apiUrl}`, { query: { client_id: currentUser } });
+    const socket = io(`${apiUrl}`, { query: { client_id: currentUser._id } });
     // set socket
     setSocket(socket);
   }, [currentUser]);
   // use effect
   useEffect(() => {
     socketClient?.on('message', (message: ChatMessage) => {
+      console.log(message);
+
       // place last updated chat to the top
       dispatch(placeLastUpdatedChatToTheTop({ chatUsrId: message.senderId }));
       // check for current route if it's chats
       if (pathname === '/chats') {
         dispatch(setNewIncomingMsg(message));
       }
+      // inform the server that the message is delevered
       socketClient?.emit('message_delevered', {
         msgId: message._id,
         senderId: message.senderId,
@@ -129,7 +132,7 @@ function App({ Component, ...pageProps }: AppProps) {
       // termenate if no opened chat
       if (!openedChat) return;
       // check if the msg releated to current chat
-      if (message.senderId !== openedChat?.id) return;
+      if (message.senderId !== openedChat?._id && message.receiverId !== openedChat._id) return;
       dispatch(addMessageToChat(message));
       playReceiveMessageSound();
     });
@@ -138,7 +141,7 @@ function App({ Component, ...pageProps }: AppProps) {
       // check if no chat is opened
       if (!openedChat) return;
       // check if the openedChat and the client doing the action of online status
-      if (openedChat.id !== data.id) return;
+      if (openedChat._id !== data.id) return;
       // all conditions passed
       dispatch(setChatUsrStatus(data.status));
     });

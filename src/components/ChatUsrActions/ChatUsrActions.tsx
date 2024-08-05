@@ -35,7 +35,7 @@ const ChatUsrActions = () => {
           ? `${t('last_seen')} ${getTime(chatUsrStatus, TimeUnits.fullTime, locale as never)}`
           : ''}
         {/* display group members */}
-        {chatUsrStatus === null ? openedChat!.members.map((member) => member.name).toString() : ''}
+        {chatUsrStatus === null ? openedChat?.members.map((member) => member.name).toString() : ''}
       </div>
     </Box>
   );

@@ -21,12 +21,12 @@ const ImageMsgViewer: FC<{ data: Props }> = ({ data }) => {
   // destruct props
   const { content, date, senderId, _id } = data;
   // redux store
-  const { chatUsr, loggedInUsrId } = useSelector((state: RootState) => ({
-    chatUsr: state.chat.openedChat?.usrname,
-    loggedInUsrId: state.auth.currentUser,
+  const { chatUsr, loggedInUsr } = useSelector((state: RootState) => ({
+    chatUsr: state.chat.openedChat?.name,
+    loggedInUsr: state.auth.currentUser,
   }));
   // is Message sended by the current usr
-  const sendedByMe = loggedInUsrId === senderId;
+  const sendedByMe = loggedInUsr?._id === senderId;
   // image url
   const [imgUrl] = useState(() => {
     // check if content contain http

@@ -80,7 +80,7 @@ const Profile = () => {
   // component did mount
   useEffect(() => {
     dispatch(setCurrentRoute(t('profile')));
-    dispatch(getUsrProfileData(currentUser!) as unknown as never);
+    dispatch(getUsrProfileData(currentUser!._id) as unknown as never);
   }, []);
   // handleClick signout
   const handleSingoutBtnClick = async () => {

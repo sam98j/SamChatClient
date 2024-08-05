@@ -132,7 +132,7 @@ const ChatInput = () => {
     const message = {
       _id: uuid(),
       receiverId: parmas.get('id'),
-      senderId: currentUsr,
+      senderId: currentUsr?._id,
       date: new Date().toString(),
       status: null,
     } as ChatMessage;

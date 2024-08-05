@@ -29,11 +29,11 @@ const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) =>
   // fetch data from redux store
   const currentUsr = useSelector((state: RootState) => state.auth.currentUser);
   // check for the the message sender
-  const [sendedByMe] = useState(String(currentUsr === senderId));
+  const [sendedByMe] = useState(String(currentUsr?._id === senderId));
   // component mount
   useEffect(() => {
     // check if the current usr is not the sender
-    if (currentUsr === senderId) return;
+    if (currentUsr?._id === senderId) return;
     // check if message is readed
     if (status === MessageStatus.READED) return;
     // mark recived message as readed

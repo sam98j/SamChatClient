@@ -13,7 +13,7 @@ const MessageStatusIcon: React.FC<{ data: { msgStatus: MessageStatus; senderId: 
   const currentUsr = useSelector((state: RootState) => state.auth.currentUser);
   return (
     <div
-      msg-sended-by-me={String(currentUsr === data.senderId)}
+      msg-sended-by-me={String(currentUsr?._id === data.senderId)}
       message-status={data.msgStatus}
       className={styles.msg_status_icon}
     >

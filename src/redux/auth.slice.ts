@@ -14,14 +14,14 @@ export interface LoggedInUserData {
 }
 // state slice shape
 export interface AuthState {
-  currentUser: string | null | undefined;
+  currentUser: Pick<LoggedInUserData, '_id' | 'avatar' | 'name'> | null | undefined;
   apiResponse: { err: boolean; msg: string } | null;
   isOAuthActive: boolean;
 }
 // logUserInSuccData
 export interface LogUserInSuccData {
   access_token: string;
-  user: LoggedInUserData;
+  loggedInUser: Pick<LoggedInUserData, 'avatar' | '_id' | 'name'>;
 }
 // inital state
 const initialState: AuthState = {
@@ -49,18 +49,18 @@ export const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(loginUser.fulfilled, (state, action) => {
-      const { access_token, user } = action.payload as LogUserInSuccData;
+      const { access_token, loggedInUser } = action.payload as LogUserInSuccData;
       // store the user access token in the localstorage
       localStorage.setItem('access_token', `Bearer ${access_token}`);
-      state.currentUser = user._id;
+      state.currentUser = loggedInUser;
       state.apiResponse = { err: false, msg: 'You Successfyl Logged In ...' };
     });
     builder.addCase(loginUser.rejected, (state) => {
-      state.currentUser = '';
+      state.currentUser = undefined;
       state.apiResponse = { err: true, msg: 'Some thing Went Wrong, Check You email or password' };
     });
     builder.addCase(getUserChats.fulfilled, (state, action) => {
-      state.currentUser = action.payload.userId;
+      state.currentUser = action.payload.loggedInUser;
     });
     builder.addCase(getUserChats.rejected, (state) => {
       state.currentUser = undefined;

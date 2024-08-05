@@ -22,6 +22,8 @@ const CreateChatGroupMenu = () => {
   const [selectedMembers, setSelectedMembers] = useState<ChatMember[]>([]);
   // groupName
   const [groupName, setGroupName] = useState('');
+  // current usr id
+  const loggedInUser = useSelector((state: RootState) => state.auth.currentUser) as ChatMember;
   // members selection complete
   const [isMemberSelectionDone, setIsMemberSelectionDone] = useState(false);
   // continueHandler
@@ -32,7 +34,7 @@ const CreateChatGroupMenu = () => {
       const createdChat: SingleChat = {
         _id: v4(),
         type: ChatTypes.GROUP,
-        members: selectedMembers,
+        members: [loggedInUser, ...selectedMembers],
         name: groupName,
         avatar: '',
       };
