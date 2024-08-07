@@ -1,5 +1,5 @@
 import { LoggedInUserData } from '@/redux/auth.slice';
-import { setOpenedChat } from '@/redux/chats.slice';
+import { ChatTypes, SingleChat, setOpenedChat } from '@/redux/chats.slice';
 import { changeNewChatScrStatus } from '@/redux/system.slice';
 import { Avatar, Box, Heading, Text } from '@chakra-ui/react';
 import Link from 'next/link';
@@ -14,11 +14,16 @@ const NewChatUser: React.FC<{
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   // redux store dispatch function
   const dispatch = useDispatch();
+  // create chat
+  const chat: SingleChat = {
+    _id: usr._id,
+    type: ChatTypes.INDIVISUAL,
+    avatar: usr.avatar,
+    members: [],
+    name: usr.name,
+  };
   return (
-    <Link
-      href={`/chat?id=${usr._id}`}
-      onClick={() => dispatch(setOpenedChat({ id: usr._id!, usrname: usr.name!, avatar: usr.avatar }))}
-    >
+    <Link href={`/chat?id=${usr._id}`} onClick={() => dispatch(setOpenedChat(chat))}>
       <Box display={'flex'} gap={5} marginTop={5} onClick={() => dispatch(changeNewChatScrStatus(false))}>
         <Avatar name='name' src={`${apiUrl}${usr.avatar}`} />
         <Box>

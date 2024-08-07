@@ -1,10 +1,14 @@
 {
-    "edit_btn": "Edit",
-    "prev_nav": "Chats",
-    "last_seen": "last seen at",
-    "online": "online",
-    "login_link": "Login",
-    "signup_link": "SignUp",
-    "usr_typing": "typing ...",
-    "recording_voice": "recording voice ..."
+  "edit_btn": "Edit",
+  "prev_nav": "Chats",
+  "last_seen": "last seen at",
+  "online": "online",
+  "login_link": "Login",
+  "signup_link": "SignUp",
+  "usr_typing": "typing ...",
+  "recording_voice": "recording voice ...",
+  "group_chatting": {
+    "you_keyword": "You",
+    "others_keyword": "Others"
+  }
 }

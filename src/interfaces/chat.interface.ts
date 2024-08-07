@@ -1,3 +1,5 @@
+import { ChatMember } from '@/redux/chats.slice';
+
 export enum MessageStatus {
   'SENT' = 'SENT',
   'DELEVERED' = 'DELEVERED',
@@ -21,7 +23,7 @@ export interface ChatMessage {
   _id: string;
   content: string;
   type: MessagesTypes;
-  senderId: string;
+  sender: ChatMember;
   fileName: string | null;
   fileSize: string | null;
   receiverId: string;

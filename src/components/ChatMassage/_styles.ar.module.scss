@@ -5,3 +5,8 @@
     }
   }
 }
+.messageContainer {
+  &[pref-lang='ar'] {
+    flex-direction: row-reverse;
+  }
+}

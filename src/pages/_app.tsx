@@ -116,10 +116,8 @@ function App({ Component, ...pageProps }: AppProps) {
   // use effect
   useEffect(() => {
     socketClient?.on('message', (message: ChatMessage) => {
-      console.log(message);
-
       // place last updated chat to the top
-      dispatch(placeLastUpdatedChatToTheTop({ chatUsrId: message.senderId }));
+      dispatch(placeLastUpdatedChatToTheTop({ chatUsrId: message.sender._id }));
       // check for current route if it's chats
       if (pathname === '/chats') {
         dispatch(setNewIncomingMsg(message));
@@ -127,12 +125,12 @@ function App({ Component, ...pageProps }: AppProps) {
       // inform the server that the message is delevered
       socketClient?.emit('message_delevered', {
         msgId: message._id,
-        senderId: message.senderId,
+        senderId: message.sender._id,
       });
       // termenate if no opened chat
       if (!openedChat) return;
       // check if the msg releated to current chat
-      if (message.senderId !== openedChat?._id && message.receiverId !== openedChat._id) return;
+      if (message.sender._id !== openedChat?._id && message.receiverId !== openedChat._id) return;
       dispatch(addMessageToChat(message));
       playReceiveMessageSound();
     });

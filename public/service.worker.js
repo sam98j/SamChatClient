@@ -1,6 +1,6 @@
 // const NEXT_PUBLIC_API_URL = 'https://api.chat.samapps.xyz';
-// const NEXT_PUBLIC_API_URL = 'http://192.168.48.78:2000';
-const NEXT_PUBLIC_API_URL = 'https://samchat.onrender.com';
+const NEXT_PUBLIC_API_URL = 'http://192.168.254.78:2000';
+// const NEXT_PUBLIC_API_URL = 'https://samchat.onrender.com';
 // caches name
 const cacheName = 'v1';
 // assets
@@ -37,6 +37,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', async () => console.log('activated'));
 
 self.addEventListener('push', (e) => {
+  console.log('push');
   const { senderImg, senderName, msgText } = e.data.json();
   self.registration.showNotification(senderName, {
     body: msgText,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './styles.module.scss';
 import { Box } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
@@ -16,6 +16,30 @@ const ChatUsrActions = () => {
   const { t } = useTranslation('appHeader');
   // get data from redux store
   const { isChatUsrDoingAction, chatUsrStatus, openedChat } = useSelector((state: RootState) => state.chat);
+  // get data from redux store
+  const currentUserId = useSelector((state: RootState) => state.auth.currentUser?._id);
+  // chat usr last seen
+  const chatUsrLastSeen = `${t('last_seen')} ${getTime(chatUsrStatus!, TimeUnits.fullTime, locale as never)}`;
+  // group members in case of chat group
+  const groupMembers = useState(() => {
+    if (!openedChat) return '';
+    // you keyword
+    const youKeyword = t('group_chatting.you_keyword');
+    // check if group members is just tow
+    if (openedChat?.members.length === 2) {
+      return openedChat?.members
+        .map((member) => {
+          if (currentUserId === member._id) return t('group_chatting.you_keyword');
+          return member.name;
+        })
+        .toString();
+    }
+    // in case of group members more than tow
+    const groupMembersNames = openedChat?.members
+      .filter((member) => member._id !== currentUserId)
+      .map((member) => member.name);
+    return `${youKeyword}, ${groupMembersNames[0]}, ${groupMembersNames.length - 1} ${t('group_chatting.others_keyword')}`;
+  });
   return (
     <Box
       fontSize={'sm'}
@@ -31,11 +55,9 @@ const ChatUsrActions = () => {
         {/* display online if usr is online */}
         {chatUsrStatus === 'online' ? t('online') : ''}
         {/* display last seen if usr is not online */}
-        {chatUsrStatus && chatUsrStatus !== 'online'
-          ? `${t('last_seen')} ${getTime(chatUsrStatus, TimeUnits.fullTime, locale as never)}`
-          : ''}
+        {chatUsrStatus && chatUsrStatus !== 'online' ? chatUsrLastSeen : ''}
         {/* display group members */}
-        {chatUsrStatus === null ? openedChat?.members.map((member) => member.name).toString() : ''}
+        {chatUsrStatus === null ? groupMembers : ''}
       </div>
     </Box>
   );

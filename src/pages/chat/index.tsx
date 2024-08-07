@@ -105,7 +105,7 @@ const Chat = () => {
         {/* if chat messages is loading */}
         {chatMessages === null ? <Spinner className={styles.spinner} /> : ''}
         {/* if chat messages not loading and there is no messages */}
-        {chatMessages !== null && chatMessages.length === 0 ? (
+        {chatMessages !== null && chatMessages?.length === 0 ? (
           // no messages avatar
           <Box className={styles.imgContainer}>
             <NextImage src={NoMessageDrow} alt='' />

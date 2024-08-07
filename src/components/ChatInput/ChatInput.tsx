@@ -111,7 +111,7 @@ const ChatInput = () => {
       // voice message content
       const content = e.target?.result as string;
       // voice message file name (null)
-      const fileName = `AUDIO-${message.senderId}-${message.receiverId}${String(Math.random())}`;
+      const fileName = `AUDIO-${message.sender._id}-${message.receiverId}${String(Math.random())}`;
       // voice message file size (null)
       const fileSize = getFileSize(content);
       // msg type
@@ -132,7 +132,7 @@ const ChatInput = () => {
     const message = {
       _id: uuid(),
       receiverId: parmas.get('id'),
-      senderId: currentUsr?._id,
+      sender: currentUsr,
       date: new Date().toString(),
       status: null,
     } as ChatMessage;

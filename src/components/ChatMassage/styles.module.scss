@@ -1,12 +1,17 @@
 @import './styles.ar.module';
 
+.messageContainer {
+  display: flex;
+  margin: 0.5rem 0;
+  gap: 10px;
+}
+
 .bubble {
   border-radius: 1.15rem;
   line-height: 1.25;
   max-width: 80%;
   padding: 8px;
   word-wrap: break-word;
-  margin: 0.5rem 0;
   width: fit-content;
   min-height: 2rem;
   min-width: fit-content;
