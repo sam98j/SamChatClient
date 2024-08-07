@@ -13,20 +13,20 @@ import { TimeUnits, getTime } from '@/utils/time';
 import { ChatMessage } from '@/interfaces/chat.interface';
 import FileMsgUploadIndicator from '../FileMsgUploadIndicator';
 
-type Props = Pick<ChatMessage, 'content' | 'senderId' | 'date' | '_id'>;
+type Props = Pick<ChatMessage, 'content' | 'sender' | 'date' | '_id'>;
 
 const ImageMsgViewer: FC<{ data: Props }> = ({ data }) => {
   // api url
   const apiHost = process.env.NEXT_PUBLIC_API_URL;
   // destruct props
-  const { content, date, senderId, _id } = data;
+  const { content, date, sender, _id } = data;
   // redux store
   const { chatUsr, loggedInUsr } = useSelector((state: RootState) => ({
     chatUsr: state.chat.openedChat?.name,
     loggedInUsr: state.auth.currentUser,
   }));
   // is Message sended by the current usr
-  const sendedByMe = loggedInUsr?._id === senderId;
+  const sendedByMe = loggedInUsr?._id === sender._id;
   // image url
   const [imgUrl] = useState(() => {
     // check if content contain http

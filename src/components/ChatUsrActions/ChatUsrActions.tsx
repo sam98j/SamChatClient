@@ -21,7 +21,7 @@ const ChatUsrActions = () => {
   // chat usr last seen
   const chatUsrLastSeen = `${t('last_seen')} ${getTime(chatUsrStatus!, TimeUnits.fullTime, locale as never)}`;
   // group members in case of chat group
-  const groupMembers = useState(() => {
+  const [groupMembers] = useState(() => {
     if (!openedChat) return '';
     // you keyword
     const youKeyword = t('group_chatting.you_keyword');

@@ -1,5 +1,5 @@
 import { GetChatMessagesRes } from '@/interfaces/chat.interface';
-import { ChatMember, ChatProfile, SingleChat } from '@/redux/chats.slice';
+import { ChatProfile, SingleChat } from '@/redux/chats.slice';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;

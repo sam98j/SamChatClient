@@ -64,13 +64,13 @@ const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) =>
           {/* text message */}
           {type === TEXT ? content : ''}
           {/* voice message */}
-          {type === VOICENOTE ? <VoiceMemoPlayer data={{ voiceNoteDuration, content, senderId: sender._id }} /> : ''}
+          {type === VOICENOTE ? <VoiceMemoPlayer data={{ voiceNoteDuration, content, sender }} /> : ''}
           {/* message type photo */}
-          {type === PHOTO ? <ImageMsgViewer data={{ senderId: sender._id, date, content, _id }} /> : ''}
+          {type === PHOTO ? <ImageMsgViewer data={{ sender, date, content, _id }} /> : ''}
           {/* message type file */}
           {type === FILE ? <FileMsgViewer data={{ fileName, fileSize, content }} /> : ''}
           {/* message type video */}
-          {type === VIDEO ? <VideoMsgPlayer data={{ content, date, senderId: sender._id, _id }} /> : ''}
+          {type === VIDEO ? <VideoMsgPlayer data={{ content, date, sender, _id }} /> : ''}
         </Text>
         {/* msg footer appear  in all messages types*/}
         <Box display={'flex'} justifyContent={'flex-end'} marginTop={'2px'} alignItems={'center'}>

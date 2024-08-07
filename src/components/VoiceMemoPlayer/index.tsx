@@ -8,17 +8,17 @@ import { ChatMessage } from '@/interfaces/chat.interface';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 
-type Props = Pick<ChatMessage, 'senderId' | 'voiceNoteDuration' | 'content'>;
+type Props = Pick<ChatMessage, 'sender' | 'voiceNoteDuration' | 'content'>;
 
 const VoiceMemoPlayer: React.FC<{ data: Props }> = ({ data }) => {
   // api url
   const apiHost = process.env.NEXT_PUBLIC_API_URL;
   // destruct props
-  const { senderId, content, voiceNoteDuration: duration } = data;
+  const { sender, content, voiceNoteDuration: duration } = data;
   // get data from redux store
   const { currentUsr } = useSelector((state: RootState) => ({ currentUsr: state.auth.currentUser }));
   // is voice note is sended by current loogedIn usr ?
-  const sendedByMe = senderId === currentUsr;
+  const sendedByMe = sender._id === currentUsr?._id;
   // audio content or url
   const [audioUrl] = useState(() => {
     // check if content contain http

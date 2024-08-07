@@ -48,7 +48,7 @@ const AttachFile = () => {
         _id: uuid(),
         date: new Date().toString(),
         receiverId: params.get('id') as string,
-        senderId: currentUser?._id!,
+        sender: currentUser!,
         fileName: file.name,
         fileSize: getFileSize(rowFile as string),
         status: null,

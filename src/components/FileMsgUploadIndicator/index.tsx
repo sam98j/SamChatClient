@@ -13,7 +13,7 @@ const FileMsgUploadIndicator: FC<Props> = ({ _id }) => {
   // redux store
   const { lastChatMessage, fileMessageUploadIndicator } = useSelector((state: RootState) => ({
     fileMessageUploadIndicator: state.chat.fileMessageUploadIndicator,
-    lastChatMessage: state.chat.chatMessages![state.chat.chatMessages?.length! - 1],
+    lastChatMessage: state.chat.chatMessages![state.chat.chatMessages!.length! - 1],
   }));
   // is photo upload progress visible
   const [isUploadProgressVisable, setIsUploadProgressVisable] = useState(

@@ -87,6 +87,7 @@ const CreateChatGroupMenu = () => {
           {chats &&
             chats.map((chat) => (
               <GroupMemberCard
+                key={chat._id}
                 _id={chat._id}
                 name={chat.name}
                 avatar={chat.avatar}

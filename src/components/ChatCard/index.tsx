@@ -56,13 +56,13 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
   );
   // listen for the new incoming msg
   useEffect(() => {
-    if (!newIncomingMsg || newIncomingMsg.senderId !== chat._id) return;
-    const { date, senderId, content: lastMsgText, fileName, type, status, voiceNoteDuration } = newIncomingMsg;
+    if (!newIncomingMsg || newIncomingMsg.sender._id !== chat._id) return;
+    const { date, sender, content: lastMsgText, fileName, type, status, voiceNoteDuration } = newIncomingMsg;
     // incoming msg date
     const incomingMsgDate = new Date(date);
     setPreveiwData({
       ...previewData,
-      senderId,
+      senderId: sender._id,
       lastMsgText,
       type,
       fileName,

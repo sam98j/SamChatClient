@@ -133,15 +133,15 @@ const ChatProfile = () => {
           {/* loop throwght content list it maybe PHOTS, FILE, Video */}
           {contentList.map((msg) => {
             // destruct message
-            const { content, senderId, date, voiceNoteDuration, fileSize, fileName, _id } = msg;
+            const { content, sender, date, voiceNoteDuration, fileSize, fileName, _id } = msg;
             return (
               <Box className={styles.list_content_item} key={_id}>
                 {/* display images */}
-                {displayedMsgsTypes === PHOTO ? <ImageMsgViewer data={{ content, senderId, date, _id }} /> : ''}
+                {displayedMsgsTypes === PHOTO ? <ImageMsgViewer data={{ content, sender, date, _id }} /> : ''}
                 {/* display video */}
-                {displayedMsgsTypes === VIDEO ? <VideoMsgPlayer data={{ content, senderId, date, _id }} /> : ''}
+                {displayedMsgsTypes === VIDEO ? <VideoMsgPlayer data={{ content, sender, date, _id }} /> : ''}
                 {/* display voice notes */}
-                {displayedMsgsTypes === VOICENOTE ? <VoiceMemoPlayer data={{ content, senderId, voiceNoteDuration }} /> : ''}
+                {displayedMsgsTypes === VOICENOTE ? <VoiceMemoPlayer data={{ content, sender, voiceNoteDuration }} /> : ''}
                 {/* display flie */}
                 {displayedMsgsTypes === FILE ? <FileMsgViewer data={{ content, fileName, fileSize }} /> : ''}
               </Box>

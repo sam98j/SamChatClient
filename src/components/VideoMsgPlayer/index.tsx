@@ -17,20 +17,20 @@ import FileMsgUploadIndicator from '../FileMsgUploadIndicator';
 // import { secondsToDurationConverter } from '@/utils/voiceMemoRec';
 
 // props
-type Props = Pick<ChatMessage, 'content' | 'senderId' | 'date' | '_id'>;
+type Props = Pick<ChatMessage, 'content' | 'sender' | 'date' | '_id'>;
 
 const VideoMsgPlayer: FC<{ data: Props }> = ({ data }) => {
   // api url
   const apiHost = process.env.NEXT_PUBLIC_API_URL;
   // destruct props
-  const { content, date, senderId, _id } = data;
+  const { content, date, sender, _id } = data;
   // get data from redux store
   const { chatUsr, currentUsr } = useSelector((state: RootState) => ({
-    chatUsr: state.chat.openedChat?.usrname,
+    chatUsr: state.chat.openedChat?.name,
     currentUsr: state.auth.currentUser,
   }));
   // is video is sended by the current loggedIn usr
-  const sendedByMe = currentUsr === senderId;
+  const sendedByMe = currentUsr?._id === sender._id;
   // vido url
   const [videoUrl] = useState(() => {
     // check for content is data url or link
