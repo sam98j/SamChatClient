@@ -8,6 +8,7 @@ const assets = [
   '/ar/chats',
   'https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400;600;800&family=Rubik:ital,wght@0,300;0,500;1,700&display=swap',
 ];
+const API_URl = NEXT_PUBLIC_API_URL;
 
 const urlBase64ToUnit8Array = (base64String) => {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -20,13 +21,11 @@ const urlBase64ToUnit8Array = (base64String) => {
   return outputArray;
 };
 const saveSubscription = async (access_token, subscription) => {
-  const API_URl = NEXT_PUBLIC_API_URL;
   const response = await fetch(`${API_URl}/users/save-subscription`, {
     method: 'post',
     headers: { 'Content-type': 'application/json', authorization: access_token },
     body: JSON.stringify(subscription),
   });
-
   return response.json();
 };
 // listen to service worker install event
@@ -34,7 +33,14 @@ self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(cacheName).then((cache) => cache.addAll(assets)));
 });
 // listen for activate event
-self.addEventListener('activate', async () => console.log('activated'));
+self.addEventListener('activate', async () => {
+  fetch(`${API_URl}/users/debug`, {
+    method: 'POST',
+    'content-type': 'application/json',
+    body: JSON.stringify({ msg: 'service activated' }),
+  });
+  console.log('activated');
+});
 
 self.addEventListener('push', (e) => {
   console.log('push');
