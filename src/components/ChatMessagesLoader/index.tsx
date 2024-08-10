@@ -16,6 +16,7 @@ const ChatMessagesLoader: FC<{ messages: MessagesGroubedByDate }> = ({ messages 
               textColor={'blue.500'}
               marginTop={'30px'}
               bgColor={'blue.50'}
+              key={i}
               rounded={'xl'}
               padding={'3px'}
               width={'fit-content'}
@@ -25,7 +26,7 @@ const ChatMessagesLoader: FC<{ messages: MessagesGroubedByDate }> = ({ messages 
               {date}
             </Text>
             {messages.messages[i].map((msg: ChatMessage) => (
-              <ChatMassage messageData={msg} key={''} />
+              <ChatMassage messageData={msg} key={msg._id} />
             ))}
           </>
         );
