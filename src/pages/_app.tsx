@@ -70,7 +70,7 @@ function App({ Component, ...pageProps }: AppProps) {
     // terminate if chat's messages not fetched yet
     if (!chatMessages) return;
     // msgs  to sent
-    const messagesToSent = chatMessages.filter((msg) => msg.status === null);
+    const messagesToSent = chatMessages.filter((msg: ChatMessage) => msg.status === null);
     // terminate if there is no message waiting for send
     if (!messagesToSent[0]) return;
     // send
@@ -156,6 +156,8 @@ function App({ Component, ...pageProps }: AppProps) {
   useEffect(() => {
     // redirect the usr to chats after logged in
     if (currentUser && apiResponse) push('/chats');
+    // redirect usr to chats if he is loggedin and hit /
+    if (currentUser && pathname === '/') push('/chats');
     // go back to home page when usr looged out
     if (currentUser === undefined) push('/');
   }, [currentUser, apiResponse]);

@@ -18,7 +18,7 @@ import useTranslation from 'next-translate/useTranslation';
 import { AnyAction } from '@reduxjs/toolkit';
 import Link from 'next/link';
 import { Icon } from '@chakra-ui/icons';
-import { resetAuthApiRes, setOAuthActivationStatus } from '@/redux/auth.slice';
+import { resetAuthApiRes } from '@/redux/auth.slice';
 import { BsGoogle } from 'react-icons/bs';
 import { signIn, useSession } from 'next-auth/react';
 import { GoogleSignInSession } from '@/interfaces/auth.interface';
@@ -31,6 +31,7 @@ const Login = () => {
   const { data: session } = useSession();
   // sign in With Google Handler
   const googleSignInHandler = () => {
+    console.log('auth with google run');
     // session with authToken
     const { authToken } = { ...session } as GoogleSignInSession;
     // store token in local storage
@@ -38,7 +39,7 @@ const Login = () => {
     // terminate if no access token
     if (!authToken) return;
     // set Oauth Activation status
-    dispatch(setOAuthActivationStatus(true));
+    // dispatch(setOAuthActivationStatus(true));
     // redirect the usr to chats screen
     push('/chats');
   };

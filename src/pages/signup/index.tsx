@@ -14,7 +14,6 @@ import LanguageSwitcher from '@/components/LangSwitcher/LangSwitcher';
 import useTranslation from 'next-translate/useTranslation';
 import Link from 'next/link';
 import { signIn, useSession, signOut } from 'next-auth/react';
-import { setOAuthActivationStatus } from '@/redux/auth.slice';
 
 const SignUp = () => {
   // dispatch store function
@@ -30,7 +29,7 @@ const SignUp = () => {
     // terminate if no access token
     if (!authToken) return;
     // set Oauth Activation status
-    dispatch(setOAuthActivationStatus(true));
+    // dispatch(setOAuthActivationStatus(true));
     // redirect the usr to chats screen
     push('/chats');
   };
