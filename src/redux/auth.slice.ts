@@ -70,7 +70,7 @@ export const authSlice = createSlice({
         state.apiResponse = { err: true, msg: action.payload.message };
         return;
       }
-      state.currentUser = action.payload.user._id;
+      state.currentUser = action.payload.loggedInUser._id;
       localStorage.setItem('access_token', `Bearer ${action.payload.access_token}`);
       state.apiResponse = { err: false, msg: 'You Successfyl singed In ...' };
     });

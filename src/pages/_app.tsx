@@ -151,7 +151,7 @@ function App({ Component, ...pageProps }: AppProps) {
       // check for message sent status
       if (data.status === MessageStatus.SENT) playSentMessageSound();
     });
-  }, [currentUser, openedChat, socketClient]);
+  }, [socketClient]);
   // usr auth observer
   useEffect(() => {
     // redirect the usr to chats after logged in
