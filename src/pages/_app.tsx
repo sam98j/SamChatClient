@@ -80,7 +80,7 @@ function App({ Component, ...pageProps }: AppProps) {
   useEffect(() => {
     // chatusr_start_typing
     socketClient?.emit('chatusr_typing_status', {
-      cUsrId: currentUser,
+      cUsrId: currentUser?._id,
       chatUsrId: parmas.get('id'),
       action: isCurrentUsrDoingAction,
     });
