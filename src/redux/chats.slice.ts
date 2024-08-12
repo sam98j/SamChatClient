@@ -37,7 +37,7 @@ export interface ChatState {
     actionSender: string | null;
   };
   isCurrentUsrDoingAction: null | ChatUserActions;
-  chatUsrStatus: string | null;
+  chatUsrStatus: string | null | undefined;
   messageToBeMarketAsReaded: null | { msgId: string; senderId: string };
   currentChatPorfile: null | ChatProfile;
   chatMessagesBatchNo: number;
@@ -78,7 +78,7 @@ export const chatSlice = createSlice({
       state.isChatUsrDoingAction = action.payload;
     },
     // set chat usr status
-    setChatUsrStatus: (state, action: PayloadAction<string | null>) => {
+    setChatUsrStatus: (state, action: PayloadAction<string | null | undefined>) => {
       state.chatUsrStatus = action.payload;
     },
     // change message status
@@ -141,7 +141,7 @@ export const chatSlice = createSlice({
       const msgToRender = state.chatMessages?.filter((msg) => msg._id === action.payload?._id)[0];
       // terminate if msg exist
       if (msgToRender) return;
-      console.log('message pushed');
+      // push message to chat
       state.chatMessages?.push(action.payload);
     },
     // set aggreated un readed message

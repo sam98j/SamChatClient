@@ -57,7 +57,7 @@ const ChatUsrActions = () => {
         {/* display last seen if usr is not online */}
         {chatUsrStatus && chatUsrStatus !== 'online' ? chatUsrLastSeen : ''}
         {/* display group members */}
-        {chatUsrStatus === null ? groupMembers : ''}
+        {chatUsrStatus === undefined ? groupMembers : ''}
       </div>
     </Box>
   );

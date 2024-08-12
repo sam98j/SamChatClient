@@ -87,6 +87,8 @@ function App({ Component, ...pageProps }: AppProps) {
   }, [isCurrentUsrDoingAction]);
   // listen for chat user doing action
   useEffect(() => {
+    // check for usr and socket
+    if (!currentUser || !socketClient) return;
     // listen for chat usr doing action
     socketClient?.on('chatusr_typing_status', (actionData) => dispatch(setChatUsrDoingAction(actionData)));
     // listen for new chat created
@@ -116,22 +118,26 @@ function App({ Component, ...pageProps }: AppProps) {
   // use effect
   useEffect(() => {
     socketClient?.on('message', (message: ChatMessage) => {
+      console.log('message received');
+      // check for current usr
+      if (!currentUser || !socketClient) return;
       // place last updated chat to the top
       dispatch(placeLastUpdatedChatToTheTop({ chatUsrId: message.sender._id }));
       // check for current route if it's chats
       if (pathname === '/chats') {
         dispatch(setNewIncomingMsg(message));
       }
-      // inform the server that the message is delevered
-      socketClient?.emit('message_delevered', {
-        msgId: message._id,
-        senderId: message.sender._id,
-      });
       // termenate if no opened chat
-      if (!openedChat) return;
+      if (!openedChat) {
+        // inform the server that the message is delevered
+        socketClient?.emit('message_delevered', { msgId: message._id, senderId: message.sender._id });
+        return;
+      }
       // check if the msg releated to current chat
-      if (message.sender._id !== openedChat?._id && message.receiverId !== openedChat._id) return;
+      if (message.sender._id !== openedChat._id && message.receiverId !== openedChat._id) return;
+      // add receved message to chat messages
       dispatch(addMessageToChat(message));
+      // play recive message sound
       playReceiveMessageSound();
     });
     // usr_online_status
@@ -151,7 +157,7 @@ function App({ Component, ...pageProps }: AppProps) {
       // check for message sent status
       if (data.status === MessageStatus.SENT) playSentMessageSound();
     });
-  }, [socketClient]);
+  }, [socketClient, openedChat, currentUser]);
   // usr auth observer
   useEffect(() => {
     // redirect the usr to chats after logged in

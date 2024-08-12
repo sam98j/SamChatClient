@@ -74,26 +74,28 @@ const Chat = () => {
   // component did mount life cicle hook
   useEffect(() => {
     // set opend chat
-    if (!openedChat) {
-      dispatch(setOpenedChat(cachedOpenedChat));
-    }
-    // get usr online status
-    if (openedChat?.type === ChatTypes.INDIVISUAL) dispatch(getUsrOnlineStatus(parmas.get('id')!) as unknown as AnyAction);
-    // get usr online status
-    if (openedChat?.type === ChatTypes.GROUP) dispatch(setChatUsrStatus(null));
+    if (!openedChat) dispatch(setOpenedChat(cachedOpenedChat));
+
     // clean up when component unmount
     return function cleanUp() {
       dispatch(setOpenedChat(undefined));
       dispatch(setChatMessagesBatchNo(1));
+      dispatch(setChatUsrStatus(null));
     };
   }, []);
   // listen for opened chat
   useEffect(() => {
     if (!openedChat) return;
-    // get chats messages
-    dispatch(getChatMessages({ chatUsrId: parmas.get('id')!, msgBatch: messagesBatchNo }) as unknown as AnyAction);
+    // get usr online status
+    if (openedChat?.type === ChatTypes.INDIVISUAL) dispatch(getUsrOnlineStatus(parmas.get('id')!) as unknown as AnyAction);
+    // get usr online status
+    if (openedChat?.type === ChatTypes.GROUP) dispatch(setChatUsrStatus(undefined));
     // set route name
     dispatch(setCurrentRoute(openedChat!.name!));
+    // terminate if there is chat messages
+    if (chatMessages?.length) return;
+    // get chats messages
+    dispatch(getChatMessages({ chatUsrId: parmas.get('id')!, msgBatch: messagesBatchNo }) as unknown as AnyAction);
   }, [openedChat]);
   // dummy messages
   return (
