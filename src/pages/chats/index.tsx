@@ -15,7 +15,7 @@ import React from 'react';
 import { AnyAction } from '@reduxjs/toolkit';
 import useTranslation from 'next-translate/useTranslation';
 import SearchInput from '@/components/SearchInput/SearchInput';
-import { searchForChat } from '@/redux/chats.slice';
+import { clearChatMessages, searchForChat } from '@/redux/chats.slice';
 
 export default function Home() {
   // translations
@@ -24,7 +24,7 @@ export default function Home() {
   // redux stroe dispatch fun
   const dispatch = useDispatch();
   // get user chats
-  const chats = useSelector((state: RootState) => state.chat.chats);
+  const { chats, chatMessages } = useSelector((state: RootState) => state.chat);
   // handleFormChange
   const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => dispatch(searchForChat(e.target.value));
   useEffect(() => {
@@ -33,6 +33,11 @@ export default function Home() {
     const userToken = localStorage.getItem('access_token');
     dispatch(getUserChats(userToken) as unknown as AnyAction);
   }, []);
+  // check for chat messages
+  useEffect(() => {
+    // clear chat message if they exist
+    if (chatMessages?.length) dispatch(clearChatMessages());
+  }, [chatMessages]);
   return (
     <>
       <Head>

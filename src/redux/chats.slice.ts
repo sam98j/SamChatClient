@@ -155,6 +155,10 @@ export const chatSlice = createSlice({
       console.log(action.payload);
       state.fileMessageUploadIndicator = action.payload;
     },
+    // clear chat messages
+    clearChatMessages: (state) => {
+      state.chatMessages = [];
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getUserChats.fulfilled, (state, action) => {
@@ -193,6 +197,7 @@ export const {
   setOpenedChat,
   setChatUsrDoingAction,
   setChatUsrStatus,
+  clearChatMessages,
   setMessageStatus,
   setAggreUnReadedMsg,
   setCurrentUsrDoingAction,
