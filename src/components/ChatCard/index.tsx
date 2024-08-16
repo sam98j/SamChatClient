@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Avatar, Box, SkeletonCircle, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -33,30 +33,22 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
   const { locale } = useRouter();
   // Messages types
   const { TEXT, VOICENOTE, PHOTO, VIDEO, FILE } = MessagesTypes;
-  // search params
-  const searchParams = useSearchParams();
   // get data from store
   const newIncomingMsg = useSelector((state: RootState) => state.system.newIncomingMsg);
   // get data from store
-  const isChatUsrDoingAction = useSelector((state: RootState) => state.chat.isChatUsrDoingAction);
+  const chatAction = useSelector((state: RootState) => state.chat.isChatUsrDoingAction);
+  // is chat usr doing action
+  const isChatUsrDoingAction = String(Boolean(chatAction.actionSender === chat._id && chatAction.action !== null));
   // handleCardClick
   const handleCardClick = () => dispatch(setOpenedChat(chat));
   // preview data
   const [previewData, setPreveiwData] = useState<ChatPreviewData>();
   // fetch preview data
   const { fetchChatPreviewData } = useChatsApi();
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams as unknown as URLSearchParams);
-      params.set(name, value);
-
-      return params.toString();
-    },
-    [searchParams]
-  );
   // listen for the new incoming msg
   useEffect(() => {
     if (!newIncomingMsg || newIncomingMsg.sender._id !== chat._id) return;
+    // destruct new incoming message
     const { date, sender, content: lastMsgText, fileName, type, status, voiceNoteDuration } = newIncomingMsg;
     // incoming msg date
     const incomingMsgDate = new Date(date);
@@ -81,15 +73,13 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
     })();
   }, []);
   return (
-    <Link href={`/chat?${createQueryString('id', chat._id)}`} onClick={handleCardClick}>
+    <Link href={`/chat?id=${chat._id}`} onClick={handleCardClick}>
       <Box
         display={'flex'}
         gap={'3'}
         padding={'1.25rem 1.25rem 0rem 1.25rem'}
         pref-lang={locale}
-        chat-usr-doing-actions={String(
-          Boolean(isChatUsrDoingAction.actionSender === chat._id && isChatUsrDoingAction.action !== null)
-        )}
+        chat-usr-doing-actions={isChatUsrDoingAction}
         className={styles.chatCard}
       >
         {/* chat avatar */}

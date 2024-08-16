@@ -94,6 +94,7 @@ const CreateChatGroupMenu = () => {
                 setSelectedMembers={setSelectedMembers}
               />
             ))}
+          {/* TODO: refactor this group member card props */}
         </Box>
         {/* Group name */}
         <InputGroup display={isMemberSelectionDone ? 'initial' : 'none'}>

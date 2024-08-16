@@ -16,22 +16,19 @@ import ImageMsgViewer from '@/components/ImageMsgViewer';
 import VideoMsgPlayer from '@/components/VideoMsgPlayer';
 import VoiceMemoPlayer from '@/components/VoiceMemoPlayer';
 import FileMsgViewer from '@/components/FileMsgViewer';
+import { ChatTypes } from '@/redux/chats.slice';
+import GroupMembersList from '@/components/GroupMembersList';
 
 const ChatProfile = () => {
   // api url
   const apiHost = process.env.NEXT_PUBLIC_API_URL;
   // data from redux store
-  const { chatPorfile, chatMessages } = useSelector((state: RootState) => {
-    return {
-      chatPorfile: state.chat.currentChatPorfile,
-      chatMessages: state.chat.chatMessages,
-    };
-  });
+  const { openedChat, chatMessages } = useSelector((state: RootState) => state.chat);
   // chat avatar
   const [avatar_url] = useState(() => {
     // check for avatar exist
-    if (!chatPorfile?.avatar) return '';
-    return `${apiHost}${chatPorfile.avatar}`;
+    if (!openedChat?.avatar) return '';
+    return `${apiHost}${openedChat.avatar}`;
   });
   // destruct messages  types
   const { VIDEO, PHOTO, FILE, VOICENOTE } = MessagesTypes;
@@ -74,21 +71,19 @@ const ChatProfile = () => {
   return (
     <>
       <Head>
-        <title>{`${chatPorfile?.name} | ${t('profile')}`}</title>
+        <title>{`${openedChat?.name} | ${t('profile')}`}</title>
       </Head>
       <div className={styles.chat_profile}>
         {/* chat avatar */}
         <Avatar src={avatar_url} size={'2xl'} />
         {/* name */}
         <Text fontSize={'2xl'} fontWeight={'black'}>
-          {chatPorfile?.name}
-        </Text>
-        {/* chat email */}
-        <Text marginBottom={'10px'} textColor={'gray'}>
-          {chatPorfile?.email}
+          {openedChat?.name}
         </Text>
         {/* chat calls */}
         <ChatCalls />
+        {/* group members list */}
+        {openedChat?.type === ChatTypes.GROUP ? <GroupMembersList members={openedChat.members} /> : ''}
         {/* media links and docs */}
         <List className={styles.list_content_type_container}>
           {/* Content Type media photos, videos */}

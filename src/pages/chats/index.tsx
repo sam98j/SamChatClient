@@ -15,22 +15,29 @@ import React from 'react';
 import { AnyAction } from '@reduxjs/toolkit';
 import useTranslation from 'next-translate/useTranslation';
 import SearchInput from '@/components/SearchInput/SearchInput';
-import { clearChatMessages, searchForChat } from '@/redux/chats.slice';
+import { clearChatMessages, searchForChat, setOpenedChat } from '@/redux/chats.slice';
 
 export default function Home() {
   // translations
   const { t } = useTranslation('chatsPage');
+  // screens names
   const { t: routesNamesTra } = useTranslation('routesNames');
   // redux stroe dispatch fun
   const dispatch = useDispatch();
   // get user chats
-  const { chats, chatMessages } = useSelector((state: RootState) => state.chat);
+  const { chats, chatMessages, openedChat } = useSelector((state: RootState) => state.chat);
   // handleFormChange
   const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => dispatch(searchForChat(e.target.value));
   useEffect(() => {
+    // set current screen name
     dispatch(setCurrentRoute(routesNamesTra('chats')));
+    // reset opendChat if it exist
+    if (openedChat) dispatch(setOpenedChat(undefined));
+    // terminate and do not get chats if there're exist
     if (chats) return;
+    // get loggedIn Usr Access token
     const userToken = localStorage.getItem('access_token');
+    // get usr chat if ther're not exist
     dispatch(getUserChats(userToken) as unknown as AnyAction);
   }, []);
   // check for chat messages

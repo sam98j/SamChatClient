@@ -26,6 +26,8 @@ const AppHeader = () => {
   });
   // check for signup or login page if it open
   const isLoginOrSignUpOpen = pathname === '/login' || pathname === '/signup';
+  // isChatScreenOpened
+  const isChatScreenOpened = Boolean(pathname === '/chat');
   // locale
   const { locale } = useRouter();
   return (
@@ -45,13 +47,14 @@ const AppHeader = () => {
       {/* back Arr */}
       <BackArrow />
       {/* Screen name */}
-      {currentUsr && openedChat ? <ChatAvatar avatar={openedChat.avatar} /> : ''}
+      {currentUsr && isChatScreenOpened ? <ChatAvatar avatar={openedChat!.avatar} /> : ''}
+      {/* screen name */}
       {currentUsr ? <ScreenName /> : ''}
       {/* add new chat btn */}
       <StartNewChatBtn />
       {/* voice call, avatar, video call */}
       {/* chat calls */}
-      {currentUsr && openedChat ? <ChatCalls /> : ''}
+      {currentUsr && isChatScreenOpened ? <ChatCalls /> : ''}
       {/* hide login and sign up if there is no loggedin user */}
       {!currentUsr ? <AuthLinks /> : ''}
     </Box>

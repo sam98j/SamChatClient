@@ -75,10 +75,8 @@ const Chat = () => {
   useEffect(() => {
     // set opend chat
     if (!openedChat) dispatch(setOpenedChat(cachedOpenedChat));
-
     // clean up when component unmount
     return function cleanUp() {
-      dispatch(setOpenedChat(undefined));
       dispatch(setChatMessagesBatchNo(1));
       dispatch(setChatUsrStatus(null));
     };
