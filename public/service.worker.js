@@ -1,5 +1,5 @@
 // const NEXT_PUBLIC_API_URL = 'https://api.chat.samapps.xyz';
-const NEXT_PUBLIC_API_URL = 'http://192.168.63.78:2000';
+const NEXT_PUBLIC_API_URL = 'http://192.168.10.78:2000';
 // const NEXT_PUBLIC_API_URL = 'https://samchat.onrender.com';
 // caches name
 const cacheName = 'v1';
@@ -29,22 +29,15 @@ const saveSubscription = async (access_token, subscription) => {
   return response.json();
 };
 // listen to service worker install event
-self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(cacheName).then((cache) => cache.addAll(assets)));
-});
+self.addEventListener('install', () => console.log('service worker installed'));
 // listen for activate event
-self.addEventListener('activate', async () => {
-  fetch(`${API_URl}/users/debug`, {
-    method: 'POST',
-    'content-type': 'application/json',
-    body: JSON.stringify({ msg: 'service activated' }),
-  });
-  console.log('activated');
-});
+self.addEventListener('activate', () => console.log('service worker activated'));
 
 self.addEventListener('push', (e) => {
   console.log('push');
+  // notification data
   const { senderImg, senderName, msgText } = e.data.json();
+  // show notification in the browser
   self.registration.showNotification(senderName, {
     body: msgText,
     icon: `${NEXT_PUBLIC_API_URL}${senderImg}`,
@@ -56,10 +49,14 @@ self.addEventListener('message', async (e) => {
   // jwt token
   const access_token = e.data.value;
   const PUBLIC_VAPID_KEY = 'BLtXuyohy-TNHkRgrHWMmNISkuO4p4yvHMViO4zPfuaH1RsAxboqRjQVm7XnbWGAJw5ovjNuuWOyjvzhFN86EEE';
-  const subscription = await self.registration.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUnit8Array(PUBLIC_VAPID_KEY),
-  });
+  try {
+    const subscription = await self.registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUnit8Array(PUBLIC_VAPID_KEY),
+    });
+  } catch (error) {
+    console.log(error);
+  }
   const response = await saveSubscription(access_token, subscription);
   console.log(response);
 });
