@@ -4,6 +4,7 @@ const usePushNotifications = () => {
     if (!('Notification' in window)) return; // TODO handle notification not supported error
     // if notification is supported then ask for permistion
     const notificationPermission = await Notification.requestPermission();
+    alert(JSON.stringify({ perm: notificationPermission }));
     // handle notification permission not granted
     if (notificationPermission !== 'granted') return; // TODO handle notification permission not granted
     // check for service worker support
@@ -11,6 +12,7 @@ const usePushNotifications = () => {
     // regester a service worker
     // TODO handle service worker regesteration failure
     const serviceWorkerRegesteration = await navigator.serviceWorker.register('/service.worker.js');
+    alert(JSON.stringify({ sw: Boolean(serviceWorkerRegesteration.active) }));
     // check for active service worker
     if (!serviceWorkerRegesteration.active) return;
     // send access token to the service worker
