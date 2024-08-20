@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Avatar, Box, SkeletonCircle, Text } from '@chakra-ui/react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import { SingleChat, setOpenedChat } from '@/redux/chats.slice';
 import { useSelector } from 'react-redux';
 import useChatsApi, { ChatPreviewData } from './getData.hook';
