@@ -1,6 +1,6 @@
 // const NEXT_PUBLIC_API_URL = 'https://api.chat.samapps.xyz';
-const NEXT_PUBLIC_API_URL = 'http://192.168.10.78:2000';
-// const NEXT_PUBLIC_API_URL = 'https://samchat.onrender.com';
+// const NEXT_PUBLIC_API_URL = 'http://192.168.38.78:2000';
+const NEXT_PUBLIC_API_URL = 'https://samchat.onrender.com';
 // caches name
 const cacheName = 'v1';
 // assets
@@ -50,15 +50,17 @@ self.addEventListener('message', async (e) => {
   const access_token = e.data.value;
   const PUBLIC_VAPID_KEY = 'BLtXuyohy-TNHkRgrHWMmNISkuO4p4yvHMViO4zPfuaH1RsAxboqRjQVm7XnbWGAJw5ovjNuuWOyjvzhFN86EEE';
   try {
+    // push notification subscription
     const subscription = await self.registration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUnit8Array(PUBLIC_VAPID_KEY),
     });
+    // send subscription to the server to save it
+    const response = await saveSubscription(access_token, subscription);
+    console.log(response);
   } catch (error) {
     console.log(error);
   }
-  const response = await saveSubscription(access_token, subscription);
-  console.log(response);
 });
 
 // fetch event
