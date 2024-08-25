@@ -14,7 +14,6 @@ import { useVoiceMemoRecorder } from '@/Hooks/useVoiceMemoRecorder';
 import { voiceMemoTimer } from '@/utils/chat.util';
 import getBlobDuration from 'get-blob-duration';
 import { v4 as uuid } from 'uuid';
-import { useSearchParams } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useRouter } from 'next/router';
@@ -22,6 +21,7 @@ import AttachFile from '../AttachFile';
 import { setAttchFileMenuOpen, setSystemNotification } from '@/redux/system.slice';
 import { addMessageToChat, setCurrentUsrDoingAction } from '@/redux/chats.slice';
 import { getFileSize } from '@/utils/files';
+import { useSearchParams } from 'next/navigation';
 
 const ChatInput = () => {
   const { start, stop, cancel } = useVoiceMemoRecorder();
@@ -38,13 +38,17 @@ const ChatInput = () => {
   // locales
   const { locale } = useRouter();
   // current logged usr
-  const { attachFileMenuOpen, currentUsr } = useSelector((state: RootState) => {
-    return { currentUsr: state.auth.currentUser, attachFileMenuOpen: state.system.attchFileMenuOpen };
+  const { attachFileMenuOpen, currentUsr, openedChat } = useSelector((state: RootState) => {
+    return {
+      currentUsr: state.auth.currentUser,
+      attachFileMenuOpen: state.system.attchFileMenuOpen,
+      openedChat: state.chat.openedChat,
+    };
   });
-  // url params
-  const parmas = useSearchParams();
   // translatios
   const { t } = useTranslation('chatScreen');
+  // url params
+  const urlSearchParams = useSearchParams();
   // handleInputFocus
   const handleInputFocus = () => dispatch(setCurrentUsrDoingAction(ChatUserActions.TYPEING));
   // handleInputBlur
@@ -131,7 +135,7 @@ const ChatInput = () => {
     // chat message
     const message = {
       _id: uuid(),
-      receiverId: parmas.get('id'),
+      receiverId: urlSearchParams.get('id'),
       sender: currentUsr,
       date: new Date().toString(),
       status: null,

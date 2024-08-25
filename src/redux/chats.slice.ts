@@ -1,4 +1,4 @@
-import { createChatGroup, getChatMessages, getChatProfile, getUserChats, getUsrOnlineStatus } from '@/apis/chats.api';
+import { createChat, getChatMessages, getChatProfile, getUserChats, getUsrOnlineStatus } from '@/apis/chats.api';
 import { ChatMessage, ChatUserActions, MessageStatus } from '@/interfaces/chat.interface';
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
@@ -9,6 +9,11 @@ import { LoggedInUserData } from './auth.slice';
 export enum ChatTypes {
   'INDIVISUAL' = 'INDIVISUAL',
   'GROUP' = 'GROUP',
+}
+// chat card
+export interface ChatCard extends SingleChat {
+  lastMessage: Omit<ChatMessage, 'fileSize'>;
+  unReadedMsgs: number;
 }
 // Chat's Member
 export type ChatMember = Pick<LoggedInUserData, '_id' | 'avatar' | 'name'>;
@@ -28,7 +33,7 @@ export interface ChatProfile {
 }
 // state slice shape
 export interface ChatState {
-  chats: SingleChat[] | null | undefined;
+  chats: ChatCard[] | null | undefined;
   chatMessages: ChatMessage[] | null;
   isLastChatMessagesBatch: boolean | null;
   openedChat: SingleChat | null | undefined;
@@ -98,13 +103,14 @@ export const chatSlice = createSlice({
       state.messageToBeMarketAsReaded = action.payload.msgData;
     },
     // add new chat to the chats
-    addNewChat(state, action: PayloadAction<SingleChat>) {
+    addNewChat(state, action: PayloadAction<ChatCard>) {
       state.chats = [action.payload, ...state.chats!];
     },
     // place last update chat to the top
-    placeLastUpdatedChatToTheTop(state, action: PayloadAction<{ chatUsrId: string }>) {
+    placeLastUpdatedChatToTheTop(state, action: PayloadAction<{ chatId: string }>) {
+      // get updated chat id
       state.chats?.find((chat, index) => {
-        if (chat._id === action.payload.chatUsrId) {
+        if (chat._id === action.payload.chatId) {
           const chatsFirstPart = state.chats?.slice(0, index);
           const chatsSecondPart = state.chats?.slice(index + 1);
           const updatedChat = state.chats?.slice(index, index + 1);
@@ -119,7 +125,7 @@ export const chatSlice = createSlice({
       // termenate if there is no cached chats
       if (cachedChats === null) return;
       // parsed cached chats
-      const parsedCachedChats = JSON.parse(cachedChats) as SingleChat[];
+      const parsedCachedChats = JSON.parse(cachedChats) as ChatCard[];
       // create regex
       const regex = new RegExp(action.payload, 'i');
       // filter chats
@@ -162,11 +168,15 @@ export const chatSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(getUserChats.fulfilled, (state, action) => {
-      const chats = action.payload.chats as [];
+      const chats = action.payload.chats as ChatCard[];
+      // sorted Chats
+      const sortedChats = chats.sort((a, b) => {
+        return new Date(b.lastMessage.date).getTime() - new Date(a.lastMessage.date).getTime();
+      });
       // store user chats in local storage
       localStorage.setItem('chats', JSON.stringify(chats));
       // cached chats is null
-      state.chats = chats;
+      state.chats = sortedChats;
       state.chatMessages = [];
     });
     builder.addCase(getChatMessages.fulfilled, (state, action) => {
@@ -186,7 +196,7 @@ export const chatSlice = createSlice({
       state.chatUsrStatus = action.payload;
     });
     // create chat group
-    builder.addCase(createChatGroup.fulfilled, (state, action) => {
+    builder.addCase(createChat.fulfilled, (state, action) => {
       const res = action.payload;
       console.log(res);
     });

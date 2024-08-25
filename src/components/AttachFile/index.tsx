@@ -20,13 +20,12 @@ const AttachFile = () => {
   const { t } = useTranslation('chatScreen');
   // dispatch store method
   const dispatch = useDispatch();
-  // url parmas
-  const params = useSearchParams();
   // store
-  const { attachFileMenuOpen, currentUser } = useSelector((state: RootState) => {
+  const { attachFileMenuOpen, currentUser, openedChat } = useSelector((state: RootState) => {
     return {
       attachFileMenuOpen: state.system.attchFileMenuOpen,
       currentUser: state.auth.currentUser,
+      openedChat: state.chat.openedChat,
     };
   });
   // handleFileSelection
@@ -41,13 +40,15 @@ const AttachFile = () => {
     fileReader.addEventListener('load', fileLoadHandler);
     // // file load handler
     function fileLoadHandler(e: ProgressEvent<FileReader>) {
+      // chat usr id
+      const chatUserId = openedChat?.members.filter((member) => member._id !== currentUser?._id)[0]._id;
       //   // get file row data
       const rowFile = e.target?.result;
       //   // create message
       const message: ChatMessage = {
         _id: uuid(),
         date: new Date().toString(),
-        receiverId: params.get('id') as string,
+        receiverId: chatUserId as string,
         sender: currentUser!,
         fileName: file.name,
         fileSize: getFileSize(rowFile as string),

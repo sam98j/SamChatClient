@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Box, SkeletonCircle, Text } from '@chakra-ui/react';
+import { Avatar, Box, Text } from '@chakra-ui/react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { SingleChat, setOpenedChat } from '@/redux/chats.slice';
+import { ChatCard, ChatTypes, setOpenedChat } from '@/redux/chats.slice';
 import { useSelector } from 'react-redux';
-import useChatsApi, { ChatPreviewData } from './getData.hook';
 import MessageStatusIcon from '../MessageStatus';
 import { MessageStatus, MessagesTypes } from '@/interfaces/chat.interface';
 import { RootState } from '@/redux/store';
@@ -19,14 +17,21 @@ import ImagePreview from '../ImagePreview';
 import VideoPreview from '../VideoPreview';
 import FilePreview from '../FilePreview';
 
-const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
+const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  // current loggedIn User
+  const loggedInUser = useSelector((state: RootState) => state.auth.currentUser?._id);
   // chat avatar
   const [chatAvatar] = useState(() => {
-    // check for avatar exist
-    if (!chat.avatar) return '';
-    return `${apiUrl}${chat.avatar}`;
+    // get chat member
+    const chatMember = chat.members.filter((member) => member._id !== loggedInUser)[0];
+    // return
+    return `${apiUrl}${chat.type === ChatTypes.GROUP ? chat.avatar : chatMember.avatar}`;
   });
+  // chat name
+  const [chatUser] = useState(() => chat.members.filter((member) => member._id !== loggedInUser)[0]);
+  // chatName
+  const [chatName] = useState(() => (chat.name ? chat.name : chatUser.name));
   // use dispatch
   const dispatch = useDispatch();
   // localize lang
@@ -42,36 +47,15 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
   // handleCardClick
   const handleCardClick = () => dispatch(setOpenedChat(chat));
   // preview data
-  const [previewData, setPreveiwData] = useState<ChatPreviewData>();
-  // fetch preview data
-  const { fetchChatPreviewData } = useChatsApi();
+  const [previewData, setPreveiwData] = useState({ ...chat.lastMessage, unReadedMsgs: chat.unReadedMsgs });
   // listen for the new incoming msg
   useEffect(() => {
-    if (!newIncomingMsg || newIncomingMsg.sender._id !== chat._id) return;
-    // destruct new incoming message
-    const { date, sender, content: lastMsgText, fileName, type, status, voiceNoteDuration } = newIncomingMsg;
+    if (!newIncomingMsg || newIncomingMsg.sender._id !== chatUser._id) return;
+    // set preview data
     // incoming msg date
-    const incomingMsgDate = new Date(date);
-    setPreveiwData({
-      ...previewData,
-      senderId: sender._id,
-      lastMsgText,
-      type,
-      fileName,
-      status: status,
-      voiceNoteDuration,
-      unReadedMsgs: previewData?.unReadedMsgs as number,
-      date: `${incomingMsgDate.getHours()}:${incomingMsgDate.getMinutes()}`,
-    });
+    setPreveiwData({ ...newIncomingMsg, unReadedMsgs: previewData.unReadedMsgs + 1 });
   }, [newIncomingMsg]);
   // componet did mount
-  useEffect(() => {
-    (async () => {
-      const data = await fetchChatPreviewData(chat._id);
-      if (!data) return;
-      setPreveiwData({ ...data });
-    })();
-  }, []);
   return (
     <Link href={`/chat?id=${chat._id}`} onClick={handleCardClick}>
       <Box
@@ -87,7 +71,7 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
         <Box flexGrow={'1'}>
           {/* chat usr name */}
           <Text fontSize={'md'} marginBottom={'5px'} textColor={'messenger.500'} fontFamily={'"Baloo Bhaijaan 2"'}>
-            {chat.name}
+            {chatName}
           </Text>
           {/* usr actions (usr typing, recording voice) */}
           <Text className={styles.chat_usr_actions}>
@@ -97,38 +81,27 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
           <Text textColor={'gray.500'} display={'flex'} className={styles.msg_text}>
             {/* message status icons */}
             <MessageStatusIcon
-              data={{ msgStatus: previewData?.status as MessageStatus, senderId: previewData?.senderId as string }}
+              data={{ msgStatus: previewData?.status as MessageStatus, senderId: previewData?.sender._id as string }}
             />
             {/* display text msg  */}
-            {previewData && previewData?.type === TEXT ? shrinkMsg(previewData.lastMsgText) : ''}
+            {chat.lastMessage.type === TEXT ? shrinkMsg(previewData.content) : ''}
             {/* display voice message details */}
-            {previewData && previewData.type === VOICENOTE ? (
-              <VoiceMemoPreview duration={previewData.voiceNoteDuration} />
-            ) : (
-              ''
-            )}
+            {chat.lastMessage.type === VOICENOTE ? <VoiceMemoPreview duration={chat.lastMessage.voiceNoteDuration} /> : ''}
             {/* photo message */}
-            {previewData && previewData.type === PHOTO ? <ImagePreview /> : ''}
+            {chat.lastMessage.type === PHOTO ? <ImagePreview /> : ''}
             {/* video message preview*/}
-            {previewData && previewData.type === VIDEO ? <VideoPreview /> : ''}
+            {chat.lastMessage.type === VIDEO ? <VideoPreview /> : ''}
             {/* file message preview */}
-            {previewData && previewData.type === FILE ? <FilePreview fileName={previewData.fileName!} /> : ''}
-            {/* loading */}
-            {!previewData ? <Box height={'10px'} width={'100%'} bgColor={'gray.100'} borderRadius={'10px'}></Box> : ''}
+            {chat.lastMessage.type === FILE ? <FilePreview fileName={chat.lastMessage.fileName!} /> : ''}
           </Text>
         </Box>
         <Box>
           {/* loading msg time */}
           <Text width={'fit-content'} textColor={'gray'}>
-            {previewData ? (
-              getTime(previewData?.date, TimeUnits.time)
-            ) : (
-              // show skelton loading
-              <Box height={'10px'} width={'50px'} bgColor={'gray.100'} borderRadius={'10px'}></Box>
-            )}
+            {getTime(previewData?.date, TimeUnits.time)}
           </Text>
           {/* un readed messages */}
-          {previewData && previewData?.unReadedMsgs !== 0 ? (
+          {chat.unReadedMsgs !== 0 ? (
             <Text
               bgColor={'messenger.500'}
               textColor={'white'}
@@ -138,13 +111,11 @@ const ChatCard: React.FC<{ chat: SingleChat }> = ({ chat }) => {
               textAlign={'center'}
               className={styles.un_readed_messages_count}
             >
-              {previewData?.unReadedMsgs}
+              {previewData.unReadedMsgs}
             </Text>
           ) : (
             ''
           )}
-          {/* loading */}
-          {!previewData ? <SkeletonCircle size='5' className={styles.skeleton_circle} /> : ''}
         </Box>
       </Box>
     </Link>

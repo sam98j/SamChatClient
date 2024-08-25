@@ -5,12 +5,10 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 // login User Api
 export const getUserChats = createAsyncThunk('getUserChats', async (bearerToken: string | null, thunkAPI) => {
-  const response = await fetch(`${apiUrl}/messages/chats`, {
-    method: 'GET',
-    headers: {
-      authorization: bearerToken,
-    },
-  } as RequestInit);
+  // request parmas
+  const requestInit = { method: 'GET', headers: { authorization: bearerToken } } as RequestInit;
+  // fetch request
+  const response = await fetch(`${apiUrl}/chats`, requestInit);
   // check for internal serval error
   if (response.status >= 500) {
     return thunkAPI.rejectWithValue('Internal Server Error');
@@ -26,11 +24,11 @@ export const getUserChats = createAsyncThunk('getUserChats', async (bearerToken:
 // get chat's messages with specific usr
 export const getChatMessages = createAsyncThunk(
   'getChatMessages',
-  async (data: { chatUsrId: string; msgBatch: number }, thunkAPI) => {
-    const { chatUsrId, msgBatch } = data;
+  async (data: { chatId: string; msgBatch: number }, thunkAPI) => {
+    const { chatId, msgBatch } = data;
     // access token
     const access_token = localStorage.getItem('access_token');
-    const response = await fetch(`${apiUrl}/messages/getchatmessages/${chatUsrId}?msgs_batch=${msgBatch}`, {
+    const response = await fetch(`${apiUrl}/messages/getchatmessages/${chatId}?msgs_batch=${msgBatch}`, {
       method: 'GET',
       headers: {
         authorization: access_token,
@@ -92,11 +90,11 @@ export const getChatProfile = createAsyncThunk('getChatProfile', async (chatId: 
   return resp;
 });
 // get chat profile
-export const createChatGroup = createAsyncThunk('createChatGroup', async (chat: SingleChat, thunkAPI) => {
+export const createChat = createAsyncThunk('createChat', async (chat: SingleChat, thunkAPI) => {
   // access token
   const access_token = localStorage.getItem('access_token');
   // get request
-  const response = await fetch(`${apiUrl}/users/create_group_chat`, {
+  const response = await fetch(`${apiUrl}/chats/create_chat`, {
     method: 'POST',
     headers: { authorization: access_token!, 'Content-type': 'application/json' },
     body: JSON.stringify(chat),

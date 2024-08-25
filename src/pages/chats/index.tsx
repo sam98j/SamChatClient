@@ -28,6 +28,7 @@ export default function Home() {
   const { chats, chatMessages, openedChat } = useSelector((state: RootState) => state.chat);
   // handleFormChange
   const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => dispatch(searchForChat(e.target.value));
+  // component did mount hook
   useEffect(() => {
     // set current screen name
     dispatch(setCurrentRoute(routesNamesTra('chats')));
@@ -68,7 +69,7 @@ export default function Home() {
           ) : (
             ''
           )}
-          {chats?.length !== 0 ? chats?.map((chat) => <ChatCard key={String(Math.random())} chat={chat} />) : ''}
+          {chats?.length !== 0 ? chats?.map((chat) => <ChatCard key={chat._id} chat={chat} />) : ''}
         </Box>
         <BottomBar />
       </div>

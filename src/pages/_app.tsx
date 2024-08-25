@@ -65,6 +65,7 @@ function App({ Component, ...pageProps }: AppProps) {
   const { openedChat, isCurrentUsrDoingAction, messageToBeMarketAsReaded, chatMessages } = useSelector(
     (state: RootState) => state.chat
   );
+  const chats = useSelector((state: RootState) => state.chat.chats);
   // listen for multichunk msg
   useEffect(() => {
     // terminate if chat's messages not fetched yet
@@ -121,8 +122,13 @@ function App({ Component, ...pageProps }: AppProps) {
       console.log('message received');
       // check for current usr
       if (!currentUser || !socketClient) return;
+      // TODO: to be refactored
+      const updatedChatId = chats?.filter((chat) => {
+        const chatMemebersIDs = chat.members.map((member) => member._id);
+        return chatMemebersIDs.includes(message.sender._id);
+      })[0];
       // place last updated chat to the top
-      dispatch(placeLastUpdatedChatToTheTop({ chatUsrId: message.sender._id }));
+      dispatch(placeLastUpdatedChatToTheTop({ chatId: updatedChatId?._id! }));
       // check for current route if it's chats
       if (pathname === '/chats') {
         dispatch(setNewIncomingMsg(message));
@@ -133,8 +139,10 @@ function App({ Component, ...pageProps }: AppProps) {
         socketClient?.emit('message_delevered', { msgId: message._id, senderId: message.sender._id });
         return;
       }
+      // chatUser
+      const chatUserId = openedChat.members.filter((member) => member._id !== currentUser._id)[0]._id;
       // check if the msg releated to current chat
-      if (message.sender._id !== openedChat._id && message.receiverId !== openedChat._id) return;
+      if (message.sender._id !== chatUserId && message.receiverId !== chatUserId) return;
       // add receved message to chat messages
       dispatch(addMessageToChat(message));
       // play recive message sound

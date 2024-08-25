@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './styles.module.scss';
 import { Box } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
@@ -15,7 +15,6 @@ import StartNewChatBtn from '../StartNewChatBtn';
 const AppHeader = () => {
   // path name
   const pathname = usePathname();
-  // query params
   // get opened chat status
   const { openedChat, currentUsr } = useSelector((state: RootState) => {
     return {
@@ -47,7 +46,7 @@ const AppHeader = () => {
       {/* back Arr */}
       <BackArrow />
       {/* Screen name */}
-      {currentUsr && isChatScreenOpened ? <ChatAvatar avatar={openedChat!.avatar} /> : ''}
+      {currentUsr && isChatScreenOpened ? <ChatAvatar /> : ''}
       {/* screen name */}
       {currentUsr ? <ScreenName /> : ''}
       {/* add new chat btn */}

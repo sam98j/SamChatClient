@@ -7,7 +7,7 @@ import SearchInput from '../SearchInput/SearchInput';
 import styles from './styles.module.scss';
 import { ChatMember, ChatTypes, SingleChat, setOpenedChat } from '@/redux/chats.slice';
 import { useDispatch } from 'react-redux';
-import { createChatGroup } from '@/apis/chats.api';
+import { createChat } from '@/apis/chats.api';
 import { AnyAction } from '@reduxjs/toolkit';
 import { v4 } from 'uuid';
 import { useRouter } from 'next/navigation';
@@ -38,7 +38,7 @@ const CreateChatGroupMenu = () => {
         name: groupName,
         avatar: '',
       };
-      dispatch(createChatGroup(createdChat) as unknown as AnyAction);
+      dispatch(createChat(createdChat) as unknown as AnyAction);
       dispatch(setVisablityOfCreateChatGroupMenu(false));
       dispatch(setOpenedChat(createdChat));
       push('/chat?id=' + createdChat._id);
@@ -86,13 +86,7 @@ const CreateChatGroupMenu = () => {
         <Box flexGrow={'1'} display={isMemberSelectionDone ? 'none' : 'flex'} flexDirection={'column'} gap={'10px'}>
           {chats &&
             chats.map((chat) => (
-              <GroupMemberCard
-                key={chat._id}
-                _id={chat._id}
-                name={chat.name}
-                avatar={chat.avatar}
-                setSelectedMembers={setSelectedMembers}
-              />
+              <GroupMemberCard key={chat._id} chatMembers={chat.members} setSelectedMembers={setSelectedMembers} />
             ))}
           {/* TODO: refactor this group member card props */}
         </Box>
