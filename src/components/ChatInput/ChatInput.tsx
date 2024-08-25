@@ -38,7 +38,7 @@ const ChatInput = () => {
   // locales
   const { locale } = useRouter();
   // current logged usr
-  const { attachFileMenuOpen, currentUsr, openedChat } = useSelector((state: RootState) => {
+  const { attachFileMenuOpen, currentUsr } = useSelector((state: RootState) => {
     return {
       currentUsr: state.auth.currentUser,
       attachFileMenuOpen: state.system.attchFileMenuOpen,

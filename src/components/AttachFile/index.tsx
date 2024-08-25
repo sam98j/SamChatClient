@@ -9,7 +9,6 @@ import { RootState } from '@/redux/store';
 import { useDispatch } from 'react-redux';
 import { ChatMessage, MessagesTypes } from '@/interfaces/chat.interface';
 import { v4 as uuid } from 'uuid';
-import { useSearchParams } from 'next/navigation';
 import { addMessageToChat } from '@/redux/chats.slice';
 import { setAttchFileMenuOpen } from '@/redux/system.slice';
 import { getFileSize } from '@/utils/files';

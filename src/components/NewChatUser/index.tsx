@@ -28,7 +28,7 @@ const NewChatUser: React.FC<{ usr: Omit<LoggedInUserData, 'email'>; searchqr: st
     type: ChatTypes.INDIVISUAL,
     avatar: '',
     members: [
-      { _id: currentUser?._id!, avatar: currentUser?.avatar!, name: currentUser?.name! },
+      { _id: currentUser!._id, avatar: currentUser!.avatar, name: currentUser!.name },
       { _id: usr._id, avatar: usr.avatar, name: usr.name },
     ],
     name: '',
@@ -36,7 +36,7 @@ const NewChatUser: React.FC<{ usr: Omit<LoggedInUserData, 'email'>; searchqr: st
   // click handler
   const clickHandler = () => {
     // create new chat request
-    dispatch(createChat(chat) as any as AnyAction);
+    dispatch(createChat(chat) as unknown as AnyAction);
     // set opended chat
     dispatch(setOpenedChat(chat));
   };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styles from './styles.module.scss';
 import { Box } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';

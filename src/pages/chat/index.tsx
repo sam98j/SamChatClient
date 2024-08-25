@@ -93,7 +93,7 @@ const Chat = () => {
   useEffect(() => {
     if (!openedChat) return;
     // get usr online status
-    if (openedChat?.type === ChatTypes.INDIVISUAL) dispatch(getUsrOnlineStatus(chatUser?._id!) as unknown as AnyAction);
+    if (openedChat?.type === ChatTypes.INDIVISUAL) dispatch(getUsrOnlineStatus(chatUser!._id) as unknown as AnyAction);
     // get usr online status
     if (openedChat?.type === ChatTypes.GROUP) dispatch(setChatUsrStatus(undefined));
     // set route name
@@ -111,7 +111,7 @@ const Chat = () => {
       </Head>
       <div className={styles.chat} ref={chatRef}>
         {/* if chat messages is loading */}
-        {chatMessages ? <Spinner className={styles.spinner} /> : ''}
+        {chatMessages === null ? <Spinner className={styles.spinner} /> : ''}
         {/* if chat messages not loading and there is no messages */}
         {chatMessages !== null && chatMessages?.length === 0 ? (
           // no messages avatar
