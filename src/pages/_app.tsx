@@ -39,7 +39,7 @@ import CreateChatGroupMenu from '@/components/CreateChatGroupMenu';
 
 function App({ Component, ...pageProps }: AppProps) {
   // chakra theme
-  const theme = extendTheme({ fonts: { body: '"Baloo Bhaijaan 2", cursive' } });
+  const theme = extendTheme({ fonts: { body: '"Baloo Bhaijaan 2", Arial, Helvetica, sans-serif,cursive' } });
   // back end api
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   // socket instance
