@@ -9,9 +9,10 @@ import { RootState } from '@/redux/store';
 import { useDispatch } from 'react-redux';
 import { ChatMessage, MessagesTypes } from '@/interfaces/chat.interface';
 import { v4 as uuid } from 'uuid';
-import { addMessageToChat } from '@/redux/chats.slice';
+import { addMessageToChat, placeLastUpdatedChatToTheTop, setChatLastMessage } from '@/redux/chats.slice';
 import { setAttchFileMenuOpen } from '@/redux/system.slice';
 import { getFileSize } from '@/utils/files';
+import { useSearchParams } from 'next/navigation';
 
 const AttachFile = () => {
   // attach file menu ref
@@ -19,12 +20,13 @@ const AttachFile = () => {
   const { t } = useTranslation('chatScreen');
   // dispatch store method
   const dispatch = useDispatch();
+  // urlSearchParams
+  const urlSearchParams = useSearchParams();
   // store
-  const { attachFileMenuOpen, currentUser, openedChat } = useSelector((state: RootState) => {
+  const { attachFileMenuOpen, currentUser } = useSelector((state: RootState) => {
     return {
       attachFileMenuOpen: state.system.attchFileMenuOpen,
       currentUser: state.auth.currentUser,
-      openedChat: state.chat.openedChat,
     };
   });
   // handleFileSelection
@@ -39,15 +41,13 @@ const AttachFile = () => {
     fileReader.addEventListener('load', fileLoadHandler);
     // // file load handler
     function fileLoadHandler(e: ProgressEvent<FileReader>) {
-      // chat usr id
-      const chatUserId = openedChat?.members.filter((member) => member._id !== currentUser?._id)[0]._id;
       //   // get file row data
       const rowFile = e.target?.result;
       //   // create message
       const message: ChatMessage = {
         _id: uuid(),
         date: new Date().toString(),
-        receiverId: chatUserId as string,
+        receiverId: urlSearchParams.get('id')!,
         sender: currentUser!,
         fileName: file.name,
         fileSize: getFileSize(rowFile as string),
@@ -60,6 +60,10 @@ const AttachFile = () => {
       dispatch(addMessageToChat(message));
       //   // hide attach file menu
       dispatch(setAttchFileMenuOpen(false));
+      // place current chat to the top
+      dispatch(placeLastUpdatedChatToTheTop({ chatId: urlSearchParams.get('id')! }));
+      // change chat last message
+      dispatch(setChatLastMessage({ msg: message, currentUserId: currentUser!._id }));
     }
   };
   return (
