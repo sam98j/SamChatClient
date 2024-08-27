@@ -101,7 +101,7 @@ const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
             {getTime(previewData?.date, TimeUnits.time)}
           </Text>
           {/* un readed messages */}
-          {chat.unReadedMsgs !== 0 ? (
+          {previewData.unReadedMsgs !== 0 ? (
             <Text
               bgColor={'messenger.500'}
               textColor={'white'}

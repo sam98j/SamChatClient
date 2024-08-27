@@ -151,10 +151,35 @@ export const chatSlice = createSlice({
       state.chatMessages?.push(action.payload);
     },
     // set aggreated un readed message
-    setAggreUnReadedMsg: (state, action: PayloadAction<number>) => {
+    clearAggreUnReadedMsg: (state, action: PayloadAction<{ chatId: string }>) => {
+      // updatedChat
+      const updatedChats = state.chats?.map((chat) => {
+        if (chat._id === action.payload.chatId) {
+          return { ...chat, unReadedMsgs: 0 };
+        }
+        return chat;
+      });
       // terminate if no chats
-      if (!action.payload) return;
-      state.aggreUnRededMsgs = state.aggreUnRededMsgs + action.payload;
+      state.chats = updatedChats;
+    },
+    // setChatLastMessage
+    setChatLastMessage: (state, action: PayloadAction<{ chatId: string }>) => {
+      // terminate if no chat messages
+      if (!state.chatMessages || state.chatMessages.length === 0) return;
+      // get last message
+      const chatLastMessage = state.chatMessages[state.chatMessages.length - 1];
+      // check for opened chat
+      if (!state.openedChat || !state.chats) return;
+      // updatedChat
+      const updatedChats = state.chats.map((chat) => {
+        console.log(chat._id, action.payload.chatId);
+        if (chat._id === action.payload.chatId) {
+          return { ...chat, lastMessage: { ...chatLastMessage } };
+        }
+        return chat;
+      });
+      // terminate if no chats
+      state.chats = updatedChats;
     },
     // setFileMessageUploadIndicator
     setFileMessageUploadIndicator: (state, action) => {
@@ -208,8 +233,9 @@ export const {
   setChatUsrDoingAction,
   setChatUsrStatus,
   clearChatMessages,
+  setChatLastMessage,
   setMessageStatus,
-  setAggreUnReadedMsg,
+  clearAggreUnReadedMsg,
   setCurrentUsrDoingAction,
   setMessageToBeMarketAsReaded,
   addNewChat,

@@ -19,7 +19,12 @@ import { RootState } from '@/redux/store';
 import { useRouter } from 'next/router';
 import AttachFile from '../AttachFile';
 import { setAttchFileMenuOpen, setSystemNotification } from '@/redux/system.slice';
-import { addMessageToChat, setCurrentUsrDoingAction } from '@/redux/chats.slice';
+import {
+  addMessageToChat,
+  placeLastUpdatedChatToTheTop,
+  setChatLastMessage,
+  setCurrentUsrDoingAction,
+} from '@/redux/chats.slice';
 import { getFileSize } from '@/utils/files';
 import { useSearchParams } from 'next/navigation';
 
@@ -93,6 +98,10 @@ const ChatInput = () => {
     dispatch(addMessageToChat({ ...message, content: inputText, type: MessagesTypes.TEXT, fileName, fileSize }));
     // clear the input
     setInputText('');
+    // change chat last message
+    dispatch(setChatLastMessage({ chatId: urlSearchParams.get('id')! }));
+    // place current chat to the top
+    dispatch(placeLastUpdatedChatToTheTop({ chatId: urlSearchParams.get('id')! }));
   };
   // send voice message
   const sendVoiceMessage = async (message: ChatMessage) => {

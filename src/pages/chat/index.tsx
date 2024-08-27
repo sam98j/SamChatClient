@@ -10,7 +10,13 @@ import NextImage from 'next/image';
 import NoMessageDrow from '../../../assets/vectors/undraw_new_message_re_fp03.svg';
 import { useSearchParams } from 'next/navigation';
 import { useDispatch } from 'react-redux';
-import { ChatTypes, setChatMessagesBatchNo, setChatUsrStatus, setOpenedChat } from '@/redux/chats.slice';
+import {
+  ChatTypes,
+  clearAggreUnReadedMsg,
+  setChatMessagesBatchNo,
+  setChatUsrStatus,
+  setOpenedChat,
+} from '@/redux/chats.slice';
 import { getChatMessages, getUsrOnlineStatus } from '@/apis/chats.api';
 import { setAttchFileMenuOpen, setCurrentRoute } from '@/redux/system.slice';
 import { AnyAction } from '@reduxjs/toolkit';
@@ -83,6 +89,8 @@ const Chat = () => {
   useEffect(() => {
     // set opend chat
     if (!openedChat) dispatch(setOpenedChat(cachedOpenedChat));
+    // clear unReaded Messages
+    dispatch(clearAggreUnReadedMsg({ chatId: parmas.get('id')! }));
     // clean up when component unmount
     return function cleanUp() {
       dispatch(setChatMessagesBatchNo(1));

@@ -128,7 +128,7 @@ function App({ Component, ...pageProps }: AppProps) {
         return chatMemebersIDs.includes(message.sender._id);
       })[0];
       // place last updated chat to the top
-      dispatch(placeLastUpdatedChatToTheTop({ chatId: updatedChatId!._id! }));
+      dispatch(placeLastUpdatedChatToTheTop({ chatId: updatedChatId!._id }));
       // check for current route if it's chats
       if (pathname === '/chats') {
         dispatch(setNewIncomingMsg(message));
