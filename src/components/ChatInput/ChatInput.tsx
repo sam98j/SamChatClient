@@ -111,7 +111,7 @@ const ChatInput = () => {
     // clear the input
     setInputText('');
     // change chat last message
-    dispatch(setChatLastMessage({ chatId: urlSearchParams.get('id')! }));
+    dispatch(setChatLastMessage({ msg: textMessage, currentUserId: currentUsr!._id }));
     // place current chat to the top
     dispatch(placeLastUpdatedChatToTheTop({ chatId: urlSearchParams.get('id')! }));
   };

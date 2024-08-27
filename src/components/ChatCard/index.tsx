@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { ChatCard, ChatTypes, setOpenedChat } from '@/redux/chats.slice';
 import { useSelector } from 'react-redux';
 import MessageStatusIcon from '../MessageStatus';
-import { MessageStatus, MessagesTypes } from '@/interfaces/chat.interface';
+import { MessagesTypes } from '@/interfaces/chat.interface';
 import { RootState } from '@/redux/store';
 import { useRouter } from 'next/router';
 import styles from './styles.module.scss';
@@ -16,10 +16,8 @@ import { shrinkMsg } from '@/utils/chat.util';
 import ImagePreview from '../ImagePreview';
 import VideoPreview from '../VideoPreview';
 import FilePreview from '../FilePreview';
-import { ChatCardPreviewData } from './types';
 
 const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
-  console.log(chat);
   // base url
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   // current loggedIn User
@@ -42,30 +40,11 @@ const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
   // Messages types
   const { TEXT, VOICENOTE, PHOTO, VIDEO, FILE } = MessagesTypes;
   // get data from store
-  const newIncomingMsg = useSelector((state: RootState) => state.system.newIncomingMsg);
-  // get data from store
   const chatAction = useSelector((state: RootState) => state.chat.isChatUsrDoingAction);
   // is chat usr doing action
   const isChatUsrDoingAction = String(Boolean(chatAction.actionSender === chat._id && chatAction.action !== null));
   // handleCardClick
   const handleCardClick = () => dispatch(setOpenedChat(chat));
-  // preview data
-  const [previewData, setPreveiwData] = useState({
-    ...chat.lastMessage,
-    unReadedMsgs: chat.unReadedMsgs,
-  });
-  // listen for the new incoming msg
-  useEffect(() => {
-    if (!newIncomingMsg || newIncomingMsg.sender._id !== chatUser._id) return;
-    // set preview data
-    // incoming msg date
-    setPreveiwData({ ...newIncomingMsg, unReadedMsgs: previewData.unReadedMsgs + 1 });
-  }, [newIncomingMsg]);
-  // component mount
-  useEffect(() => {
-    // set Preview Data
-    setPreveiwData({ ...chat.lastMessage, unReadedMsgs: chat.unReadedMsgs });
-  }, [chat]);
   // componet did mount
   return (
     <Link href={`/chat?id=${chat._id}`} onClick={handleCardClick}>
@@ -91,9 +70,9 @@ const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
           {/* text message field */}
           <Text textColor={'gray.500'} display={'flex'} className={styles.msg_text}>
             {/* message status icons */}
-            <MessageStatusIcon data={{ msgStatus: previewData.status!, senderId: previewData!.sender._id }} />
+            <MessageStatusIcon data={{ msgStatus: chat.lastMessage.status!, senderId: chat.lastMessage!.sender._id }} />
             {/* display text msg  */}
-            {chat.lastMessage.type === TEXT ? shrinkMsg(previewData.content) : ''}
+            {chat.lastMessage.type === TEXT ? shrinkMsg(chat.lastMessage.content) : ''}
             {/* display voice message details */}
             {chat.lastMessage.type === VOICENOTE ? <VoiceMemoPreview duration={chat.lastMessage.voiceNoteDuration} /> : ''}
             {/* photo message */}
@@ -107,10 +86,10 @@ const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
         <Box>
           {/* loading msg time */}
           <Text width={'fit-content'} textColor={'gray'}>
-            {getTime(previewData?.date, TimeUnits.time)}
+            {getTime(chat.lastMessage.date, TimeUnits.time)}
           </Text>
           {/* un readed messages */}
-          {previewData.unReadedMsgs !== 0 ? (
+          {chat.unReadedMsgs !== 0 ? (
             <Text
               bgColor={'messenger.500'}
               textColor={'white'}
@@ -120,7 +99,7 @@ const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
               textAlign={'center'}
               className={styles.un_readed_messages_count}
             >
-              {previewData.unReadedMsgs}
+              {chat.unReadedMsgs}
             </Text>
           ) : (
             ''

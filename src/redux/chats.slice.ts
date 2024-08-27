@@ -178,17 +178,16 @@ export const chatSlice = createSlice({
       state.chats = updatedChats;
     },
     // setChatLastMessage
-    setChatLastMessage: (state, action: PayloadAction<{ chatId: string }>) => {
-      // terminate if no chat messages
-      if (!state.chatMessages || state.chatMessages.length === 0) return;
-      // get last message
-      const chatLastMessage = state.chatMessages[state.chatMessages.length - 1];
-      // check for opened chat
-      if (!state.openedChat || !state.chats) return;
+    setChatLastMessage: (state, action: PayloadAction<{ msg: ChatMessage; currentUserId: string }>) => {
+      // new message
+      const lastMessage = action.payload.msg;
+      // is loggedInUser sended this message
+      const isSendedByCurrentUser = action.payload.currentUserId === lastMessage.sender._id;
       // updatedChat
-      const updatedChats = state.chats.map((chat) => {
-        if (chat._id === action.payload.chatId) {
-          return { ...chat, lastMessage: { ...chatLastMessage } };
+      const updatedChats = state.chats!.map((chat) => {
+        if (chat._id === lastMessage.receiverId) {
+          const unReadedMsgs = isSendedByCurrentUser ? chat.unReadedMsgs : chat.unReadedMsgs + 1;
+          return { ...chat, lastMessage, unReadedMsgs };
         }
         return chat;
       });

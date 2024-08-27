@@ -123,15 +123,10 @@ function App({ Component, ...pageProps }: AppProps) {
       console.log('message received');
       // check for current usr
       if (!currentUser || !socketClient) return;
-      // TODO: to be refactored
-      const updatedChatId = chats?.filter((chat) => {
-        const chatMemebersIDs = chat.members.map((member) => member._id);
-        return chatMemebersIDs.includes(message.sender._id);
-      })[0];
       // place last updated chat to the top
-      dispatch(placeLastUpdatedChatToTheTop({ chatId: updatedChatId!._id }));
-      // check for current route if it's chats
-      if (pathname === '/chats') dispatch(setNewIncomingMsg(message));
+      dispatch(placeLastUpdatedChatToTheTop({ chatId: message.receiverId }));
+      // set chat's last message
+      dispatch(setChatLastMessage({ msg: message, currentUserId: currentUser._id }));
       // mark received message as delevered if there is no opened chat
       if (!openedChat) {
         // inform the server that the message is delevered
@@ -150,8 +145,6 @@ function App({ Component, ...pageProps }: AppProps) {
       dispatch(addMessageToChat(message));
       // play recive message sound
       playReceiveMessageSound();
-      // set chat's last message
-      dispatch(setChatLastMessage({ chatId: message.receiverId }));
     });
     // usr_online_status
     socketClient?.on('usr_online_status', (data) => {
