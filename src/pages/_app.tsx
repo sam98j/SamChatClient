@@ -26,6 +26,7 @@ import {
   setChatUsrDoingAction,
   addNewChat,
   placeLastUpdatedChatToTheTop,
+  setChatLastMessage,
 } from '@/redux/chats.slice';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { io, Socket } from 'socket.io-client';
@@ -131,7 +132,7 @@ function App({ Component, ...pageProps }: AppProps) {
       dispatch(placeLastUpdatedChatToTheTop({ chatId: updatedChatId!._id }));
       // check for current route if it's chats
       if (pathname === '/chats') dispatch(setNewIncomingMsg(message));
-      // termenate if no opened chat
+      // mark received message as delevered if there is no opened chat
       if (!openedChat) {
         // inform the server that the message is delevered
         socketClient?.emit('message_delevered', {
@@ -149,6 +150,8 @@ function App({ Component, ...pageProps }: AppProps) {
       dispatch(addMessageToChat(message));
       // play recive message sound
       playReceiveMessageSound();
+      // set chat's last message
+      dispatch(setChatLastMessage({ chatId: message.receiverId }));
     });
     // usr_online_status
     socketClient?.on('usr_online_status', (data) => {
