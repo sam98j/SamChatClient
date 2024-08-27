@@ -16,8 +16,11 @@ import { shrinkMsg } from '@/utils/chat.util';
 import ImagePreview from '../ImagePreview';
 import VideoPreview from '../VideoPreview';
 import FilePreview from '../FilePreview';
+import { ChatCardPreviewData } from './types';
 
 const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
+  console.log(chat);
+  // base url
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   // current loggedIn User
   const loggedInUser = useSelector((state: RootState) => state.auth.currentUser?._id);
@@ -47,7 +50,10 @@ const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
   // handleCardClick
   const handleCardClick = () => dispatch(setOpenedChat(chat));
   // preview data
-  const [previewData, setPreveiwData] = useState({ ...chat.lastMessage, unReadedMsgs: chat.unReadedMsgs });
+  const [previewData, setPreveiwData] = useState({
+    ...chat.lastMessage,
+    unReadedMsgs: chat.unReadedMsgs,
+  });
   // listen for the new incoming msg
   useEffect(() => {
     if (!newIncomingMsg || newIncomingMsg.sender._id !== chatUser._id) return;
@@ -55,6 +61,11 @@ const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
     // incoming msg date
     setPreveiwData({ ...newIncomingMsg, unReadedMsgs: previewData.unReadedMsgs + 1 });
   }, [newIncomingMsg]);
+  // component mount
+  useEffect(() => {
+    // set Preview Data
+    setPreveiwData({ ...chat.lastMessage, unReadedMsgs: chat.unReadedMsgs });
+  }, [chat]);
   // componet did mount
   return (
     <Link href={`/chat?id=${chat._id}`} onClick={handleCardClick}>
@@ -80,9 +91,7 @@ const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
           {/* text message field */}
           <Text textColor={'gray.500'} display={'flex'} className={styles.msg_text}>
             {/* message status icons */}
-            <MessageStatusIcon
-              data={{ msgStatus: previewData?.status as MessageStatus, senderId: previewData?.sender._id as string }}
-            />
+            <MessageStatusIcon data={{ msgStatus: previewData.status!, senderId: previewData!.sender._id }} />
             {/* display text msg  */}
             {chat.lastMessage.type === TEXT ? shrinkMsg(previewData.content) : ''}
             {/* display voice message details */}

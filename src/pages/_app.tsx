@@ -101,9 +101,9 @@ function App({ Component, ...pageProps }: AppProps) {
     // terminate if there is no message
     if (!messageToBeMarketAsReaded) return;
     // destructe
-    const { msgId, senderId } = messageToBeMarketAsReaded!;
+    const { msgId, senderId, chatId } = messageToBeMarketAsReaded!;
     // tell the server about readed message
-    socketClient?.emit('message_readed', { msgId, senderId });
+    socketClient?.emit('message_readed', { msgId, senderId, chatId });
   }, [messageToBeMarketAsReaded]);
   // make socket connection
   useEffect(() => {
@@ -130,13 +130,15 @@ function App({ Component, ...pageProps }: AppProps) {
       // place last updated chat to the top
       dispatch(placeLastUpdatedChatToTheTop({ chatId: updatedChatId!._id }));
       // check for current route if it's chats
-      if (pathname === '/chats') {
-        dispatch(setNewIncomingMsg(message));
-      }
+      if (pathname === '/chats') dispatch(setNewIncomingMsg(message));
       // termenate if no opened chat
       if (!openedChat) {
         // inform the server that the message is delevered
-        socketClient?.emit('message_delevered', { msgId: message._id, senderId: message.sender._id });
+        socketClient?.emit('message_delevered', {
+          msgId: message._id,
+          senderId: message.sender._id,
+          chatId: message.receiverId,
+        });
         return;
       }
       // chatUser
@@ -160,8 +162,9 @@ function App({ Component, ...pageProps }: AppProps) {
     // on new chat create
     socketClient?.on('chat_created', (chatId) => dispatch(setOpenedChat(chatId)));
     // receive message status
-    socketClient?.on('message_status', (data: { msgId: string; status: MessageStatus }) => {
+    socketClient?.on('message_status', (data: { msgId: string; chatId: string; status: MessageStatus }) => {
       dispatch(setMessageStatus(data));
+      if (data.status === MessageStatus.READED) console.log('readedddd');
       // check for message sent status
       if (data.status === MessageStatus.SENT) playSentMessageSound();
     });

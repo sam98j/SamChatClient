@@ -20,7 +20,9 @@ import { useRouter } from 'next/router';
 import AttachFile from '../AttachFile';
 import { setAttchFileMenuOpen, setSystemNotification } from '@/redux/system.slice';
 import {
+  ChatCard,
   addMessageToChat,
+  addNewChat,
   placeLastUpdatedChatToTheTop,
   setChatLastMessage,
   setCurrentUsrDoingAction,
@@ -43,10 +45,11 @@ const ChatInput = () => {
   // locales
   const { locale } = useRouter();
   // current logged usr
-  const { attachFileMenuOpen, currentUsr } = useSelector((state: RootState) => {
+  const { attachFileMenuOpen, currentUsr, chatMessages, openedChat } = useSelector((state: RootState) => {
     return {
       currentUsr: state.auth.currentUser,
       attachFileMenuOpen: state.system.attchFileMenuOpen,
+      chatMessages: state.chat.chatMessages,
       openedChat: state.chat.openedChat,
     };
   });
@@ -94,8 +97,17 @@ const ChatInput = () => {
     const fileName = null;
     // text message file size (null)
     const fileSize = null;
+    // textMessage
+    const textMessage: ChatMessage = { ...message, content: inputText, type: MessagesTypes.TEXT, fileName, fileSize };
+    // check if it's first message in the chat
+    if (chatMessages?.length === 0) {
+      // create chat card
+      const chatCard: ChatCard = { lastMessage: textMessage, unReadedMsgs: 1, ...openedChat! };
+      // add chat top the top
+      dispatch(addNewChat(chatCard));
+    }
     // push message to the chat
-    dispatch(addMessageToChat({ ...message, content: inputText, type: MessagesTypes.TEXT, fileName, fileSize }));
+    dispatch(addMessageToChat(textMessage));
     // clear the input
     setInputText('');
     // change chat last message

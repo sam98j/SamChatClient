@@ -43,7 +43,7 @@ export interface ChatState {
   };
   isCurrentUsrDoingAction: null | ChatUserActions;
   chatUsrStatus: string | null | undefined;
-  messageToBeMarketAsReaded: null | { msgId: string; senderId: string };
+  messageToBeMarketAsReaded: null | { msgId: string; senderId: string; chatId: string };
   currentChatPorfile: null | ChatProfile;
   chatMessagesBatchNo: number;
   aggreUnRededMsgs: number;
@@ -87,11 +87,23 @@ export const chatSlice = createSlice({
       state.chatUsrStatus = action.payload;
     },
     // change message status
-    setMessageStatus: (state, action: PayloadAction<{ msgId: string; status: MessageStatus }>) => {
+    setMessageStatus: (state, action: PayloadAction<{ msgId: string; chatId: string; status: MessageStatus }>) => {
+      // change message's status in chatCard's lastMessage
+      const updateChats = state.chats?.map((chat) => {
+        if (chat._id === action.payload.chatId) {
+          return { ...chat, lastMessage: { ...chat.lastMessage, status: action.payload.status } };
+        }
+        return chat;
+      });
+      // set chats
+      state.chats = updateChats;
+      // break if no opened chat
+      if (!state.openedChat) return;
       // get index of the message
       const msgIndex = state.chatMessages?.findIndex((msg) => msg._id === action.payload.msgId);
       // if msg dosnot exist termenate the process
       if (msgIndex === -1) return;
+      // set message status
       state.chatMessages![msgIndex!].status = action.payload.status;
     },
     // set current usr typing state
@@ -99,7 +111,10 @@ export const chatSlice = createSlice({
       state.isCurrentUsrDoingAction = action.payload;
     },
     // messageToBeMarketAsReaded
-    setMessageToBeMarketAsReaded(state, action: PayloadAction<{ msgData: { msgId: string; senderId: string } }>) {
+    setMessageToBeMarketAsReaded(
+      state,
+      action: PayloadAction<{ msgData: { msgId: string; senderId: string; chatId: string } }>
+    ) {
       state.messageToBeMarketAsReaded = action.payload.msgData;
     },
     // add new chat to the chats
@@ -172,7 +187,6 @@ export const chatSlice = createSlice({
       if (!state.openedChat || !state.chats) return;
       // updatedChat
       const updatedChats = state.chats.map((chat) => {
-        console.log(chat._id, action.payload.chatId);
         if (chat._id === action.payload.chatId) {
           return { ...chat, lastMessage: { ...chatLastMessage } };
         }

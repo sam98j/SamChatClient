@@ -41,9 +41,13 @@ const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) =>
     // check if message is readed
     if (status === MessageStatus.READED) return;
     // mark recived message as readed
-    dispatch(setMessageStatus({ msgId: messageData._id, status: MessageStatus.READED }));
+    dispatch(setMessageStatus({ msgId: messageData._id, status: MessageStatus.READED, chatId: messageData.receiverId }));
     //
-    dispatch(setMessageToBeMarketAsReaded({ msgData: { msgId: messageData._id, senderId: sender._id } }));
+    dispatch(
+      setMessageToBeMarketAsReaded({
+        msgData: { msgId: messageData._id, senderId: sender._id, chatId: messageData.receiverId },
+      })
+    );
   }, []);
   return (
     <div className={styles.messageContainer} pref-lang={locale}>

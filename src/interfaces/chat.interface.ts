@@ -36,3 +36,10 @@ export interface GetChatMessagesRes {
   chatMessages: ChatMessage[];
   isLastBatch: boolean;
 }
+
+// ChangeMessageStatusDTO
+export interface ChangeMessageStatusDTO {
+  chatId: string;
+  msgId: string;
+  senderId: string;
+}
