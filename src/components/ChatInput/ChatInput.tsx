@@ -112,8 +112,6 @@ const ChatInput = () => {
     setInputText('');
     // change chat last message
     dispatch(setChatLastMessage({ msg: textMessage, currentUserId: currentUsr!._id }));
-    // place current chat to the top
-    dispatch(placeLastUpdatedChatToTheTop({ chatId: urlSearchParams.get('id')! }));
   };
   // send voice message
   const sendVoiceMessage = async (message: ChatMessage) => {
@@ -147,6 +145,8 @@ const ChatInput = () => {
       dispatch(addMessageToChat(voiceNoteMessage));
       // set isRec
       setIsReco(false);
+      // change chat last message
+      dispatch(setChatLastMessage({ msg: voiceNoteMessage, currentUserId: currentUsr!._id }));
     };
     // on voice reader load
     reader.addEventListener('load', voiceLoadHandler);
@@ -161,6 +161,8 @@ const ChatInput = () => {
       date: new Date().toString(),
       status: null,
     } as ChatMessage;
+    // place current chat to the top
+    dispatch(placeLastUpdatedChatToTheTop({ chatId: urlSearchParams.get('id')! }));
     // if text message
     if (inputText && !isRec) return sendTextMessage(message);
     // if voice message
