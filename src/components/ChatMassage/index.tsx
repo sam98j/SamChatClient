@@ -1,12 +1,11 @@
 /* eslint-disable react/no-unknown-property */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styles from './styles.module.scss';
-import { ChatMessage, MessageStatus, MessagesTypes } from '@/interfaces/chat.interface';
+import { ChatMessage, MessagesTypes } from '@/interfaces/chat.interface';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { Avatar, Box, Text } from '@chakra-ui/react';
-import { useDispatch } from 'react-redux';
-import { ChatTypes, setMessageStatus, setMessageToBeMarketAsReaded } from '@/redux/chats.slice';
+import { ChatTypes } from '@/redux/chats.slice';
 import { useRouter } from 'next/router';
 import VoiceMemoPlayer from '../VoiceMemoPlayer';
 import MessageStatusIcon from '../MessageStatus';
@@ -23,7 +22,6 @@ const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) =>
   // current app lang
   const { locale } = useRouter();
   // redux dispatch function
-  const dispatch = useDispatch();
   // message data
   const { content, sender, status, date, type, voiceNoteDuration, fileName, fileSize, _id } = messageData;
   // msg time
@@ -35,20 +33,6 @@ const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) =>
   // check for the the message sender
   const [sendedByMe] = useState(currentUsr?._id === sender._id);
   // component mount
-  useEffect(() => {
-    // check if the current usr is not the sender
-    if (currentUsr?._id === sender._id) return;
-    // check if message is readed
-    if (status === MessageStatus.READED) return;
-    // mark recived message as readed
-    dispatch(setMessageStatus({ msgId: messageData._id, status: MessageStatus.READED, chatId: messageData.receiverId }));
-    //
-    dispatch(
-      setMessageToBeMarketAsReaded({
-        msgData: { msgId: messageData._id, senderId: sender._id, chatId: messageData.receiverId },
-      })
-    );
-  }, []);
   return (
     <div className={styles.messageContainer} pref-lang={locale}>
       {/* avatar */}

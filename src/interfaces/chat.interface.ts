@@ -39,7 +39,8 @@ export interface GetChatMessagesRes {
 
 // ChangeMessageStatusDTO
 export interface ChangeMessageStatusDTO {
+  msgIDs: string[];
+  msgStatus: MessageStatus;
   chatId: string;
-  msgId: string;
-  senderId: string;
+  senderIDs?: string[];
 }

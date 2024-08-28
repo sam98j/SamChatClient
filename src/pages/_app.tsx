@@ -17,7 +17,7 @@ import AppLogo from '@/components/AppLogo';
 import { AnyAction } from '@reduxjs/toolkit';
 import { extendTheme } from '@chakra-ui/react';
 import { playReceiveMessageSound, playSentMessageSound } from '@/utils/chat.util';
-import { ChatMessage, MessageStatus } from '@/interfaces/chat.interface';
+import { ChangeMessageStatusDTO, ChatMessage, MessageStatus } from '@/interfaces/chat.interface';
 import {
   addMessageToChat,
   setChatUsrStatus,
@@ -28,9 +28,8 @@ import {
   placeLastUpdatedChatToTheTop,
   setChatLastMessage,
 } from '@/redux/chats.slice';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { io, Socket } from 'socket.io-client';
-import { setNewIncomingMsg } from '@/redux/system.slice';
 import useChatMessagesSender from '@/Hooks/useChatMsgSender';
 import SystemNotifications from '@/components/SystemNotifications/SystemNotifications';
 import usePushNotifications from '@/Hooks/usePushNotifications';
@@ -52,8 +51,6 @@ function App({ Component, ...pageProps }: AppProps) {
   const pathname = usePathname();
   // router
   const { push } = useRouter();
-  // search params
-  const parmas = useSearchParams();
   // store dispatch func
   const dispatch = useDispatch();
   // system state
@@ -99,13 +96,10 @@ function App({ Component, ...pageProps }: AppProps) {
   }, [currentUser, socketClient]);
   // listen for message to be mark as readed
   useEffect(() => {
-    // TODO: refacotring mark message as readed
     // terminate if there is no message
     if (!messageToBeMarketAsReaded) return;
-    // destructe
-    const { msgId, senderId, chatId } = messageToBeMarketAsReaded!;
     // tell the server about readed message
-    socketClient?.emit('message_readed', { msgId, senderId, chatId });
+    socketClient?.emit('message_status_changed', messageToBeMarketAsReaded);
   }, [messageToBeMarketAsReaded]);
   // make socket connection
   useEffect(() => {
@@ -121,7 +115,6 @@ function App({ Component, ...pageProps }: AppProps) {
   // use effect
   useEffect(() => {
     socketClient?.on('message', (message: ChatMessage) => {
-      console.log('message received');
       // check for current usr
       if (!currentUser || !socketClient) return;
       // opened chat membersIds
@@ -131,12 +124,15 @@ function App({ Component, ...pageProps }: AppProps) {
       dispatch(setChatLastMessage({ msg: message, currentUserId: currentUser._id }));
       // mark received message as delevered if there is no opened chat
       if (!openedChat) {
-        // inform the server that the message is delevered
-        socketClient?.emit('message_delevered', {
-          msgId: message._id,
-          senderId: message.sender._id,
+        // change message status dto
+        const data: ChangeMessageStatusDTO = {
+          msgIDs: [message._id],
+          senderIDs: [message.sender._id],
           chatId: message.receiverId,
-        });
+          msgStatus: MessageStatus.DELEVERED,
+        };
+        // inform the server that the message is delevered
+        socketClient?.emit('message_status_changed', data);
         return;
       }
       // chatUser
@@ -160,10 +156,11 @@ function App({ Component, ...pageProps }: AppProps) {
     // on new chat create
     socketClient?.on('chat_created', (chatId) => dispatch(setOpenedChat(chatId)));
     // receive message status
-    socketClient?.on('message_status', (data: { msgId: string; chatId: string; status: MessageStatus }) => {
-      dispatch(setMessageStatus(data));
+    socketClient?.on('message_status_changed', (data: ChangeMessageStatusDTO) => {
       // check for message sent status
-      if (data.status === MessageStatus.SENT) playSentMessageSound();
+      if (data.msgStatus === MessageStatus.SENT) playSentMessageSound();
+      // set message status
+      dispatch(setMessageStatus(data));
     });
   }, [socketClient, openedChat, currentUser]);
   // usr auth observer

@@ -15,6 +15,7 @@ import {
   clearAggreUnReadedMsg,
   setChatMessagesBatchNo,
   setChatUsrStatus,
+  setMessageToBeMarketAsReaded,
   setOpenedChat,
 } from '@/redux/chats.slice';
 import { getChatMessages, getUsrOnlineStatus } from '@/apis/chats.api';
@@ -22,7 +23,7 @@ import { setAttchFileMenuOpen, setCurrentRoute } from '@/redux/system.slice';
 import { AnyAction } from '@reduxjs/toolkit';
 import ChatInput from '@/components/ChatInput/ChatInput';
 import { groupChatMessagesByDate } from '@/utils/chat.util';
-import { ChatMessage } from '@/interfaces/chat.interface';
+import { ChangeMessageStatusDTO, ChatMessage, MessageStatus } from '@/interfaces/chat.interface';
 import { useRouter } from 'next/router';
 import ChatMessagesLoader from '@/components/ChatMessagesLoader';
 
@@ -82,6 +83,28 @@ const Chat = () => {
   const [cachedOpenedChat] = useState(() => chats?.filter((chat) => chat._id === (parmas.get('id') as string))[0]);
   // scroll to the bottom of the view
   useEffect(() => {
+    // if there is chat messages
+    if (chatMessages && chatMessages.length) {
+      // messages to be market as readed
+      const messagesToBeMarketAsReaded = chatMessages
+        .filter((message) => message.status !== MessageStatus.READED && message.sender._id !== loggedInUser)
+        .map((message) => message._id);
+      // messages senders
+      const messagesSendersIDs = chatMessages
+        .filter((message) => message.status !== MessageStatus.READED && message.sender._id !== loggedInUser)
+        .map((message) => message.sender._id);
+      // terminate if message is sended by current user
+      if (!messagesToBeMarketAsReaded.length) return;
+      // messagesToBeMarket as Readed
+      const changeMessageStatusData: ChangeMessageStatusDTO = {
+        chatId: parmas.get('id')!,
+        msgIDs: messagesToBeMarketAsReaded,
+        senderIDs: messagesSendersIDs,
+        msgStatus: MessageStatus.READED,
+      };
+      // set messages to market as readed
+      dispatch(setMessageToBeMarketAsReaded(changeMessageStatusData));
+    }
     if (messagesBatchNo > 1) return;
     chatRef.current?.scrollTo(0, chatRef.current.scrollHeight);
   }, [chatMessages, messagesBatchNo]);

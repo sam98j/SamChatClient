@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Avatar, Box, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { ChatCard, ChatTypes, setOpenedChat } from '@/redux/chats.slice';

@@ -1,5 +1,5 @@
 import { createChat, getChatMessages, getChatProfile, getUserChats, getUsrOnlineStatus } from '@/apis/chats.api';
-import { ChatMessage, ChatUserActions, MessageStatus } from '@/interfaces/chat.interface';
+import { ChangeMessageStatusDTO, ChatMessage, ChatUserActions } from '@/interfaces/chat.interface';
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { LoggedInUserData } from './auth.slice';
@@ -43,7 +43,7 @@ export interface ChatState {
   };
   isCurrentUsrDoingAction: null | ChatUserActions;
   chatUsrStatus: string | null | undefined;
-  messageToBeMarketAsReaded: null | { msgId: string; senderId: string; chatId: string };
+  messageToBeMarketAsReaded: null | ChangeMessageStatusDTO;
   currentChatPorfile: null | ChatProfile;
   chatMessagesBatchNo: number;
   aggreUnRededMsgs: number;
@@ -87,11 +87,11 @@ export const chatSlice = createSlice({
       state.chatUsrStatus = action.payload;
     },
     // change message status
-    setMessageStatus: (state, action: PayloadAction<{ msgId: string; chatId: string; status: MessageStatus }>) => {
+    setMessageStatus: (state, action: PayloadAction<ChangeMessageStatusDTO>) => {
       // change message's status in chatCard's lastMessage
       const updateChats = state.chats?.map((chat) => {
         if (chat._id === action.payload.chatId) {
-          return { ...chat, lastMessage: { ...chat.lastMessage, status: action.payload.status } };
+          return { ...chat, lastMessage: { ...chat.lastMessage, status: action.payload.msgStatus } };
         }
         return chat;
       });
@@ -100,22 +100,20 @@ export const chatSlice = createSlice({
       // break if no opened chat
       if (!state.openedChat) return;
       // get index of the message
-      const msgIndex = state.chatMessages?.findIndex((msg) => msg._id === action.payload.msgId);
-      // if msg dosnot exist termenate the process
-      if (msgIndex === -1) return;
-      // set message status
-      state.chatMessages![msgIndex!].status = action.payload.status;
+      if (!state.chatMessages) return;
+      // change messages status
+      action.payload.msgIDs.map((msgId) => {
+        const msgIndex = state.chatMessages?.findIndex((msg) => msg._id === msgId);
+        state.chatMessages![msgIndex!].status = action.payload.msgStatus;
+      });
     },
     // set current usr typing state
     setCurrentUsrDoingAction(state, action: PayloadAction<null | ChatUserActions>) {
       state.isCurrentUsrDoingAction = action.payload;
     },
     // messageToBeMarketAsReaded
-    setMessageToBeMarketAsReaded(
-      state,
-      action: PayloadAction<{ msgData: { msgId: string; senderId: string; chatId: string } }>
-    ) {
-      state.messageToBeMarketAsReaded = action.payload.msgData;
+    setMessageToBeMarketAsReaded(state, action: PayloadAction<ChangeMessageStatusDTO>) {
+      state.messageToBeMarketAsReaded = action.payload;
     },
     // add new chat to the chats
     addNewChat(state, action: PayloadAction<ChatCard>) {
