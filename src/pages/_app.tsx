@@ -148,8 +148,10 @@ function App({ Component, ...pageProps }: AppProps) {
     socketClient?.on('usr_online_status', (data) => {
       // check if no chat is opened
       if (!openedChat) return;
+      // chat Usr
+      const chatUser = openedChat.members.filter((member) => member._id !== currentUser?._id)[0];
       // check if the openedChat and the client doing the action of online status
-      if (openedChat._id !== data.id) return;
+      if (chatUser._id !== data.id) return;
       // all conditions passed
       dispatch(setChatUsrStatus(data.status));
     });
