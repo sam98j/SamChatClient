@@ -42,7 +42,7 @@ const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
   // get data from store
   const chatAction = useSelector((state: RootState) => state.chat.isChatUsrDoingAction);
   // is chat usr doing action
-  const isChatUsrDoingAction = String(Boolean(chatAction.actionSender === chat._id && chatAction.action !== null));
+  const isChatUsrDoingAction = String(Boolean(chatAction.actionSender === chatUser._id && chatAction.action !== null));
   // handleCardClick
   const handleCardClick = () => dispatch(setOpenedChat(chat));
   // componet did mount

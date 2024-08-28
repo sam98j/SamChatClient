@@ -66,7 +66,6 @@ function App({ Component, ...pageProps }: AppProps) {
   const { openedChat, isCurrentUsrDoingAction, messageToBeMarketAsReaded, chatMessages } = useSelector(
     (state: RootState) => state.chat
   );
-  const chats = useSelector((state: RootState) => state.chat.chats);
   // listen for multichunk msg
   useEffect(() => {
     // terminate if chat's messages not fetched yet
@@ -80,10 +79,12 @@ function App({ Component, ...pageProps }: AppProps) {
   }, [chatMessages]);
   // listen to isCurrentUsrDoingAction
   useEffect(() => {
+    // opened chat membersIds
+    const openedChatMembersIDs = openedChat?.members.map((member) => member._id);
     // chatusr_start_typing
     socketClient?.emit('chatusr_typing_status', {
       cUsrId: currentUser?._id,
-      chatUsrId: parmas.get('id'),
+      chatMembersIDs: openedChatMembersIDs,
       action: isCurrentUsrDoingAction,
     });
   }, [isCurrentUsrDoingAction]);
@@ -123,6 +124,7 @@ function App({ Component, ...pageProps }: AppProps) {
       console.log('message received');
       // check for current usr
       if (!currentUser || !socketClient) return;
+      // opened chat membersIds
       // place last updated chat to the top
       dispatch(placeLastUpdatedChatToTheTop({ chatId: message.receiverId }));
       // set chat's last message
@@ -160,7 +162,6 @@ function App({ Component, ...pageProps }: AppProps) {
     // receive message status
     socketClient?.on('message_status', (data: { msgId: string; chatId: string; status: MessageStatus }) => {
       dispatch(setMessageStatus(data));
-      if (data.status === MessageStatus.READED) console.log('readedddd');
       // check for message sent status
       if (data.status === MessageStatus.SENT) playSentMessageSound();
     });
