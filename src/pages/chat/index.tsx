@@ -52,9 +52,9 @@ const Chat = () => {
       };
     });
   // chat name
-  const [chatUser] = useState(() => openedChat?.members.filter((member) => member._id !== loggedInUser)[0]);
+  const chatUser = openedChat?.members.filter((member) => member._id !== loggedInUser)[0];
   // chatName
-  const [chatName] = useState(() => (openedChat?.name ? openedChat.name : chatUser?.name));
+  const chatName = openedChat?.name ? openedChat.name : chatUser?.name;
   // chatId
   const chatId = parmas.get('id');
   // when usr scroll throwout the messages

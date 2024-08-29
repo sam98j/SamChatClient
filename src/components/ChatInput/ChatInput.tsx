@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 import { Box, IconButton, Input, InputGroup, InputRightElement, Text } from '@chakra-ui/react';
 import styles from './styles.module.scss';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Icon } from '@chakra-ui/icons';
 import { BsMic, BsSoundwave, BsStopFill } from 'react-icons/bs';
 import { ImAttachment } from 'react-icons/im';
@@ -58,19 +58,12 @@ const ChatInput = () => {
   const { t } = useTranslation('chatScreen');
   // url params
   const urlSearchParams = useSearchParams();
-  // chat members IDs
-  const [openedChatMembersIDs] = useState(() => openedChat?.members.map((member) => member._id));
   // chat action
-  const [chatAction] = useState<ChatActions>({
-    type: null,
-    chatId: openedChat!._id,
-    chatMembers: openedChatMembersIDs!,
-    senderId: currentUsr!._id,
-  });
+  const [chatAction, setChatAction] = useState<ChatActions | null>(null);
   // handleInputFocus
-  const handleInputFocus = () => dispatch(setCurrentUsrDoingAction({ ...chatAction, type: ChatActionsTypes.TYPEING }));
+  const handleInputFocus = () => dispatch(setCurrentUsrDoingAction({ ...chatAction!, type: ChatActionsTypes.TYPEING }));
   // handleInputBlur
-  const handleInputBlur = () => dispatch(setCurrentUsrDoingAction({ ...chatAction, type: null }));
+  const handleInputBlur = () => dispatch(setCurrentUsrDoingAction({ ...chatAction!, type: null }));
   // inputChangeHandler
   const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => setInputText(event.target.value);
   // start recording voice
@@ -79,7 +72,7 @@ const ChatInput = () => {
     try {
       await start();
       // tell the server about is currently recording voice to inform another usr in the chat
-      dispatch(setCurrentUsrDoingAction({ ...chatAction, type: ChatActionsTypes.RECORDING_VOICE }));
+      dispatch(setCurrentUsrDoingAction({ ...chatAction!, type: ChatActionsTypes.RECORDING_VOICE }));
       // set voice recording state
       setIsReco(true);
       setTimerInterval(voiceMemoTimer(setTimer));
@@ -93,7 +86,7 @@ const ChatInput = () => {
   const stopRecVoiceMemoHandler = () => {
     // tell server about usr is currently stop recording voice to inform another usr in chat
     // set loggedInUser Doing Action
-    dispatch(setCurrentUsrDoingAction({ ...chatAction, type: null }));
+    dispatch(setCurrentUsrDoingAction({ ...chatAction!, type: null }));
     // set voice recording state
     setIsReco(false);
     // cancerl recording
@@ -130,7 +123,7 @@ const ChatInput = () => {
     if (!isRec || inputText) return;
     // make current usr doing nothing
     // set loggedInUser Doing Action
-    dispatch(setCurrentUsrDoingAction({ ...chatAction, type: null }));
+    dispatch(setCurrentUsrDoingAction({ ...chatAction!, type: null }));
     // stop voice memo counter
     clearInterval(timerInterval);
     const blob = await stop();
@@ -189,7 +182,22 @@ const ChatInput = () => {
   const showSendMsgBtn = isRec || inputText;
   // decide to render attachment or flashing mic icon
   const MicOrAttchIcon = isRec ? BsMic : ImAttachment;
-  //
+  // listen for opened chat
+  useEffect(() => {
+    // if no opened chat
+    if (!openedChat) return;
+    // chat members IDs
+    const openedChatMembersIDs = openedChat?.members.map((member) => member._id);
+    // chat action
+    const chatAction = {
+      type: null,
+      chatId: openedChat!._id,
+      chatMembers: openedChatMembersIDs!,
+      senderId: currentUsr!._id,
+    };
+    // setChatAction
+    setChatAction(chatAction);
+  }, [openedChat]);
   return (
     <div className={styles.footer} pref-lang={locale}>
       {/* attach file menu */}
