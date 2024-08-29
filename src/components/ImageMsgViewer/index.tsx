@@ -21,12 +21,13 @@ const ImageMsgViewer: FC<{ data: Props }> = ({ data }) => {
   // destruct props
   const { content, date, sender, _id } = data;
   // redux store
-  const { chatUsr, loggedInUsr } = useSelector((state: RootState) => ({
-    chatUsr: state.chat.openedChat?.name,
+  const { loggedInUsr } = useSelector((state: RootState) => ({
     loggedInUsr: state.auth.currentUser,
   }));
   // is Message sended by the current usr
   const sendedByMe = loggedInUsr?._id === sender._id;
+  // photo's sender name
+  const photoSenderName = data.sender.name;
   // image url
   const [imgUrl] = useState(() => {
     // check if content contain http
@@ -46,7 +47,6 @@ const ImageMsgViewer: FC<{ data: Props }> = ({ data }) => {
     setIsOpen(true);
   };
   const handleClose = () => setIsOpen(false);
-
   return (
     <div className={styles.imageMsgViewer} key={_id} is-open={String(isOpen)} pref-lang={locale}>
       {/* photo upload indicator */}
@@ -57,7 +57,7 @@ const ImageMsgViewer: FC<{ data: Props }> = ({ data }) => {
           <IoArrowBack size={'1.5rem'} />
           {/* message sender */}
           <Box>
-            <Text>{sendedByMe ? t('you') : chatUsr}</Text>
+            <Text>{sendedByMe ? t('you') : photoSenderName}</Text>
             <Text fontSize={'.8rem'}>{getTime(date, TimeUnits.fullTime, locale as never)}</Text>
           </Box>
         </Box>

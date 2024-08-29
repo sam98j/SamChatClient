@@ -25,12 +25,13 @@ const VideoMsgPlayer: FC<{ data: Props }> = ({ data }) => {
   // destruct props
   const { content, date, sender, _id } = data;
   // get data from redux store
-  const { chatUsr, currentUsr } = useSelector((state: RootState) => ({
-    chatUsr: state.chat.openedChat?.name,
+  const { currentUsr } = useSelector((state: RootState) => ({
     currentUsr: state.auth.currentUser,
   }));
   // is video is sended by the current loggedIn usr
   const sendedByMe = currentUsr?._id === sender._id;
+  // video sender name
+  const videoSenderName = data.sender.name;
   // vido url
   const [videoUrl] = useState(() => {
     // check for content is data url or link
@@ -94,7 +95,7 @@ const VideoMsgPlayer: FC<{ data: Props }> = ({ data }) => {
           {/* message sender */}
           <Box>
             {/* message sender */}
-            <Text>{sendedByMe ? t('you') : chatUsr}</Text>
+            <Text>{sendedByMe ? t('you') : videoSenderName}</Text>
             {/* message date and time */}
             <Text fontSize={'.8rem'}>{getTime(date, TimeUnits.fullTime, locale as never)}</Text>
           </Box>
