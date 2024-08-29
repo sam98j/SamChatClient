@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Avatar, Box, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { ChatCard, ChatTypes, setOpenedChat } from '@/redux/chats.slice';
@@ -42,7 +42,15 @@ const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
   // get data from store
   const chatAction = useSelector((state: RootState) => state.chat.isChatUsrDoingAction);
   // is chat usr doing action
-  const isChatUsrDoingAction = String(Boolean(chatAction.actionSender === chatUser._id && chatAction.action !== null));
+  const [isChatUsrDoingAction, setIsChatUserDoingAction] = useState('false');
+  // listen for chat action
+  useEffect(() => {
+    // TODO: fix this massive rerender
+    // check if no chat action
+    if (!chatAction) return setIsChatUserDoingAction('false');
+    // set isChatUserDoingAction
+    setIsChatUserDoingAction(String(Boolean(chatAction.chatId === chat._id && chatAction.type)));
+  }, [chatAction]);
   // handleCardClick
   const handleCardClick = () => dispatch(setOpenedChat(chat));
   // componet did mount

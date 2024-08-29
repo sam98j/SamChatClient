@@ -1,5 +1,5 @@
 import { createChat, getChatMessages, getChatProfile, getUserChats, getUsrOnlineStatus } from '@/apis/chats.api';
-import { ChangeMessageStatusDTO, ChatMessage, ChatUserActions } from '@/interfaces/chat.interface';
+import { ChangeMessageStatusDTO, ChatMessage, ChatActionsTypes } from '@/interfaces/chat.interface';
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { LoggedInUserData } from './auth.slice';
@@ -31,17 +31,21 @@ export interface ChatProfile {
   name: string;
   email: string;
 }
+// chatActionsDTO
+export interface ChatActions {
+  type: ChatActionsTypes | null;
+  senderId: string;
+  chatId: string;
+  chatMembers: string[];
+}
 // state slice shape
 export interface ChatState {
   chats: ChatCard[] | null | undefined;
   chatMessages: ChatMessage[] | null;
   isLastChatMessagesBatch: boolean | null;
   openedChat: SingleChat | null | undefined;
-  isChatUsrDoingAction: {
-    action: ChatUserActions | null;
-    actionSender: string | null;
-  };
-  isCurrentUsrDoingAction: null | ChatUserActions;
+  isChatUsrDoingAction: ChatActions;
+  isCurrentUsrDoingAction: ChatActions;
   chatUsrStatus: string | null | undefined;
   messageToBeMarketAsReaded: null | ChangeMessageStatusDTO;
   currentChatPorfile: null | ChatProfile;
@@ -56,8 +60,8 @@ const initialState: ChatState = {
   chats: null,
   chatMessages: [],
   openedChat: undefined,
-  isChatUsrDoingAction: { action: null, actionSender: null },
-  isCurrentUsrDoingAction: null,
+  isChatUsrDoingAction: { chatId: '', chatMembers: [], senderId: '', type: null },
+  isCurrentUsrDoingAction: { chatId: '', chatMembers: [], senderId: '', type: null },
   chatUsrStatus: '',
   messageToBeMarketAsReaded: null,
   currentChatPorfile: null,
@@ -79,7 +83,7 @@ export const chatSlice = createSlice({
       state.chatUsrStatus = action.payload;
     },
     // change chat user typing state
-    setChatUsrDoingAction: (state, action: PayloadAction<{ action: ChatUserActions; actionSender: string }>) => {
+    setChatUsrDoingAction: (state, action: PayloadAction<ChatActions>) => {
       state.isChatUsrDoingAction = action.payload;
     },
     // set chat usr status
@@ -108,7 +112,7 @@ export const chatSlice = createSlice({
       });
     },
     // set current usr typing state
-    setCurrentUsrDoingAction(state, action: PayloadAction<null | ChatUserActions>) {
+    setCurrentUsrDoingAction(state, action: PayloadAction<ChatActions>) {
       state.isCurrentUsrDoingAction = action.payload;
     },
     // messageToBeMarketAsReaded

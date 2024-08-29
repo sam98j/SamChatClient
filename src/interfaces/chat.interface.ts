@@ -6,7 +6,7 @@ export enum MessageStatus {
   'READED' = 'READED',
 }
 // chat user actions
-export enum ChatUserActions {
+export enum ChatActionsTypes {
   'TYPEING' = 'TYPEING',
   'RECORDING_VOICE' = 'RECORDING_VOICE',
 }

@@ -76,14 +76,8 @@ function App({ Component, ...pageProps }: AppProps) {
   }, [chatMessages]);
   // listen to isCurrentUsrDoingAction
   useEffect(() => {
-    // opened chat membersIds
-    const openedChatMembersIDs = openedChat?.members.map((member) => member._id);
     // chatusr_start_typing
-    socketClient?.emit('chatusr_typing_status', {
-      cUsrId: currentUser?._id,
-      chatMembersIDs: openedChatMembersIDs,
-      action: isCurrentUsrDoingAction,
-    });
+    socketClient?.emit('chatusr_typing_status', isCurrentUsrDoingAction);
   }, [isCurrentUsrDoingAction]);
   // listen for chat user doing action
   useEffect(() => {

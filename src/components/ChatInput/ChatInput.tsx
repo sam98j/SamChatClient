@@ -8,7 +8,7 @@ import { ImAttachment } from 'react-icons/im';
 import { BiSticker } from 'react-icons/bi';
 import useTranslation from 'next-translate/useTranslation';
 import { IoSend } from 'react-icons/io5';
-import { ChatMessage, ChatUserActions, MessagesTypes } from '@/interfaces/chat.interface';
+import { ChatMessage, ChatActionsTypes, MessagesTypes } from '@/interfaces/chat.interface';
 import { useDispatch } from 'react-redux';
 import { useVoiceMemoRecorder } from '@/Hooks/useVoiceMemoRecorder';
 import { voiceMemoTimer } from '@/utils/chat.util';
@@ -20,6 +20,7 @@ import { useRouter } from 'next/router';
 import AttachFile from '../AttachFile';
 import { setAttchFileMenuOpen, setSystemNotification } from '@/redux/system.slice';
 import {
+  ChatActions,
   ChatCard,
   addMessageToChat,
   addNewChat,
@@ -58,9 +59,35 @@ const ChatInput = () => {
   // url params
   const urlSearchParams = useSearchParams();
   // handleInputFocus
-  const handleInputFocus = () => dispatch(setCurrentUsrDoingAction(ChatUserActions.TYPEING));
+  const handleInputFocus = () => {
+    // TODO: make chat members ids a global variable
+    // chat members IDs
+    const openedChatMembersIDs = openedChat?.members.map((member) => member._id);
+    // chatAction
+    const chatAction: ChatActions = {
+      type: ChatActionsTypes.TYPEING,
+      chatId: openedChat!._id,
+      chatMembers: openedChatMembersIDs!,
+      senderId: currentUsr!._id,
+    };
+    // set loggedInUser Doing Action
+    dispatch(setCurrentUsrDoingAction(chatAction));
+  };
   // handleInputBlur
-  const handleInputBlur = () => dispatch(setCurrentUsrDoingAction(null));
+  const handleInputBlur = () => {
+    // TODO: make chat members ids a global variable
+    // chat members IDs
+    const openedChatMembersIDs = openedChat?.members.map((member) => member._id);
+    // chatAction
+    const chatAction: ChatActions = {
+      type: null,
+      chatId: openedChat!._id,
+      chatMembers: openedChatMembersIDs!,
+      senderId: currentUsr!._id,
+    };
+    // set loggedInUser Doing Action
+    dispatch(setCurrentUsrDoingAction(chatAction));
+  };
   // inputChangeHandler
   const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => setInputText(event.target.value);
   // start recording voice
@@ -68,8 +95,17 @@ const ChatInput = () => {
     // start recording voice
     try {
       await start();
+      // chat members IDs
+      const openedChatMembersIDs = openedChat?.members.map((member) => member._id);
+      // chatAction
+      const chatAction: ChatActions = {
+        type: ChatActionsTypes.RECORDING_VOICE,
+        chatId: openedChat!._id,
+        chatMembers: openedChatMembersIDs!,
+        senderId: currentUsr!._id,
+      };
       // tell the server about is currently recording voice to inform another usr in the chat
-      dispatch(setCurrentUsrDoingAction(ChatUserActions.RECORDING_VOICE));
+      dispatch(setCurrentUsrDoingAction(chatAction));
       // set voice recording state
       setIsReco(true);
       setTimerInterval(voiceMemoTimer(setTimer));
@@ -82,7 +118,17 @@ const ChatInput = () => {
   // handle stop recrding vioice
   const stopRecVoiceMemoHandler = () => {
     // tell server about usr is currently stop recording voice to inform another usr in chat
-    dispatch(setCurrentUsrDoingAction(null));
+    // chat members IDs
+    const openedChatMembersIDs = openedChat?.members.map((member) => member._id);
+    // chatAction
+    const chatAction: ChatActions = {
+      type: null,
+      chatId: openedChat!._id,
+      chatMembers: openedChatMembersIDs!,
+      senderId: currentUsr!._id,
+    };
+    // set loggedInUser Doing Action
+    dispatch(setCurrentUsrDoingAction(chatAction));
     // set voice recording state
     setIsReco(false);
     // cancerl recording
@@ -118,7 +164,17 @@ const ChatInput = () => {
     // send voice msg if it's recording and input is empty
     if (!isRec || inputText) return;
     // make current usr doing nothing
-    dispatch(setCurrentUsrDoingAction(null));
+    // chat members IDs
+    const openedChatMembersIDs = openedChat?.members.map((member) => member._id);
+    // chatAction
+    const chatAction: ChatActions = {
+      type: null,
+      chatId: openedChat!._id,
+      chatMembers: openedChatMembersIDs!,
+      senderId: currentUsr!._id,
+    };
+    // set loggedInUser Doing Action
+    dispatch(setCurrentUsrDoingAction(chatAction));
     // stop voice memo counter
     clearInterval(timerInterval);
     const blob = await stop();

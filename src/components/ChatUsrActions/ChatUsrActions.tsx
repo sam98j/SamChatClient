@@ -3,7 +3,7 @@ import styles from './styles.module.scss';
 import { Box } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { ChatUserActions } from '@/interfaces/chat.interface';
+import { ChatActionsTypes } from '@/interfaces/chat.interface';
 import RecVoiceInd from '../RecVoiceInd';
 import useTranslation from 'next-translate/useTranslation';
 import { TimeUnits, getTime } from '@/utils/time';
@@ -44,12 +44,12 @@ const ChatUsrActions = () => {
     <Box
       fontSize={'sm'}
       className={styles.chat_usr_actions}
-      is-usr-doing-action={String(isChatUsrDoingAction.action !== null)}
+      is-usr-doing-action={String(Boolean(isChatUsrDoingAction.type))}
       is-chat-opened={String(Boolean(openedChat))}
     >
       <span className={styles.actions}>
-        {isChatUsrDoingAction.action === ChatUserActions.TYPEING ? t('usr_typing') : ''}
-        {isChatUsrDoingAction.action === ChatUserActions.RECORDING_VOICE ? <RecVoiceInd /> : ''}
+        {isChatUsrDoingAction?.type === ChatActionsTypes.TYPEING ? t('usr_typing') : ''}
+        {isChatUsrDoingAction?.type === ChatActionsTypes.RECORDING_VOICE ? <RecVoiceInd /> : ''}
       </span>
       <div className={styles.online}>
         {/* display online if usr is online */}
