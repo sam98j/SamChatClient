@@ -24,12 +24,14 @@ const ChatProfile = () => {
   const apiHost = process.env.NEXT_PUBLIC_API_URL;
   // data from redux store
   const { openedChat, chatMessages } = useSelector((state: RootState) => state.chat);
+  // get loggedInUser
+  const currentUser = useSelector((state: RootState) => state.auth.currentUser);
+  // chat name
+  const chatUser = openedChat && openedChat!.members.filter((member) => member._id !== currentUser?._id)[0];
+  // chatName
+  const chatName = chatUser && (openedChat!.name ? openedChat!.name : chatUser!.name);
   // chat avatar
-  const [avatar_url] = useState(() => {
-    // check for avatar exist
-    if (!openedChat?.avatar) return '';
-    return `${apiHost}${openedChat.avatar}`;
-  });
+  const [avatar_url, setAvataUrl] = useState('');
   // destruct messages  types
   const { VIDEO, PHOTO, FILE, VOICENOTE } = MessagesTypes;
   // what kind of messages has been displayed
@@ -42,6 +44,17 @@ const ChatProfile = () => {
   const dispatch = useDispatch();
   // url query params
   const params = useSearchParams();
+  // listen for opened chat chanegs
+  useEffect(() => {
+    // break if no opened chat
+    if (!openedChat) return;
+    // chatAvatarUrl
+    const chatAvatarUrl = openedChat?.type === ChatTypes.GROUP ? openedChat.avatar : chatUser!.avatar;
+    // if no avatar
+    if (!chatAvatarUrl) return;
+    // set avatar url
+    setAvataUrl(`${apiHost}${chatAvatarUrl}`);
+  }, [openedChat]);
   // component did mount
   useEffect(() => {
     // set current route
@@ -71,14 +84,14 @@ const ChatProfile = () => {
   return (
     <>
       <Head>
-        <title>{`${openedChat?.name} | ${t('profile')}`}</title>
+        <title>{`${chatName!} | ${t('profile')}`}</title>
       </Head>
       <div className={styles.chat_profile}>
         {/* chat avatar */}
         <Avatar src={avatar_url} size={'2xl'} />
         {/* name */}
         <Text fontSize={'2xl'} fontWeight={'black'}>
-          {openedChat?.name}
+          {chatName}
         </Text>
         {/* chat calls */}
         <ChatCalls />

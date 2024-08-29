@@ -73,7 +73,7 @@ export const getChatProfile = createAsyncThunk('getChatProfile', async (chatId: 
   // access token
   const access_token = localStorage.getItem('access_token');
   // get request
-  const response = await fetch(`${apiUrl}/users/chat_profile/${chatId}`, {
+  const response = await fetch(`${apiUrl}/chats/${chatId}`, {
     method: 'GET',
     headers: { authorization: access_token! },
   });
@@ -85,7 +85,7 @@ export const getChatProfile = createAsyncThunk('getChatProfile', async (chatId: 
   if (response.status >= 400) {
     return thunkAPI.rejectWithValue('You Are Not Authente. Yet');
   }
-  const resp = (await response.json()) as ChatProfile;
+  const resp = (await response.json()) as SingleChat;
   // there is no error
   return resp;
 });

@@ -224,8 +224,8 @@ export const chatSlice = createSlice({
       state.chatMessages = null;
     });
     // get chat profile
-    builder.addCase(getChatProfile.fulfilled, (state, action: PayloadAction<ChatProfile>) => {
-      state.currentChatPorfile = action.payload;
+    builder.addCase(getChatProfile.fulfilled, (state, action: PayloadAction<SingleChat>) => {
+      state.openedChat = action.payload;
     });
     // set usr online status
     builder.addCase(getUsrOnlineStatus.fulfilled, (state, action: PayloadAction<string>) => {
