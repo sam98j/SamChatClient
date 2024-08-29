@@ -27,6 +27,7 @@ import {
   addNewChat,
   placeLastUpdatedChatToTheTop,
   setChatLastMessage,
+  ChatCard,
 } from '@/redux/chats.slice';
 import { usePathname } from 'next/navigation';
 import { io, Socket } from 'socket.io-client';
@@ -86,7 +87,19 @@ function App({ Component, ...pageProps }: AppProps) {
     // listen for chat usr doing action
     socketClient?.on('chatusr_typing_status', (actionData) => dispatch(setChatUsrDoingAction(actionData)));
     // listen for new chat created
-    socketClient?.on('new_chat_created', (newChat) => dispatch(addNewChat(newChat)));
+    socketClient?.on('new_chat_created', (newChat: ChatCard) => {
+      // add the new chat to the user's chats list
+      dispatch(addNewChat(newChat));
+      // change message status dto
+      const changeMessageStatusData: ChangeMessageStatusDTO = {
+        msgIDs: [newChat.lastMessage._id],
+        msgStatus: MessageStatus.DELEVERED,
+        chatId: newChat._id,
+        senderIDs: [newChat.lastMessage.sender._id],
+      };
+      // emit the received chat's message as delevered
+      socketClient.emit('message_status_changed', changeMessageStatusData);
+    });
   }, [currentUser, socketClient]);
   // listen for message to be mark as readed
   useEffect(() => {
