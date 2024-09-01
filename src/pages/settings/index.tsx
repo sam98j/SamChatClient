@@ -50,6 +50,7 @@ const Settings = () => {
             </Button>
           </Box>
         </Box>
+        <Text color={'gray'}>app version {process.env.NEXT_PUBLIC_APP_VERSION}</Text>
       </Box>
     </>
   );

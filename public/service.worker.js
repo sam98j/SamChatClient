@@ -1,5 +1,5 @@
 // const NEXT_PUBLIC_API_URL = 'https://api.chat.samapps.xyz';
-const NEXT_PUBLIC_API_URL = 'http://192.168.148.78:2000';
+const NEXT_PUBLIC_API_URL = 'http://192.168.136.78:2000';
 // const NEXT_PUBLIC_API_URL = 'https://samchat.onrender.com';
 // caches name
 const cacheName = 'v1';
