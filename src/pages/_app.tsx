@@ -28,6 +28,7 @@ import {
   placeLastUpdatedChatToTheTop,
   setChatLastMessage,
   ChatCard,
+  setChatUnReadedMessagesCount,
 } from '@/redux/chats.slice';
 import { usePathname } from 'next/navigation';
 import { io, Socket } from 'socket.io-client';
@@ -121,36 +122,6 @@ function App({ Component, ...pageProps }: AppProps) {
   }, [currentUser]);
   // use effect
   useEffect(() => {
-    socketClient?.on('message', (message: ChatMessage) => {
-      // check for current usr
-      if (!currentUser || !socketClient) return;
-      // opened chat membersIds
-      // place last updated chat to the top
-      dispatch(placeLastUpdatedChatToTheTop({ chatId: message.receiverId }));
-      // set chat's last message
-      dispatch(setChatLastMessage({ msg: message, currentUserId: currentUser._id }));
-      // mark received message as delevered if there is no opened chat
-      if (!openedChat) {
-        // change message status dto
-        const data: ChangeMessageStatusDTO = {
-          msgIDs: [message._id],
-          senderIDs: [message.sender._id],
-          chatId: message.receiverId,
-          msgStatus: MessageStatus.DELEVERED,
-        };
-        // inform the server that the message is delevered
-        socketClient?.emit('message_status_changed', data);
-        return;
-      }
-      // chatUser
-      const chatUserId = openedChat.members.filter((member) => member._id !== currentUser._id)[0]._id;
-      // check if the msg releated to current chat
-      if (message.sender._id !== chatUserId && message.receiverId !== chatUserId) return;
-      // add receved message to chat messages
-      dispatch(addMessageToChat(message));
-      // play recive message sound
-      playReceiveMessageSound();
-    });
     // usr_online_status
     socketClient?.on('usr_online_status', (data) => {
       // check if no chat is opened
@@ -172,6 +143,40 @@ function App({ Component, ...pageProps }: AppProps) {
       dispatch(setMessageStatus(data));
     });
   }, [socketClient, openedChat, currentUser]);
+  // listen for incoming messages
+  useEffect(() => {
+    // remove all message listener
+    socketClient?.removeAllListeners('message');
+    // listen for new message
+    socketClient?.on('message', (message: ChatMessage) => {
+      // place last updated chat to the top
+      dispatch(placeLastUpdatedChatToTheTop({ chatId: message.receiverId }));
+      // set chat's last message
+      dispatch(setChatLastMessage({ msg: message, currentUserId: currentUser!._id }));
+      // mark received message as delevered if there is no opened chat
+      if (!openedChat || openedChat._id !== message.receiverId) {
+        // change message status dto
+        const data: ChangeMessageStatusDTO = {
+          msgIDs: [message._id],
+          senderIDs: [message.sender._id],
+          chatId: message.receiverId,
+          msgStatus: MessageStatus.DELEVERED,
+        };
+        // inform the server that the message is delevered
+        socketClient?.emit('message_status_changed', data);
+        dispatch(setChatUnReadedMessagesCount({ msg: message }));
+        return;
+      }
+      // chatUser
+      const chatUserId = openedChat!.members.filter((member) => member._id !== currentUser!._id)[0]._id;
+      // check if the msg releated to current chat
+      if (message.sender._id !== chatUserId && message.receiverId !== chatUserId) return;
+      // add receved message to chat messages
+      dispatch(addMessageToChat(message));
+      // play recive message sound
+      playReceiveMessageSound();
+    });
+  }, [socketClient, openedChat]);
   // usr auth observer
   useEffect(() => {
     // redirect the usr to chats after logged in

@@ -189,12 +189,20 @@ export const chatSlice = createSlice({
       const updatedChats = state.chats!.map((chat) => {
         if (chat._id === lastMessage.receiverId) {
           const unReadedMsgs = isSendedByCurrentUser ? chat.unReadedMsgs : chat.unReadedMsgs + 1;
-          return { ...chat, lastMessage, unReadedMsgs };
+          return { ...chat, lastMessage };
         }
         return chat;
       });
       // terminate if no chats
       state.chats = updatedChats;
+    },
+    // setChatUnReadedMessagesCount
+    setChatUnReadedMessagesCount: (state, action: PayloadAction<{ msg: ChatMessage }>) => {
+      // find update chat's index
+      const chatIndex = state.chats?.findIndex((chat) => chat._id === action.payload.msg.receiverId);
+      // old chat's unreaded messages
+      const oldChatUnReadedMessaegs = state.chats![chatIndex!].unReadedMsgs;
+      state.chats![chatIndex!].unReadedMsgs = oldChatUnReadedMessaegs + 1;
     },
     // setFileMessageUploadIndicator
     setFileMessageUploadIndicator: (state, action) => {
@@ -248,6 +256,7 @@ export const {
   setChatUsrDoingAction,
   setChatUsrStatus,
   clearChatMessages,
+  setChatUnReadedMessagesCount,
   setChatLastMessage,
   setMessageStatus,
   clearAggreUnReadedMsg,
