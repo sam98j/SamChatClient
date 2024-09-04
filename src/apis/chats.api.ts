@@ -111,3 +111,24 @@ export const createChat = createAsyncThunk('createChat', async (chat: SingleChat
   // there is no error
   return resp;
 });
+// delete chat
+export const deleteChat = createAsyncThunk('deleteChat', async (_id: string, thunkAPI) => {
+  // access token
+  const access_token = localStorage.getItem('access_token');
+  // get request
+  const response = await fetch(`${apiUrl}/chats/${_id}`, {
+    method: 'Delete',
+    headers: { authorization: access_token! },
+  });
+  // check for internal serval error
+  if (response.status >= 500) {
+    return thunkAPI.rejectWithValue('Internal Server Error');
+  }
+  // if the clinet err
+  if (response.status >= 400) {
+    return thunkAPI.rejectWithValue('You Are Not Authente. Yet');
+  }
+  const resp = (await response.json()) as ChatProfile;
+  // there is no error
+  return resp;
+});

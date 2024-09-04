@@ -7,5 +7,6 @@
   "workbench.colorCustomizations": {
     "editorWhitespace.foreground": "#ffffff86"
   },
-  "whitespacepp.renderEOF": false
+  "whitespacepp.renderEOF": false,
+  "todoist.projectId": "2307184890"
 }

@@ -18,7 +18,7 @@ import {
   setMessageToBeMarketAsReaded,
   setOpenedChat,
 } from '@/redux/chats.slice';
-import { getChatMessages, getUsrOnlineStatus } from '@/apis/chats.api';
+import { deleteChat, getChatMessages, getUsrOnlineStatus } from '@/apis/chats.api';
 import { setAttchFileMenuOpen, setCurrentRoute } from '@/redux/system.slice';
 import { AnyAction } from '@reduxjs/toolkit';
 import ChatInput from '@/components/ChatInput/ChatInput';
@@ -118,6 +118,10 @@ const Chat = () => {
     return function cleanUp() {
       dispatch(setChatMessagesBatchNo(1));
       dispatch(setChatUsrStatus(null));
+      // terminate if chat type is group
+      if (openedChat?.type === ChatTypes.GROUP) return;
+      // try to delete this chat
+      dispatch(deleteChat(parmas.get('id')!) as unknown as any);
     };
   }, []);
   // listen for opened chat
