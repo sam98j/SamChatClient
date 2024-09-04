@@ -8,9 +8,15 @@ import ChatUsrActions from '../ChatUsrActions/ChatUsrActions';
 
 const ScreenName = () => {
   // get data from redux store
-  const { currentRoute, openedChat } = useSelector((state: RootState) => {
-    return { currentRoute: state.system.currentRoute, openedChat: state.chat.openedChat };
+  const { currentRoute, openedChat, chatAction } = useSelector((state: RootState) => {
+    return {
+      currentRoute: state.system.currentRoute,
+      openedChat: state.chat.openedChat,
+      chatAction: state.chat.isChatUsrDoingAction,
+    };
   });
+  // isChatActionRelatedToOpenedChat
+  const showAction = Boolean(chatAction.type && chatAction.chatId === openedChat?._id);
   return (
     <div className={styles.screen_name_container} is-chat-open={String(Boolean(openedChat))}>
       {/* Chat Name */}
@@ -19,7 +25,7 @@ const ScreenName = () => {
         {currentRoute !== 'chatProfile' ? currentRoute : ''}
       </Text>
       {/* show chatUsrAction only when chat is opened */}
-      {openedChat ? <ChatUsrActions /> : ''}
+      {openedChat ? <ChatUsrActions showAction={showAction} /> : ''}
     </div>
   );
 };

@@ -73,7 +73,7 @@ const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
           </Text>
           {/* usr actions (usr typing, recording voice) */}
           <Text className={styles.chat_usr_actions}>
-            <ChatUsrActions />
+            <ChatUsrActions showAction={true} />
           </Text>
           {/* text message field */}
           <Text textColor={'gray.500'} display={'flex'} className={styles.msg_text}>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import styles from './styles.module.scss';
 import { Box } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
@@ -9,7 +9,7 @@ import useTranslation from 'next-translate/useTranslation';
 import { TimeUnits, getTime } from '@/utils/time';
 import { useRouter } from 'next/router';
 
-const ChatUsrActions = () => {
+const ChatUsrActions: FC<{ showAction: boolean }> = ({ showAction }) => {
   // get local
   const { locale } = useRouter();
   // localization
@@ -44,7 +44,7 @@ const ChatUsrActions = () => {
     <Box
       fontSize={'sm'}
       className={styles.chat_usr_actions}
-      is-usr-doing-action={String(Boolean(isChatUsrDoingAction.type))}
+      is-usr-doing-action={String(showAction)}
       is-chat-opened={String(Boolean(openedChat))}
     >
       <span className={styles.actions}>
