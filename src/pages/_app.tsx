@@ -84,7 +84,7 @@ function App({ Component, ...pageProps }: AppProps) {
   // listen for chat user doing action
   useEffect(() => {
     // check for usr and socket
-    if (!currentUser || !socketClient) return;
+    if (!socketClient) return;
     // listen for chat usr doing action
     socketClient?.on('chatusr_typing_status', (actionData) => dispatch(setChatUsrDoingAction(actionData)));
     // listen for new chat created
@@ -101,7 +101,7 @@ function App({ Component, ...pageProps }: AppProps) {
       // emit the received chat's message as delevered
       socketClient.emit('message_status_changed', changeMessageStatusData);
     });
-  }, [currentUser, socketClient]);
+  }, [socketClient]);
   // listen for message to be mark as readed
   useEffect(() => {
     // terminate if there is no message
@@ -135,8 +135,11 @@ function App({ Component, ...pageProps }: AppProps) {
     });
     // on new chat create
     socketClient?.on('chat_created', (chatId) => dispatch(setOpenedChat(chatId)));
+    // clear listener
+    socketClient?.removeAllListeners('message_status_changed');
     // receive message status
     socketClient?.on('message_status_changed', (data: ChangeMessageStatusDTO) => {
+      console.log(data.msgStatus);
       // check for message sent status
       if (data.msgStatus === MessageStatus.SENT) playSentMessageSound();
       // set message status

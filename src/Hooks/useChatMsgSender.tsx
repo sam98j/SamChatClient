@@ -60,6 +60,8 @@ const useChatMessagesSender = (socket: Socket) => {
   // listen for chunk delevery res
   useEffect(() => {
     // terminate if no socket
+    socket?.removeAllListeners('chunk_recieved');
+    // terminate if no socket
     if (!socket) return;
     // chunk delevered handler
     const chunkRecievedHandler = () => {

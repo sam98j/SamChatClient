@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import styles from './styles.module.scss';
-import { Box } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { ChatActionsTypes } from '@/interfaces/chat.interface';
@@ -47,10 +47,10 @@ const ChatUsrActions: FC<{ showAction: boolean }> = ({ showAction }) => {
       is-usr-doing-action={String(showAction)}
       is-chat-opened={String(Boolean(openedChat))}
     >
-      <span className={styles.actions}>
+      <Text className={styles.actions}>
         {isChatUsrDoingAction?.type === ChatActionsTypes.TYPEING ? t('usr_typing') : ''}
         {isChatUsrDoingAction?.type === ChatActionsTypes.RECORDING_VOICE ? <RecVoiceInd /> : ''}
-      </span>
+      </Text>
       <div className={styles.online}>
         {/* display online if usr is online */}
         {chatUsrStatus === 'online' ? t('online') : ''}
