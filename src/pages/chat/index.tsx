@@ -121,7 +121,7 @@ const Chat = () => {
       // terminate if chat type is group
       if (openedChat?.type === ChatTypes.GROUP) return;
       // try to delete this chat
-      dispatch(deleteChat(parmas.get('id')!) as unknown as any);
+      dispatch(deleteChat(parmas.get('id')!) as unknown as AnyAction);
     };
   }, []);
   // listen for opened chat

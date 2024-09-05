@@ -183,12 +183,9 @@ export const chatSlice = createSlice({
     setChatLastMessage: (state, action: PayloadAction<{ msg: ChatMessage; currentUserId: string }>) => {
       // new message
       const lastMessage = action.payload.msg;
-      // is loggedInUser sended this message
-      const isSendedByCurrentUser = action.payload.currentUserId === lastMessage.sender._id;
       // updatedChat
       const updatedChats = state.chats!.map((chat) => {
         if (chat._id === lastMessage.receiverId) {
-          const unReadedMsgs = isSendedByCurrentUser ? chat.unReadedMsgs : chat.unReadedMsgs + 1;
           return { ...chat, lastMessage };
         }
         return chat;
