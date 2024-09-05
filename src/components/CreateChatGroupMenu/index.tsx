@@ -53,7 +53,11 @@ const CreateChatGroupMenu = () => {
   // inputChangeHandler
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => setGroupName(e.target.value);
   // get usr chat from redux store
-  const { chats } = useSelector((state: RootState) => state.chat);
+  const { chats } = useSelector((state: RootState) => {
+    return {
+      chats: state.chat.chats?.filter((chat) => chat.type === ChatTypes.INDIVISUAL),
+    };
+  });
   return (
     <Box
       height={'100%'}
