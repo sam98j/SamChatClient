@@ -69,6 +69,9 @@ const CreateChatGroupMenu = () => {
       bottom={'0'}
       left={'0'}
     >
+      {/* close modal */}
+      <Box height={'full'} onClick={() => dispatch(setVisablityOfCreateChatGroupMenu(false))}></Box>
+      {/* modal */}
       <Box
         className={styles.createChatGroupMenu}
         borderTopRadius={'2xl'}
