@@ -12,10 +12,13 @@ import { AnyAction } from '@reduxjs/toolkit';
 import { v4 } from 'uuid';
 import { useRouter } from 'next/navigation';
 import { setVisablityOfCreateChatGroupMenu } from '@/redux/system.slice';
+import useTranslation from 'next-translate/useTranslation';
 
 const CreateChatGroupMenu = () => {
   // use Router
   const { push } = useRouter();
+  // translation method
+  const { t } = useTranslation('createChatGroupMenu');
   // dispatch
   const dispatch = useDispatch();
   // selected members
@@ -99,11 +102,11 @@ const CreateChatGroupMenu = () => {
         </Box>
         {/* Group name */}
         <InputGroup display={isMemberSelectionDone ? 'initial' : 'none'}>
-          <Input placeholder='إختيار اسم المجموعة' ringColor={'green.400'} onChange={inputChangeHandler} />
+          <Input placeholder={t('chooseGroupName')} ringColor={'green.400'} onChange={inputChangeHandler} />
         </InputGroup>
         {/* countine btn */}
         <Button colorScheme='green' onClick={continueHandler}>
-          إستمرار
+          {t('completeChatCreationBtn')}
         </Button>
       </Box>
     </Box>

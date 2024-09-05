@@ -1,3 +1,5 @@
 {
-  "createNewChatGroupBtn": "Create New Group"
+  "createNewChatGroupBtn": "Create New Group",
+  "completeChatCreationBtn": "Continue",
+  "chooseGroupName": "Enter Group Name"
 }
