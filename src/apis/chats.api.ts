@@ -90,14 +90,19 @@ export const getChatProfile = createAsyncThunk('getChatProfile', async (chatId: 
   return resp;
 });
 // get chat profile
-export const createChat = createAsyncThunk('createChat', async (chat: SingleChat, thunkAPI) => {
+export const createChat = createAsyncThunk('createChat', async (chatData: { chat: SingleChat; avatar?: File }, thunkAPI) => {
   // access token
   const access_token = localStorage.getItem('access_token');
+  // formData
+  const formData = new FormData();
+  // append chat
+  formData.append('chat', JSON.stringify(chatData.chat));
+  formData.append('avatar', chatData.avatar!);
   // get request
   const response = await fetch(`${apiUrl}/chats/create_chat`, {
     method: 'POST',
-    headers: { authorization: access_token!, 'Content-type': 'application/json' },
-    body: JSON.stringify(chat),
+    headers: { authorization: access_token! },
+    body: formData,
   });
   // check for internal serval error
   if (response.status >= 500) {

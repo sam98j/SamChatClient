@@ -13,6 +13,12 @@ import { v4 } from 'uuid';
 import { useRouter } from 'next/navigation';
 import { setVisablityOfCreateChatGroupMenu } from '@/redux/system.slice';
 import useTranslation from 'next-translate/useTranslation';
+import { CiCamera } from 'react-icons/ci';
+
+type GroupData = {
+  name: string;
+  avatar: File;
+};
 
 const CreateChatGroupMenu = () => {
   // use Router
@@ -24,24 +30,23 @@ const CreateChatGroupMenu = () => {
   // selected members
   const [selectedMembers, setSelectedMembers] = useState<ChatMember[]>([]);
   // groupName
-  const [groupName, setGroupName] = useState('');
+  const [groupData, setGroupData] = useState<GroupData>(null!);
   // current usr id
   const loggedInUser = useSelector((state: RootState) => state.auth.currentUser) as ChatMember;
   // members selection complete
   const [isMemberSelectionDone, setIsMemberSelectionDone] = useState(false);
   // continueHandler
   const continueHandler = () => {
-    if (isMemberSelectionDone && groupName) {
-      console.log('sending request');
+    if (isMemberSelectionDone && groupData) {
       // create chat obj
       const createdChat: SingleChat = {
         _id: v4(),
         type: ChatTypes.GROUP,
         members: [loggedInUser, ...selectedMembers],
-        name: groupName,
+        name: groupData.name,
         avatar: '',
       };
-      dispatch(createChat(createdChat) as unknown as AnyAction);
+      dispatch(createChat({ chat: createdChat, avatar: groupData.avatar }) as unknown as AnyAction);
       dispatch(setVisablityOfCreateChatGroupMenu(false));
       dispatch(setOpenedChat(createdChat));
       push('/chat?id=' + createdChat._id);
@@ -49,12 +54,18 @@ const CreateChatGroupMenu = () => {
     }
     // terminate if no members selected
     if (selectedMembers.length === 0) return;
+    //
     if (!isMemberSelectionDone) setIsMemberSelectionDone(true);
   };
   // handleFormChange
   const handleFormChange = () => {};
   // inputChangeHandler
-  const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => setGroupName(e.target.value);
+  const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // get chat avatar
+    if (e.target.files) return setGroupData({ ...groupData, avatar: e.target.files![0] });
+    // get other data
+    setGroupData({ ...groupData, [e.target.name]: e.target.value });
+  };
   // get usr chat from redux store
   const { chats } = useSelector((state: RootState) => {
     return {
@@ -101,8 +112,24 @@ const CreateChatGroupMenu = () => {
           {/* TODO: refactor this group member card props */}
         </Box>
         {/* Group name */}
-        <InputGroup display={isMemberSelectionDone ? 'initial' : 'none'}>
-          <Input placeholder={t('chooseGroupName')} ringColor={'green.400'} onChange={inputChangeHandler} />
+        <InputGroup display={isMemberSelectionDone ? 'flex' : 'none'} alignItems={'center'} gap={'1.5rem'}>
+          <Box
+            backgroundColor={'gray.100'}
+            borderRadius={'50%'}
+            width={'fit-content'}
+            padding={'10px'}
+            position={'relative'}
+          >
+            <CiCamera size={'1.5rem'} />
+            <Input
+              type='file'
+              name='avatar'
+              accept='image/jpg,image/png'
+              className={styles.choose_group_avatar}
+              onChange={inputChangeHandler}
+            />
+          </Box>
+          <Input placeholder={t('chooseGroupName')} ringColor={'green.400'} onChange={inputChangeHandler} name='name' />
         </InputGroup>
         {/* countine btn */}
         <Button colorScheme='green' onClick={continueHandler}>

@@ -36,7 +36,7 @@ const NewChatUser: React.FC<{ usr: Omit<LoggedInUserData, 'email'>; searchqr: st
   // click handler
   const clickHandler = () => {
     // create new chat request
-    dispatch(createChat(chat) as unknown as AnyAction);
+    dispatch(createChat({ chat }) as unknown as AnyAction);
     // set opended chat
     dispatch(setOpenedChat(chat));
   };
