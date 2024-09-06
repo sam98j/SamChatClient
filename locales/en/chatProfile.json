@@ -11,5 +11,8 @@
     "voice_call": "Voice Call",
     "mute": "Mute"
   },
-  "profile": "Profile"
+  "profile": "Profile",
+  "group_chat": {
+    "add_members_btn": "Add Members"
+  }
 }

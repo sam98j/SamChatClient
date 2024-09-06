@@ -11,5 +11,8 @@
     "voice_call": "مكالمة صوتية",
     "mute": "كتم الإشعارات"
   },
-  "profile": "الملف الشخصي"
+  "profile": "الملف الشخصي",
+  "group_chat": {
+    "add_members_btn": "إضافة أعضاء"
+  }
 }
