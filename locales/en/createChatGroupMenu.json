@@ -1,5 +1,7 @@
 {
   "createNewChatGroupBtn": "Create New Group",
   "completeChatCreationBtn": "Continue",
-  "chooseGroupName": "Enter Group Name"
+  "chooseGroupName": "Enter Group Name",
+  "add_members_btn": "Add",
+  "membersAdditionStatus": "Members Added Successfuly"
 }

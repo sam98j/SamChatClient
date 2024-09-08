@@ -1,5 +1,5 @@
 import { GetChatMessagesRes } from '@/interfaces/chat.interface';
-import { ChatProfile, SingleChat } from '@/redux/chats.slice';
+import { ChatMember, ChatProfile, SingleChat } from '@/redux/chats.slice';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -137,3 +137,29 @@ export const deleteChat = createAsyncThunk('deleteChat', async (_id: string, thu
   // there is no error
   return resp;
 });
+// add chat members
+export const addChatMembers = createAsyncThunk(
+  'addChatMembers',
+  async (addMembersDTO: { members: ChatMember[]; chatId: string }, thunkAPI) => {
+    // adding members data
+    const { chatId, members } = addMembersDTO;
+    // access token
+    const access_token = localStorage.getItem('access_token');
+    // get request
+    const response = await fetch(`${apiUrl}/chats/addmembers/${chatId}`, {
+      method: 'POST',
+      headers: { authorization: access_token!, 'Content-type': 'application/json' },
+      body: JSON.stringify(members),
+    });
+    // check for internal serval error
+    if (response.status >= 500) {
+      return thunkAPI.rejectWithValue('Internal Server Error');
+    }
+    // if the clinet err
+    if (response.status >= 400) {
+      return thunkAPI.rejectWithValue('You Are Not Authente. Yet');
+    }
+    // there is no error
+    return true;
+  }
+);

@@ -9,7 +9,7 @@ const GroupMember: FC<Props> = ({ member }) => {
   // ap url
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   return (
-    <Box borderTop={'1px solid lightgray'} paddingTop={'10px'} display={'flex'} gap={'10px'}>
+    <Box borderTop={'1px solid #f3f3f3'} paddingTop={'10px'} display={'flex'} gap={'10px'}>
       {/* member Avatar */}
       <Avatar size={'md'} src={`${apiUrl}${member.avatar}`} />
       <Box>

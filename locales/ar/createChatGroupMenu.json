@@ -1,5 +1,7 @@
 {
   "createNewChatGroupBtn": "إنشاء مجموعة جديدة",
   "completeChatCreationBtn": "إستمرار",
-  "chooseGroupName": "اكتب اسم المجموعة"
+  "chooseGroupName": "اكتب اسم المجموعة",
+  "add_members_btn": "إضافة",
+  "membersAdditionStatus": "تم إضافة الاعضاء بنجاح"
 }

@@ -1,4 +1,11 @@
-import { createChat, getChatMessages, getChatProfile, getUserChats, getUsrOnlineStatus } from '@/apis/chats.api';
+import {
+  addChatMembers,
+  createChat,
+  getChatMessages,
+  getChatProfile,
+  getUserChats,
+  getUsrOnlineStatus,
+} from '@/apis/chats.api';
 import { ChangeMessageStatusDTO, ChatMessage, ChatActionsTypes } from '@/interfaces/chat.interface';
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
@@ -52,11 +59,13 @@ export interface ChatState {
   chatMessagesBatchNo: number;
   aggreUnRededMsgs: number;
   fileMessageUploadIndicator: number | null;
+  addChatMembersRes: boolean | null;
 }
 // inital state
 const initialState: ChatState = {
   fileMessageUploadIndicator: null,
   isLastChatMessagesBatch: null,
+  addChatMembersRes: null,
   chats: null,
   chatMessages: [],
   openedChat: undefined,
@@ -244,6 +253,10 @@ export const chatSlice = createSlice({
     builder.addCase(createChat.fulfilled, (state, action) => {
       const res = action.payload;
       console.log(res);
+    });
+    // adding members to a groub chat
+    builder.addCase(addChatMembers.fulfilled, (state, action) => {
+      state.addChatMembersRes = true;
     });
   },
 });

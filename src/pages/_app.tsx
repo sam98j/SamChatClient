@@ -217,7 +217,7 @@ function App({ Component, ...pageProps }: AppProps) {
               {currentUser === null ? <AppLogo /> : ''}
               <CreateChat />
               {/* CreateChatGroupMenu */}
-              {isCreateChatGroupMenuOpen ? <CreateChatGroupMenu /> : ''}
+              {isCreateChatGroupMenuOpen ? <CreateChatGroupMenu forCreation={!Boolean(openedChat)} /> : ''}
             </div>
           </Provider>
         </SessionProvider>
