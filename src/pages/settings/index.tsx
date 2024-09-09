@@ -1,6 +1,6 @@
 import LanguageSwitcher from '@/components/LangSwitcher/LangSwitcher';
 import { setCurrentRoute } from '@/redux/system.slice';
-import { Box, Button, Text } from '@chakra-ui/react';
+import { Box, Button, FormControl, FormLabel, Switch, Text } from '@chakra-ui/react';
 import useTranslation from 'next-translate/useTranslation';
 import Head from 'next/head';
 import React, { useEffect } from 'react';
@@ -42,12 +42,12 @@ const Settings = () => {
         <Box>
           <Text textColor={'gray'}>{tSettings('notifications')}</Text>
           <Box bgColor={'gray.100'} padding={2} borderRadius={10}>
-            <Button display={'block'} padding={0} fontWeight={'normal'}>
-              {tSettings('notification__btn__on')}
-            </Button>
-            <Button display={'block'} padding={0} fontWeight={'normal'}>
-              {tSettings('notification__btn__off')}
-            </Button>
+            <FormControl display='flex' alignItems='center'>
+              <FormLabel htmlFor='email-alerts' mb='0' width={'full'}>
+                {tSettings('push_notifications')}
+              </FormLabel>
+              <Switch id='email-alerts' />
+            </FormControl>
           </Box>
         </Box>
         <Text color={'gray'}>app version {process.env.NEXT_PUBLIC_APP_VERSION}</Text>

@@ -6,5 +6,6 @@
   "theme__btn__system": "لون النظام",
   "notifications": "التنبيهات",
   "notification__btn__on": "تشغيل",
-  "notification__btn__off": "إيقاف"
+  "notification__btn__off": "إيقاف",
+  "push_notifications": "التنبيهات الفورية"
 }
