@@ -12,6 +12,7 @@ import SearchInput from '../SearchInput/SearchInput';
 import { Button, Text } from '@chakra-ui/react';
 import { MdOutlineGroups2 } from 'react-icons/md';
 import useTranslation from 'next-translate/useTranslation';
+import { Drawer, DrawerContent } from '../ui/drawer';
 
 const CreateChat = () => {
   // translation method
@@ -54,20 +55,16 @@ const CreateChat = () => {
     dispatch(changeNewChatScrStatus(false));
   };
   return (
-    <div className={styles.create_chat_container} is-opened={String(isModalOpen)}>
-      {/* close modal  */}
-      <div style={{ height: '100%' }} onClick={() => dispatch(changeNewChatScrStatus(false))}></div>
-      {/* create chat modal */}
-      <div className={styles.create_chat}>
-        {/* Search Input */}
+    <Drawer open={isModalOpen} onClose={() => dispatch(changeNewChatScrStatus(false))}>
+      <DrawerContent className='p-2 h-4/5 flex flex-col gap-3'>
         <SearchInput data={{ handleFormChange, loadingState: state.loading }} />
-        {/* create group chat btn */}
         <Button
           onClick={createGroupChatBtnHandler}
           width={'full'}
           borderRadius={'2xl'}
           colorScheme='blue'
-          marginTop={'10px'}
+          paddingTop={'10px'}
+          paddingBottom={'10px'}
           display={'flex'}
           alignItems={'center'}
           gap={'10px'}
@@ -76,12 +73,14 @@ const CreateChat = () => {
           <MdOutlineGroups2 size={'1.5rem'} color='white' />
           <Text>{t('createNewChatGroupBtn')}</Text>
         </Button>
-        {/* new Chat User */}
-        {state.fetchedUsers.map((usr) => (
-          <NewChatUser key={usr._id} usr={usr} searchqr={state.searchqr} />
-        ))}
-      </div>
-    </div>
+        {/* user */}
+        <div className='overflow-y-scroll'>
+          {state.fetchedUsers.map((usr) => (
+            <NewChatUser key={usr._id} usr={usr} searchqr={state.searchqr} />
+          ))}
+        </div>
+      </DrawerContent>
+    </Drawer>
   );
 };
 

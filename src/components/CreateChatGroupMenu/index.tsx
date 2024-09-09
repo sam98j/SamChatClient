@@ -1,5 +1,5 @@
 import { RootState } from '@/redux/store';
-import { Box, Button, Input, InputGroup, Spinner } from '@chakra-ui/react';
+import { Box, Button, Input, InputGroup, Modal, Spinner } from '@chakra-ui/react';
 import React, { FC, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import GroupMemberCard from '../GroupMemberCard';
@@ -14,6 +14,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { setSystemNotification, setVisablityOfCreateChatGroupMenu } from '@/redux/system.slice';
 import useTranslation from 'next-translate/useTranslation';
 import { CiCamera } from 'react-icons/ci';
+import { Drawer, DrawerDescription, DrawerTitle, DrawerTrigger, DrawerHeader, DrawerContent } from '../ui/drawer';
 
 type GroupData = {
   name: string;
@@ -97,47 +98,25 @@ const CreateChatGroupMenu: FC<{ forCreation: boolean }> = ({ forCreation }) => {
     dispatch(setSystemNotification({ err: false, msg: t('membersAdditionStatus') }));
   }, [addChatMembersRes]);
   return (
-    <Box
-      height={'100%'}
-      className={styles.createChatGroupMenuContainer}
-      width={'full'}
-      position={'absolute'}
-      backgroundColor={'blackAlpha.500'}
-      backdropFilter={'blur(10px)'}
-      bottom={'0'}
-      left={'0'}
-    >
-      {/* close modal */}
-      <Box height={'full'} onClick={() => dispatch(setVisablityOfCreateChatGroupMenu(false))}></Box>
-      {/* modal */}
-      <Box
-        className={styles.createChatGroupMenu}
-        borderTopRadius={'2xl'}
-        width={'full'}
-        padding={'1rem'}
-        height={'90%'}
-        backgroundColor={'white'}
-        boxShadow={'0px 0px 5px lightgray'}
-        position={'absolute'}
-        bottom={'0'}
-        display={'flex'}
-        flexDirection={'column'}
-        gap={'10px'}
-        left={'0'}
-      >
-        {/* Search Input */}
-        <SearchInput data={{ handleFormChange, loadingState: false }} />
+    <Drawer open={true} dismissible={true} onClose={() => dispatch(setVisablityOfCreateChatGroupMenu(false))}>
+      <DrawerContent className={`${styles.createChatGroupMenu} p-2`}>
+        <div className='mt-2'>
+          <SearchInput data={{ handleFormChange, loadingState: false }} />
+        </div>
         {/* group members */}
         <Box
           flexGrow={'1'}
           display={isMemberSelectionDone && forCreation ? 'none' : 'flex'}
           flexDirection={'column'}
+          height={'60dvh'}
           gap={'10px'}
+          marginTop={'10px'}
           overflowY={'scroll'}
         >
-          {chats!.map((chat) => (
-            <GroupMemberCard key={chat._id} chatMembers={chat.members} setSelectedMembers={setSelectedMembers} />
-          ))}
+          {chats &&
+            chats!.map((chat) => (
+              <GroupMemberCard key={chat._id} chatMembers={chat.members} setSelectedMembers={setSelectedMembers} />
+            ))}
           {/* TODO: refactor this group member card props */}
         </Box>
         {/* Group name and avatar */}
@@ -170,8 +149,8 @@ const CreateChatGroupMenu: FC<{ forCreation: boolean }> = ({ forCreation }) => {
         >
           {isLoading ? <Spinner /> : addMembersAndContinueBtnText}
         </Button>
-      </Box>
-    </Box>
+      </DrawerContent>
+    </Drawer>
   );
 };
 
