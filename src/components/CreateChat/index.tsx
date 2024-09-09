@@ -1,6 +1,5 @@
 /* eslint-disable react/no-unknown-property */
 import React, { useState } from 'react';
-import styles from './styles.module.scss';
 import NewChatUser from '../NewChatUser';
 import useUsersApi from './getUsrs.hook';
 import { LoggedInUserData } from '@/redux/auth.slice';

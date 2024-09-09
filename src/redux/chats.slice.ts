@@ -255,7 +255,7 @@ export const chatSlice = createSlice({
       console.log(res);
     });
     // adding members to a groub chat
-    builder.addCase(addChatMembers.fulfilled, (state, action) => {
+    builder.addCase(addChatMembers.fulfilled, (state) => {
       state.addChatMembersRes = true;
     });
   },

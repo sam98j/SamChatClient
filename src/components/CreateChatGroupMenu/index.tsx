@@ -1,5 +1,5 @@
 import { RootState } from '@/redux/store';
-import { Box, Button, Input, InputGroup, Modal, Spinner } from '@chakra-ui/react';
+import { Box, Button, Input, InputGroup, Spinner } from '@chakra-ui/react';
 import React, { FC, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import GroupMemberCard from '../GroupMemberCard';
@@ -14,7 +14,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { setSystemNotification, setVisablityOfCreateChatGroupMenu } from '@/redux/system.slice';
 import useTranslation from 'next-translate/useTranslation';
 import { CiCamera } from 'react-icons/ci';
-import { Drawer, DrawerDescription, DrawerTitle, DrawerTrigger, DrawerHeader, DrawerContent } from '../ui/drawer';
+import { Drawer, DrawerContent } from '../ui/drawer';
 
 type GroupData = {
   name: string;
