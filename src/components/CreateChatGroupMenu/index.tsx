@@ -99,7 +99,7 @@ const CreateChatGroupMenu: FC<{ forCreation: boolean }> = ({ forCreation }) => {
   }, [addChatMembersRes]);
   return (
     <Drawer open={true} dismissible={true} onClose={() => dispatch(setVisablityOfCreateChatGroupMenu(false))}>
-      <DrawerContent className={`${styles.createChatGroupMenu} p-2`}>
+      <DrawerContent className={`${styles.createChatGroupMenu} p-2 outline-none`}>
         <div className='mt-2'>
           <SearchInput data={{ handleFormChange, loadingState: false }} />
         </div>

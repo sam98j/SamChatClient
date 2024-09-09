@@ -56,7 +56,7 @@ const CreateChat = () => {
   };
   return (
     <Drawer open={isModalOpen} onClose={() => dispatch(changeNewChatScrStatus(false))}>
-      <DrawerContent className='p-2 h-4/5 flex flex-col gap-3'>
+      <DrawerContent className='p-2 h-4/5 flex flex-col gap-3 outline-none'>
         <SearchInput data={{ handleFormChange, loadingState: state.loading }} />
         <Button
           onClick={createGroupChatBtnHandler}
