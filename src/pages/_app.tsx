@@ -16,8 +16,15 @@ import Head from 'next/head';
 import AppLogo from '@/components/AppLogo';
 import { AnyAction } from '@reduxjs/toolkit';
 import { extendTheme } from '@chakra-ui/react';
-import { playReceiveMessageSound, playSentMessageSound } from '@/utils/chat.util';
-import { ChangeMessageStatusDTO, ChatMessage, MessageStatus } from '@/interfaces/chat.interface';
+import {
+  playReceiveMessageSound,
+  playSentMessageSound,
+} from '@/utils/chat.util';
+import {
+  ChangeMessageStatusDTO,
+  ChatMessage,
+  MessageStatus,
+} from '@/interfaces/chat.interface';
 import {
   addMessageToChat,
   setChatUsrStatus,
@@ -40,7 +47,9 @@ import CreateChatGroupMenu from '@/components/CreateChatGroupMenu';
 
 function App({ Component, ...pageProps }: AppProps) {
   // chakra theme
-  const theme = extendTheme({ fonts: { body: '"Baloo Bhaijaan 2", Arial, Helvetica, sans-serif,cursive' } });
+  const theme = extendTheme({
+    fonts: { body: '"Baloo Bhaijaan 2", Arial, Helvetica, sans-serif,cursive' },
+  });
   // back end api
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   // socket instance
@@ -56,21 +65,32 @@ function App({ Component, ...pageProps }: AppProps) {
   // store dispatch func
   const dispatch = useDispatch();
   // system state
-  const { isCreateChatGroupMenuOpen } = useSelector((state: RootState) => state.system);
-  // auth state
-  const { apiResponse, currentUser } = useSelector((state: RootState) => state.auth);
-  // system notifications
-  const systemNotifications = useSelector((state: RootState) => state.system.notifications);
-  // chat state
-  const { openedChat, isCurrentUsrDoingAction, messageToBeMarketAsReaded, chatMessages } = useSelector(
-    (state: RootState) => state.chat
+  const { isCreateChatGroupMenuOpen } = useSelector(
+    (state: RootState) => state.system,
   );
+  // auth state
+  const { apiResponse, currentUser } = useSelector(
+    (state: RootState) => state.auth,
+  );
+  // system notifications
+  const systemNotifications = useSelector(
+    (state: RootState) => state.system.notifications,
+  );
+  // chat state
+  const {
+    openedChat,
+    isCurrentUsrDoingAction,
+    messageToBeMarketAsReaded,
+    chatMessages,
+  } = useSelector((state: RootState) => state.chat);
   // listen for multichunk msg
   useEffect(() => {
     // terminate if chat's messages not fetched yet
     if (!chatMessages) return;
     // msgs  to sent
-    const messagesToSent = chatMessages.filter((msg: ChatMessage) => msg.status === null);
+    const messagesToSent = chatMessages.filter(
+      (msg: ChatMessage) => msg.status === null,
+    );
     // terminate if there is no message waiting for send
     if (!messagesToSent[0]) return;
     // send
@@ -86,7 +106,9 @@ function App({ Component, ...pageProps }: AppProps) {
     // check for usr and socket
     if (!socketClient) return;
     // listen for chat usr doing action
-    socketClient?.on('chatusr_typing_status', (actionData) => dispatch(setChatUsrDoingAction(actionData)));
+    socketClient?.on('chatusr_typing_status', (actionData) =>
+      dispatch(setChatUsrDoingAction(actionData)),
+    );
     // listen for new chat created
     socketClient?.on('new_chat_created', (newChat: ChatCard) => {
       // add the new chat to the user's chats list
@@ -127,24 +149,31 @@ function App({ Component, ...pageProps }: AppProps) {
       // check if no chat is opened
       if (!openedChat) return;
       // chat Usr
-      const chatUser = openedChat.members.filter((member) => member._id !== currentUser?._id)[0];
+      const chatUser = openedChat.members.filter(
+        (member) => member._id !== currentUser?._id,
+      )[0];
       // check if the openedChat and the client doing the action of online status
       if (chatUser._id !== data.id) return;
       // all conditions passed
       dispatch(setChatUsrStatus(data.status));
     });
     // on new chat create
-    socketClient?.on('chat_created', (chatId) => dispatch(setOpenedChat(chatId)));
+    socketClient?.on('chat_created', (chatId) =>
+      dispatch(setOpenedChat(chatId)),
+    );
     // clear listener
     socketClient?.removeAllListeners('message_status_changed');
     // receive message status
-    socketClient?.on('message_status_changed', (data: ChangeMessageStatusDTO) => {
-      console.log(data.msgStatus);
-      // check for message sent status
-      if (data.msgStatus === MessageStatus.SENT) playSentMessageSound();
-      // set message status
-      dispatch(setMessageStatus(data));
-    });
+    socketClient?.on(
+      'message_status_changed',
+      (data: ChangeMessageStatusDTO) => {
+        console.log(data.msgStatus);
+        // check for message sent status
+        if (data.msgStatus === MessageStatus.SENT) playSentMessageSound();
+        // set message status
+        dispatch(setMessageStatus(data));
+      },
+    );
   }, [socketClient, openedChat, currentUser]);
   // listen for incoming messages
   useEffect(() => {
@@ -155,7 +184,9 @@ function App({ Component, ...pageProps }: AppProps) {
       // place last updated chat to the top
       dispatch(placeLastUpdatedChatToTheTop({ chatId: message.receiverId }));
       // set chat's last message
-      dispatch(setChatLastMessage({ msg: message, currentUserId: currentUser!._id }));
+      dispatch(
+        setChatLastMessage({ msg: message, currentUserId: currentUser!._id }),
+      );
       // mark received message as delevered if there is no opened chat
       if (!openedChat || openedChat._id !== message.receiverId) {
         // change message status dto
@@ -171,9 +202,15 @@ function App({ Component, ...pageProps }: AppProps) {
         return;
       }
       // chatUser
-      const chatUserId = openedChat!.members.filter((member) => member._id !== currentUser!._id)[0]._id;
+      const chatUserId = openedChat!.members.filter(
+        (member) => member._id !== currentUser!._id,
+      )[0]._id;
       // check if the msg releated to current chat
-      if (message.sender._id !== chatUserId && message.receiverId !== chatUserId) return;
+      if (
+        message.sender._id !== chatUserId &&
+        message.receiverId !== chatUserId
+      )
+        return;
       // add receved message to chat messages
       dispatch(addMessageToChat(message));
       // play recive message sound
@@ -201,7 +238,7 @@ function App({ Component, ...pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <link rel='shortcut icon' href='/favicon.ico' />
+        <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
       <ChakraProvider theme={theme}>
         <SessionProvider>
@@ -209,7 +246,12 @@ function App({ Component, ...pageProps }: AppProps) {
             <div className={styles.app}>
               {/* system notifications */}
               {systemNotifications && (
-                <SystemNotifications data={{ err: systemNotifications.err, msg: systemNotifications.msg }} />
+                <SystemNotifications
+                  data={{
+                    err: systemNotifications.err,
+                    msg: systemNotifications.msg,
+                  }}
+                />
               )}
               {/* appHeader */}
               {currentUser !== null ? <AppHeader /> : ''}
@@ -217,7 +259,11 @@ function App({ Component, ...pageProps }: AppProps) {
               {currentUser === null ? <AppLogo /> : ''}
               <CreateChat />
               {/* CreateChatGroupMenu */}
-              {isCreateChatGroupMenuOpen ? <CreateChatGroupMenu forCreation={Boolean(openedChat)} /> : ''}
+              {isCreateChatGroupMenuOpen ? (
+                <CreateChatGroupMenu forCreation={Boolean(!openedChat)} />
+              ) : (
+                ''
+              )}
             </div>
           </Provider>
         </SessionProvider>
