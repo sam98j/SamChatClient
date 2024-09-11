@@ -23,6 +23,8 @@ export interface ChatMessage {
   _id: string;
   content: string;
   type: MessagesTypes;
+  replyTo: string | null;
+  msgReplyedTo: Pick<ChatMessage, '_id' | 'content' | 'type' | 'sender'> | null;
   sender: ChatMember;
   fileName: string | null;
   fileSize: string | null;

@@ -1,14 +1,25 @@
 /* eslint-disable react/no-unknown-property */
-import { Box, IconButton, Input, InputGroup, InputRightElement, Text } from '@chakra-ui/react';
+import {
+  Box,
+  IconButton,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Text,
+} from '@chakra-ui/react';
 import styles from './styles.module.scss';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Icon } from '@chakra-ui/icons';
 import { BsMic, BsSoundwave, BsStopFill } from 'react-icons/bs';
 import { ImAttachment } from 'react-icons/im';
 import { BiSticker } from 'react-icons/bi';
 import useTranslation from 'next-translate/useTranslation';
 import { IoSend } from 'react-icons/io5';
-import { ChatMessage, ChatActionsTypes, MessagesTypes } from '@/interfaces/chat.interface';
+import {
+  ChatMessage,
+  ChatActionsTypes,
+  MessagesTypes,
+} from '@/interfaces/chat.interface';
 import { useDispatch } from 'react-redux';
 import { useVoiceMemoRecorder } from '@/Hooks/useVoiceMemoRecorder';
 import { voiceMemoTimer } from '@/utils/chat.util';
@@ -18,7 +29,10 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useRouter } from 'next/router';
 import AttachFile from '../AttachFile';
-import { setAttchFileMenuOpen, setSystemNotification } from '@/redux/system.slice';
+import {
+  setAttchFileMenuOpen,
+  setSystemNotification,
+} from '@/redux/system.slice';
 import {
   ChatActions,
   ChatCard,
@@ -30,6 +44,7 @@ import {
 } from '@/redux/chats.slice';
 import { getFileSize } from '@/utils/files';
 import { useSearchParams } from 'next/navigation';
+import ResponseToMessage from '../ResponseToMessage';
 
 const ChatInput = () => {
   const { start, stop, cancel } = useVoiceMemoRecorder();
@@ -39,6 +54,8 @@ const ChatInput = () => {
   const [isRec, setIsReco] = useState(false);
   // timer
   const [timer, setTimer] = useState('00:00');
+  // textInputRef
+  const textInputRef = useRef<HTMLInputElement>(null);
   // timer interval
   const [timerInterval, setTimerInterval] = useState<NodeJS.Timer>();
   // redux dispatch method
@@ -46,14 +63,23 @@ const ChatInput = () => {
   // locales
   const { locale } = useRouter();
   // current logged usr
-  const { attachFileMenuOpen, currentUsr, chatMessages, openedChat } = useSelector((state: RootState) => {
+  const {
+    attachFileMenuOpen,
+    responseToMessage,
+    currentUsr,
+    chatMessages,
+    openedChat,
+  } = useSelector((state: RootState) => {
     return {
       currentUsr: state.auth.currentUser,
       attachFileMenuOpen: state.system.attchFileMenuOpen,
       chatMessages: state.chat.chatMessages,
       openedChat: state.chat.openedChat,
+      responseToMessage: state.chat.responseToMessage,
     };
   });
+  //
+  responseToMessage && textInputRef.current?.focus();
   // translatios
   const { t } = useTranslation('chatScreen');
   // url params
@@ -61,18 +87,31 @@ const ChatInput = () => {
   // chat action
   const [chatAction, setChatAction] = useState<ChatActions | null>(null);
   // handleInputFocus
-  const handleInputFocus = () => dispatch(setCurrentUsrDoingAction({ ...chatAction!, type: ChatActionsTypes.TYPEING }));
+  const handleInputFocus = () =>
+    dispatch(
+      setCurrentUsrDoingAction({
+        ...chatAction!,
+        type: ChatActionsTypes.TYPEING,
+      }),
+    );
   // handleInputBlur
-  const handleInputBlur = () => dispatch(setCurrentUsrDoingAction({ ...chatAction!, type: null }));
+  const handleInputBlur = () =>
+    dispatch(setCurrentUsrDoingAction({ ...chatAction!, type: null }));
   // inputChangeHandler
-  const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => setInputText(event.target.value);
+  const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setInputText(event.target.value);
   // start recording voice
   const startRecVoiceMemoHandler = async () => {
     // start recording voice
     try {
       await start();
       // tell the server about is currently recording voice to inform another usr in the chat
-      dispatch(setCurrentUsrDoingAction({ ...chatAction!, type: ChatActionsTypes.RECORDING_VOICE }));
+      dispatch(
+        setCurrentUsrDoingAction({
+          ...chatAction!,
+          type: ChatActionsTypes.RECORDING_VOICE,
+        }),
+      );
       // set voice recording state
       setIsReco(true);
       setTimerInterval(voiceMemoTimer(setTimer));
@@ -102,11 +141,21 @@ const ChatInput = () => {
     // text message file size (null)
     const fileSize = null;
     // textMessage
-    const textMessage: ChatMessage = { ...message, content: inputText, type: MessagesTypes.TEXT, fileName, fileSize };
+    const textMessage: ChatMessage = {
+      ...message,
+      content: inputText,
+      type: MessagesTypes.TEXT,
+      fileName,
+      fileSize,
+    };
     // check if it's first message in the chat
     if (chatMessages?.length === 0) {
       // create chat card
-      const chatCard: ChatCard = { lastMessage: textMessage, unReadedMsgs: 1, ...openedChat! };
+      const chatCard: ChatCard = {
+        lastMessage: textMessage,
+        unReadedMsgs: 1,
+        ...openedChat!,
+      };
       // add chat top the top
       dispatch(addNewChat(chatCard));
     }
@@ -115,7 +164,9 @@ const ChatInput = () => {
     // clear the input
     setInputText('');
     // change chat last message
-    dispatch(setChatLastMessage({ msg: textMessage, currentUserId: currentUsr!._id }));
+    dispatch(
+      setChatLastMessage({ msg: textMessage, currentUserId: currentUsr!._id }),
+    );
   };
   // send voice message
   const sendVoiceMessage = async (message: ChatMessage) => {
@@ -145,13 +196,25 @@ const ChatInput = () => {
       // msg type
       const type = MessagesTypes.VOICENOTE;
       // voice note message
-      const voiceNoteMessage: ChatMessage = { ...message, voiceNoteDuration, content, type, fileName, fileSize };
+      const voiceNoteMessage: ChatMessage = {
+        ...message,
+        voiceNoteDuration,
+        content,
+        type,
+        fileName,
+        fileSize,
+      };
       // add message to the chat
       dispatch(addMessageToChat(voiceNoteMessage));
       // set isRec
       setIsReco(false);
       // change chat last message
-      dispatch(setChatLastMessage({ msg: voiceNoteMessage, currentUserId: currentUsr!._id }));
+      dispatch(
+        setChatLastMessage({
+          msg: voiceNoteMessage,
+          currentUserId: currentUsr!._id,
+        }),
+      );
     };
     // on voice reader load
     reader.addEventListener('load', voiceLoadHandler);
@@ -165,9 +228,13 @@ const ChatInput = () => {
       sender: currentUsr,
       date: new Date().toString(),
       status: null,
+      msgReplyedTo: responseToMessage,
+      replyTo: responseToMessage?._id!,
     } as ChatMessage;
     // place current chat to the top
-    dispatch(placeLastUpdatedChatToTheTop({ chatId: urlSearchParams.get('id')! }));
+    dispatch(
+      placeLastUpdatedChatToTheTop({ chatId: urlSearchParams.get('id')! }),
+    );
     // if text message
     if (inputText && !isRec) return sendTextMessage(message);
     // if voice message
@@ -187,7 +254,9 @@ const ChatInput = () => {
     // if no opened chat
     if (!openedChat) return;
     // chat members IDs
-    const openedChatMembersIDs = openedChat?.members.map((member) => member._id);
+    const openedChatMembersIDs = openedChat?.members.map(
+      (member) => member._id,
+    );
     // chat action
     const chatAction = {
       type: null,
@@ -200,45 +269,78 @@ const ChatInput = () => {
   }, [openedChat]);
   return (
     <div className={styles.footer} pref-lang={locale}>
+      {/* response to message */}
+      {responseToMessage && <ResponseToMessage />}
       {/* attach file menu */}
-      <AttachFile />
-      {/* attach and flashing mic */}
-      <IconButton
-        aria-label=''
-        isRound={true}
-        is-voice-rec={String(isRec)}
-        className={styles.mic_atta_icon}
-        onClick={handleAttachFile}
-      >
-        <MicOrAttchIcon />
-      </IconButton>
-      {/* voice message timer */}
-      <Box flexGrow={'1'} textColor={'gray'} display={!isRec ? 'none' : 'flex'}>
-        <Text> {timer} </Text>
-        <Text>{t('rec_voice')}</Text>
-      </Box>
-      {/* write text message box */}
-      <InputGroup display={isRec ? 'none' : 'initial'}>
-        <InputRightElement className={styles.input_inner_icon}>
-          <Icon as={BiSticker} boxSize={5} color={'messenger.500'} />
-        </InputRightElement>
-        <Input
-          variant='filled'
-          placeholder={t('typeMessagePlaceholder')}
-          borderRadius={'20px'}
-          value={inputText}
-          name='msgText'
-          onChange={inputChangeHandler}
-          onFocus={handleInputFocus}
-          onBlur={handleInputBlur}
-        />
-      </InputGroup>
-      {/* btn to stop voice recording */}
-      {isRec ? <BsStopFill onClick={stopRecVoiceMemoHandler} color='red' size='2rem' /> : ''}
-      {/* start recording voice message btn */}
-      {!isRec && !inputText ? <BsSoundwave onClick={startRecVoiceMemoHandler} color='#1e90ff' size={'2.5rem'} /> : ''}
-      {/* send message btn */}
-      {showSendMsgBtn ? <IoSend onClick={handleSendBtnClick} className={styles.send_btn} size='1.5rem' /> : ''}
+      <div className={styles.input_container}>
+        <AttachFile />
+        {/* attach and flashing mic */}
+        <IconButton
+          aria-label=""
+          isRound={true}
+          is-voice-rec={String(isRec)}
+          className={styles.mic_atta_icon}
+          onClick={handleAttachFile}
+        >
+          <MicOrAttchIcon />
+        </IconButton>
+        {/* voice message timer */}
+        <Box
+          flexGrow={'1'}
+          textColor={'gray'}
+          display={!isRec ? 'none' : 'flex'}
+        >
+          <Text> {timer} </Text>
+          <Text>{t('rec_voice')}</Text>
+        </Box>
+        {/* write text message box */}
+        <InputGroup display={isRec ? 'none' : 'initial'}>
+          <InputRightElement className={styles.input_inner_icon}>
+            <Icon as={BiSticker} boxSize={5} color={'messenger.500'} />
+          </InputRightElement>
+          <Input
+            variant="filled"
+            placeholder={t('typeMessagePlaceholder')}
+            borderRadius={'20px'}
+            value={inputText}
+            name="msgText"
+            ref={textInputRef}
+            onChange={inputChangeHandler}
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+          />
+        </InputGroup>
+        {/* btn to stop voice recording */}
+        {isRec ? (
+          <BsStopFill
+            onClick={stopRecVoiceMemoHandler}
+            color="red"
+            size="2rem"
+          />
+        ) : (
+          ''
+        )}
+        {/* start recording voice message btn */}
+        {!isRec && !inputText ? (
+          <BsSoundwave
+            onClick={startRecVoiceMemoHandler}
+            color="#1e90ff"
+            size={'2.5rem'}
+          />
+        ) : (
+          ''
+        )}
+        {/* send message btn */}
+        {showSendMsgBtn ? (
+          <IoSend
+            onClick={handleSendBtnClick}
+            className={styles.send_btn}
+            size="1.5rem"
+          />
+        ) : (
+          ''
+        )}
+      </div>
     </div>
   );
 };

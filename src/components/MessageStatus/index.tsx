@@ -8,17 +8,25 @@ import { MessageStatus } from '@/interfaces/chat.interface';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 
-const MessageStatusIcon: React.FC<{ data: { msgStatus: MessageStatus; senderId: string } }> = ({ data }) => {
+type MessageData = { status: MessageStatus; senderId: string };
+
+const MessageStatusIcon: React.FC<MessageData> = ({ senderId, status }) => {
   // current usr
   const currentUsr = useSelector((state: RootState) => state.auth.currentUser);
   return (
     <div
-      msg-sended-by-me={String(currentUsr?._id === data.senderId)}
-      message-status={data.msgStatus}
+      msg-sended-by-me={String(currentUsr?._id === senderId)}
+      message-status={status}
       className={styles.msg_status_icon}
     >
       <Icon
-        as={data.msgStatus === null ? HiOutlineClock : data.msgStatus === MessageStatus.SENT ? BiCheck : BiCheckDouble}
+        as={
+          status === null
+            ? HiOutlineClock
+            : status === MessageStatus.SENT
+              ? BiCheck
+              : BiCheckDouble
+        }
         boxSize={'5'}
         color={'gray'}
       />

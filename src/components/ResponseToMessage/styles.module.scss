@@ -1,0 +1,9 @@
+.response_to_msg {
+  max-height: 0;
+  transition: all 0.1s ease-in-out;
+  overflow: hidden;
+}
+
+.response_to_msg[is-modal-open='true'] {
+  max-height: 58px !important;
+}

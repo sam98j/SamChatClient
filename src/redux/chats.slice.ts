@@ -6,7 +6,11 @@ import {
   getUserChats,
   getUsrOnlineStatus,
 } from '@/apis/chats.api';
-import { ChangeMessageStatusDTO, ChatMessage, ChatActionsTypes } from '@/interfaces/chat.interface';
+import {
+  ChangeMessageStatusDTO,
+  ChatMessage,
+  ChatActionsTypes,
+} from '@/interfaces/chat.interface';
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { LoggedInUserData } from './auth.slice';
@@ -45,6 +49,11 @@ export interface ChatActions {
   chatId: string;
   chatMembers: string[];
 }
+// responseToMessageData
+export type ResponseToMessageData = Pick<
+  ChatMessage,
+  'sender' | 'content' | 'type' | '_id'
+>;
 // state slice shape
 export interface ChatState {
   chats: ChatCard[] | null | undefined;
@@ -60,17 +69,29 @@ export interface ChatState {
   aggreUnRededMsgs: number;
   fileMessageUploadIndicator: number | null;
   addChatMembersRes: boolean | null;
+  responseToMessage: ResponseToMessageData | null;
 }
 // inital state
 const initialState: ChatState = {
   fileMessageUploadIndicator: null,
   isLastChatMessagesBatch: null,
   addChatMembersRes: null,
+  responseToMessage: null,
   chats: null,
   chatMessages: [],
   openedChat: undefined,
-  isChatUsrDoingAction: { chatId: '', chatMembers: [], senderId: '', type: null },
-  isCurrentUsrDoingAction: { chatId: '', chatMembers: [], senderId: '', type: null },
+  isChatUsrDoingAction: {
+    chatId: '',
+    chatMembers: [],
+    senderId: '',
+    type: null,
+  },
+  isCurrentUsrDoingAction: {
+    chatId: '',
+    chatMembers: [],
+    senderId: '',
+    type: null,
+  },
   chatUsrStatus: '',
   messageToBeMarketAsReaded: null,
   currentChatPorfile: null,
@@ -96,15 +117,27 @@ export const chatSlice = createSlice({
       state.isChatUsrDoingAction = action.payload;
     },
     // set chat usr status
-    setChatUsrStatus: (state, action: PayloadAction<string | null | undefined>) => {
+    setChatUsrStatus: (
+      state,
+      action: PayloadAction<string | null | undefined>,
+    ) => {
       state.chatUsrStatus = action.payload;
     },
     // change message status
-    setMessageStatus: (state, action: PayloadAction<ChangeMessageStatusDTO>) => {
+    setMessageStatus: (
+      state,
+      action: PayloadAction<ChangeMessageStatusDTO>,
+    ) => {
       // change message's status in chatCard's lastMessage
       const updateChats = state.chats?.map((chat) => {
         if (chat._id === action.payload.chatId) {
-          return { ...chat, lastMessage: { ...chat.lastMessage, status: action.payload.msgStatus } };
+          return {
+            ...chat,
+            lastMessage: {
+              ...chat.lastMessage,
+              status: action.payload.msgStatus,
+            },
+          };
         }
         return chat;
       });
@@ -116,7 +149,9 @@ export const chatSlice = createSlice({
       if (!state.chatMessages) return;
       // change messages status
       action.payload.msgIDs.map((msgId) => {
-        const msgIndex = state.chatMessages?.findIndex((msg) => msg._id === msgId);
+        const msgIndex = state.chatMessages?.findIndex(
+          (msg) => msg._id === msgId,
+        );
         state.chatMessages![msgIndex!].status = action.payload.msgStatus;
       });
     },
@@ -125,7 +160,10 @@ export const chatSlice = createSlice({
       state.isCurrentUsrDoingAction = action.payload;
     },
     // messageToBeMarketAsReaded
-    setMessageToBeMarketAsReaded(state, action: PayloadAction<ChangeMessageStatusDTO>) {
+    setMessageToBeMarketAsReaded(
+      state,
+      action: PayloadAction<ChangeMessageStatusDTO>,
+    ) {
       state.messageToBeMarketAsReaded = action.payload;
     },
     // add new chat to the chats
@@ -133,14 +171,21 @@ export const chatSlice = createSlice({
       state.chats = [action.payload, ...state.chats!];
     },
     // place last update chat to the top
-    placeLastUpdatedChatToTheTop(state, action: PayloadAction<{ chatId: string }>) {
+    placeLastUpdatedChatToTheTop(
+      state,
+      action: PayloadAction<{ chatId: string }>,
+    ) {
       // get updated chat id
       state.chats?.find((chat, index) => {
         if (chat._id === action.payload.chatId) {
           const chatsFirstPart = state.chats?.slice(0, index);
           const chatsSecondPart = state.chats?.slice(index + 1);
           const updatedChat = state.chats?.slice(index, index + 1);
-          state.chats = Array.prototype.concat(updatedChat, chatsFirstPart, chatsSecondPart);
+          state.chats = Array.prototype.concat(
+            updatedChat,
+            chatsFirstPart,
+            chatsSecondPart,
+          );
         }
       });
     },
@@ -155,7 +200,9 @@ export const chatSlice = createSlice({
       // create regex
       const regex = new RegExp(action.payload, 'i');
       // filter chats
-      const fillteredChats = parsedCachedChats.filter(({ name }) => regex.test(name));
+      const fillteredChats = parsedCachedChats.filter(({ name }) =>
+        regex.test(name),
+      );
       // update chats state
       state.chats = fillteredChats;
       // if there is no query
@@ -170,14 +217,19 @@ export const chatSlice = createSlice({
       // terminate if no message
       if (!action.payload) return;
       // check if message is already in chat
-      const msgToRender = state.chatMessages?.filter((msg) => msg._id === action.payload?._id)[0];
+      const msgToRender = state.chatMessages?.filter(
+        (msg) => msg._id === action.payload?._id,
+      )[0];
       // terminate if msg exist
       if (msgToRender) return;
       // push message to chat
       state.chatMessages?.push(action.payload);
     },
     // set aggreated un readed message
-    clearAggreUnReadedMsg: (state, action: PayloadAction<{ chatId: string }>) => {
+    clearAggreUnReadedMsg: (
+      state,
+      action: PayloadAction<{ chatId: string }>,
+    ) => {
       // updatedChat
       const updatedChats = state.chats?.map((chat) => {
         if (chat._id === action.payload.chatId) {
@@ -189,7 +241,10 @@ export const chatSlice = createSlice({
       state.chats = updatedChats;
     },
     // setChatLastMessage
-    setChatLastMessage: (state, action: PayloadAction<{ msg: ChatMessage; currentUserId: string }>) => {
+    setChatLastMessage: (
+      state,
+      action: PayloadAction<{ msg: ChatMessage; currentUserId: string }>,
+    ) => {
       // new message
       const lastMessage = action.payload.msg;
       // updatedChat
@@ -203,9 +258,14 @@ export const chatSlice = createSlice({
       state.chats = updatedChats;
     },
     // setChatUnReadedMessagesCount
-    setChatUnReadedMessagesCount: (state, action: PayloadAction<{ msg: ChatMessage }>) => {
+    setChatUnReadedMessagesCount: (
+      state,
+      action: PayloadAction<{ msg: ChatMessage }>,
+    ) => {
       // find update chat's index
-      const chatIndex = state.chats?.findIndex((chat) => chat._id === action.payload.msg.receiverId);
+      const chatIndex = state.chats?.findIndex(
+        (chat) => chat._id === action.payload.msg.receiverId,
+      );
       // old chat's unreaded messages
       const oldChatUnReadedMessaegs = state.chats![chatIndex!].unReadedMsgs;
       state.chats![chatIndex!].unReadedMsgs = oldChatUnReadedMessaegs + 1;
@@ -219,13 +279,23 @@ export const chatSlice = createSlice({
     clearChatMessages: (state) => {
       state.chatMessages = [];
     },
+    // set response to message
+    setResponseToMessage: (
+      state,
+      action: PayloadAction<ResponseToMessageData | null>,
+    ) => {
+      state.responseToMessage = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getUserChats.fulfilled, (state, action) => {
       const chats = action.payload.chats as ChatCard[];
       // sorted Chats
       const sortedChats = chats.sort((a, b) => {
-        return new Date(b.lastMessage.date).getTime() - new Date(a.lastMessage.date).getTime();
+        return (
+          new Date(b.lastMessage.date).getTime() -
+          new Date(a.lastMessage.date).getTime()
+        );
       });
       // store user chats in local storage
       localStorage.setItem('chats', JSON.stringify(chats));
@@ -242,13 +312,19 @@ export const chatSlice = createSlice({
       state.chatMessages = null;
     });
     // get chat profile
-    builder.addCase(getChatProfile.fulfilled, (state, action: PayloadAction<SingleChat>) => {
-      state.openedChat = action.payload;
-    });
+    builder.addCase(
+      getChatProfile.fulfilled,
+      (state, action: PayloadAction<SingleChat>) => {
+        state.openedChat = action.payload;
+      },
+    );
     // set usr online status
-    builder.addCase(getUsrOnlineStatus.fulfilled, (state, action: PayloadAction<string>) => {
-      state.chatUsrStatus = action.payload;
-    });
+    builder.addCase(
+      getUsrOnlineStatus.fulfilled,
+      (state, action: PayloadAction<string>) => {
+        state.chatUsrStatus = action.payload;
+      },
+    );
     // create chat group
     builder.addCase(createChat.fulfilled, (state, action) => {
       const res = action.payload;
@@ -269,6 +345,7 @@ export const {
   setChatUnReadedMessagesCount,
   setChatLastMessage,
   setMessageStatus,
+  setResponseToMessage,
   clearAggreUnReadedMsg,
   setCurrentUsrDoingAction,
   setMessageToBeMarketAsReaded,

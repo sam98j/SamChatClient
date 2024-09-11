@@ -8,6 +8,7 @@
   margin: 0;
   text-decoration: none;
   font-weight: 400;
+  user-select: none;
 }
 
 /* scroll bar styles */
@@ -89,4 +90,10 @@ html[lang='ar'] {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.transtion-response-to-message-modal {
+  transition: all 5s ease-in-out;
+  opacity: 1;
+  height: initial !important;
 }

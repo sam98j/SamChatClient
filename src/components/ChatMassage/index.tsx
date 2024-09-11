@@ -5,7 +5,7 @@ import { ChatMessage, MessagesTypes } from '@/interfaces/chat.interface';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { Avatar, Box, Text } from '@chakra-ui/react';
-import { ChatTypes } from '@/redux/chats.slice';
+import { ChatTypes, setResponseToMessage } from '@/redux/chats.slice';
 import { useRouter } from 'next/router';
 import VoiceMemoPlayer from '../VoiceMemoPlayer';
 import MessageStatusIcon from '../MessageStatus';
@@ -13,32 +13,74 @@ import { TimeUnits, getTime } from '@/utils/time';
 import ImageMsgViewer from '../ImageMsgViewer';
 import FileMsgViewer from '../FileMsgViewer';
 import VideoMsgPlayer from '../VideoMsgPlayer';
+import { useDispatch } from 'react-redux';
+import MessageReplyedTo from '../MessageReplyedTo';
 
-const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) => {
+type MessageData = { messageData: ChatMessage };
+
+const ChatMassage: React.FC<MessageData> = ({ messageData }) => {
   // back end api
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   // messages types
   const { TEXT, VOICENOTE, PHOTO, FILE, VIDEO } = MessagesTypes;
   // current app lang
   const { locale } = useRouter();
+  // dispatch
+  const dispatch = useDispatch();
   // redux dispatch function
   // message data
-  const { content, sender, status, date, type, voiceNoteDuration, fileName, fileSize, _id } = messageData;
+  const {
+    content,
+    sender,
+    status,
+    date,
+    type,
+    voiceNoteDuration,
+    fileName,
+    fileSize,
+    _id,
+    msgReplyedTo,
+  } = messageData;
   // msg time
   const msgTime = getTime(date, TimeUnits.time);
   // fetch data from redux store
   const currentUsr = useSelector((state: RootState) => state.auth.currentUser);
   // current opend chat type
-  const opendChatType = useSelector((state: RootState) => state.chat.openedChat?.type);
+  const opendChatType = useSelector(
+    (state: RootState) => state.chat.openedChat?.type,
+  );
   // check for the the message sender
   const [sendedByMe] = useState(currentUsr?._id === sender._id);
+  // doubleClickHandler
+  const doubleClickHandler = (e: React.MouseEvent<HTMLDivElement>) =>
+    dispatch(
+      setResponseToMessage({
+        sender: sender!,
+        content: content!,
+        _id: _id!,
+        type,
+      }),
+    );
   // component mount
   return (
-    <div className={styles.messageContainer} pref-lang={locale}>
+    <div
+      className={styles.messageContainer}
+      pref-lang={locale}
+      onDoubleClick={doubleClickHandler}
+    >
       {/* avatar */}
-      {opendChatType === ChatTypes.GROUP && !sendedByMe ? <Avatar size={'sm'} src={`${apiUrl}${sender.avatar}`} /> : ''}
+      {opendChatType === ChatTypes.GROUP && !sendedByMe ? (
+        <Avatar size={'sm'} src={`${apiUrl}${sender.avatar}`} />
+      ) : (
+        ''
+      )}
       {/* message bubble */}
-      <div className={styles.bubble} sended-by-me={String(sendedByMe)} message-status={String(status)} pref-lang={locale}>
+      <div
+        className={styles.bubble}
+        sended-by-me={String(sendedByMe)}
+        message-status={String(status)}
+        pref-lang={locale}
+      >
         {/* chat text  */}
         <Text>
           {/* chat sender name */}
@@ -49,25 +91,48 @@ const ChatMassage: React.FC<{ messageData: ChatMessage }> = ({ messageData }) =>
           ) : (
             ''
           )}
+          {/* replyedToMsg */}
+          {msgReplyedTo ? <MessageReplyedTo msgData={msgReplyedTo} /> : ''}
           {/* text message */}
           {type === TEXT ? content : ''}
           {/* voice message */}
-          {type === VOICENOTE ? <VoiceMemoPlayer data={{ voiceNoteDuration, content, sender }} /> : ''}
+          {type === VOICENOTE ? (
+            <VoiceMemoPlayer data={{ voiceNoteDuration, content, sender }} />
+          ) : (
+            ''
+          )}
           {/* message type photo */}
-          {type === PHOTO ? <ImageMsgViewer data={{ sender, date, content, _id }} /> : ''}
+          {type === PHOTO ? (
+            <ImageMsgViewer data={{ sender, date, content, _id }} />
+          ) : (
+            ''
+          )}
           {/* message type file */}
-          {type === FILE ? <FileMsgViewer data={{ fileName, fileSize, content }} /> : ''}
+          {type === FILE ? (
+            <FileMsgViewer data={{ fileName, fileSize, content }} />
+          ) : (
+            ''
+          )}
           {/* message type video */}
-          {type === VIDEO ? <VideoMsgPlayer data={{ content, date, sender, _id }} /> : ''}
+          {type === VIDEO ? (
+            <VideoMsgPlayer data={{ content, date, sender, _id }} />
+          ) : (
+            ''
+          )}
         </Text>
         {/* msg footer appear  in all messages types*/}
-        <Box display={'flex'} justifyContent={'flex-end'} marginTop={'2px'} alignItems={'center'}>
+        <Box
+          display={'flex'}
+          justifyContent={'flex-end'}
+          marginTop={'2px'}
+          alignItems={'center'}
+        >
           {/* message time */}
           <Text className={styles.msg_time} fontSize={'sm'}>
             {msgTime}
           </Text>
           {/* when status is null show clock icon */}
-          <MessageStatusIcon data={{ msgStatus: status!, senderId: sender._id }} />
+          <MessageStatusIcon senderId={sender._id!} status={status!} />
         </Box>
       </div>
     </div>
