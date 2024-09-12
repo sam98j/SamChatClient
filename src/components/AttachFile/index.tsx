@@ -9,7 +9,11 @@ import { RootState } from '@/redux/store';
 import { useDispatch } from 'react-redux';
 import { ChatMessage, MessagesTypes } from '@/interfaces/chat.interface';
 import { v4 as uuid } from 'uuid';
-import { addMessageToChat, placeLastUpdatedChatToTheTop, setChatLastMessage } from '@/redux/chats.slice';
+import {
+  addMessageToChat,
+  placeLastUpdatedChatToTheTop,
+  setChatLastMessage,
+} from '@/redux/chats.slice';
 import { setAttchFileMenuOpen } from '@/redux/system.slice';
 import { getFileSize } from '@/utils/files';
 import { useSearchParams } from 'next/navigation';
@@ -23,12 +27,15 @@ const AttachFile = () => {
   // urlSearchParams
   const urlSearchParams = useSearchParams();
   // store
-  const { attachFileMenuOpen, currentUser } = useSelector((state: RootState) => {
-    return {
-      attachFileMenuOpen: state.system.attchFileMenuOpen,
-      currentUser: state.auth.currentUser,
-    };
-  });
+  const { responseToMessage, attachFileMenuOpen, currentUser } = useSelector(
+    (state: RootState) => {
+      return {
+        attachFileMenuOpen: state.system.attchFileMenuOpen,
+        currentUser: state.auth.currentUser,
+        responseToMessage: state.chat.responseToMessage,
+      };
+    },
+  );
   // handleFileSelection
   const handleFileSelection = (changeEvent: ChangeEvent<HTMLInputElement>) => {
     // selected file
@@ -55,30 +62,39 @@ const AttachFile = () => {
         content: rowFile as string,
         type: changeEvent.target.name as MessagesTypes,
         voiceNoteDuration: '',
+        replyTo: responseToMessage!._id,
+        msgReplyedTo: responseToMessage,
       };
       //   // dispatch a message
       dispatch(addMessageToChat(message));
       //   // hide attach file menu
       dispatch(setAttchFileMenuOpen(false));
       // place current chat to the top
-      dispatch(placeLastUpdatedChatToTheTop({ chatId: urlSearchParams.get('id')! }));
+      dispatch(
+        placeLastUpdatedChatToTheTop({ chatId: urlSearchParams.get('id')! }),
+      );
       // change chat last message
-      dispatch(setChatLastMessage({ msg: message, currentUserId: currentUser!._id }));
+      dispatch(
+        setChatLastMessage({ msg: message, currentUserId: currentUser!._id }),
+      );
     }
   };
   return (
-    <div className={styles.attach_file_menu} is-menu-open={String(attachFileMenuOpen)}>
+    <div
+      className={styles.attach_file_menu}
+      is-menu-open={String(attachFileMenuOpen)}
+    >
       {/* insert Photo */}
       <InputGroup className={styles.input_group}>
         <FormControl className={styles.form_control}>
-          <IconButton aria-label='imagebtn' isRound={true}>
-            <BsImage color='orange' />
+          <IconButton aria-label="imagebtn" isRound={true}>
+            <BsImage color="orange" />
           </IconButton>
           <Input
-            type='file'
+            type="file"
             name={MessagesTypes.PHOTO}
             placeholder={t('insertPhoto')}
-            accept='image/png, image/jpeg'
+            accept="image/png, image/jpeg"
             onChange={handleFileSelection}
           />
         </FormControl>
@@ -86,13 +102,13 @@ const AttachFile = () => {
       {/* Insert Video */}
       <InputGroup className={styles.input_group}>
         <FormControl className={styles.form_control}>
-          <IconButton aria-label='imagebtn' isRound={true}>
-            <BsCameraVideo color='blue' />
+          <IconButton aria-label="imagebtn" isRound={true}>
+            <BsCameraVideo color="blue" />
           </IconButton>
           <Input
-            type='file'
+            type="file"
             placeholder={t('insertVideo')}
-            accept='video/mp4, video/webm, video/*,.mkv'
+            accept="video/mp4, video/webm, video/*,.mkv"
             name={MessagesTypes.VIDEO}
             onChange={handleFileSelection}
           />
@@ -101,15 +117,15 @@ const AttachFile = () => {
       {/* Insert File */}
       <InputGroup className={styles.input_group}>
         <FormControl className={styles.form_control}>
-          <IconButton aria-label='imagebtn' isRound={true}>
-            <BsFilePdf color='green' />
+          <IconButton aria-label="imagebtn" isRound={true}>
+            <BsFilePdf color="green" />
           </IconButton>
           <Input
-            type='file'
+            type="file"
             placeholder={t('insertFile')}
             name={MessagesTypes.FILE}
             onChange={handleFileSelection}
-            accept='application/pdf'
+            accept="application/pdf"
           />
         </FormControl>
       </InputGroup>
@@ -117,14 +133,14 @@ const AttachFile = () => {
       {/* insert Photo */}
       <InputGroup className={styles.input_group}>
         <FormControl className={styles.form_control}>
-          <IconButton aria-label='imagebtn' isRound={true}>
-            <BsMusicNote color='red' />
+          <IconButton aria-label="imagebtn" isRound={true}>
+            <BsMusicNote color="red" />
           </IconButton>
           <Input
-            type='file'
+            type="file"
             name={MessagesTypes.VOICENOTE}
             placeholder={t('insertSoundFile')}
-            accept='image/png, image/jpeg'
+            accept="image/png, image/jpeg"
             onChange={handleFileSelection}
           />
         </FormControl>

@@ -229,7 +229,7 @@ const ChatInput = () => {
       date: new Date().toString(),
       status: null,
       msgReplyedTo: responseToMessage,
-      replyTo: responseToMessage?._id!,
+      replyTo: responseToMessage!._id,
     } as ChatMessage;
     // place current chat to the top
     dispatch(

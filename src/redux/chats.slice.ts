@@ -52,7 +52,7 @@ export interface ChatActions {
 // responseToMessageData
 export type ResponseToMessageData = Pick<
   ChatMessage,
-  'sender' | 'content' | 'type' | '_id'
+  'sender' | 'content' | 'type' | '_id' | 'voiceNoteDuration' | 'fileName'
 >;
 // state slice shape
 export interface ChatState {

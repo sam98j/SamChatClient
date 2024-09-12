@@ -1,6 +1,5 @@
 import { setResponseToMessage } from '@/redux/chats.slice';
 import { RootState } from '@/redux/store';
-import { Reply } from 'lucide-react';
 import useTranslation from 'next-translate/useTranslation';
 import { useRouter } from 'next/router';
 import React, { useRef, useState } from 'react';
@@ -8,6 +7,12 @@ import { BsReply } from 'react-icons/bs';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import styles from './styles.module.scss';
+import { MessagesTypes } from '@/interfaces/chat.interface';
+import ImagePreview from '../ImagePreview';
+import VideoPreview from '../VideoPreview';
+import VoiceMemoPreview from '../VoiceMemoPreview';
+import FilePreview from '../FilePreview';
+import { Box } from 'lucide-react';
 
 const ResponseToMessage = () => {
   // dispatch
@@ -15,7 +20,7 @@ const ResponseToMessage = () => {
   // translatios
   const { t } = useTranslation('chatScreen');
   // ref
-  const componentRef = useRef<HTMLDivElement>(null);
+  const componentRef = useRef<SVGSVGElement>(null);
   // lang
   const { locale } = useRouter();
   //   redux store
@@ -24,19 +29,27 @@ const ResponseToMessage = () => {
       responseToMessage: state.chat.responseToMessage,
     };
   });
+  // destruct  message
+  const {
+    content,
+    sender,
+    type,
+    fileName,
+    voiceNoteDuration: duration,
+  } = responseToMessage!;
+  // messages types
+  const { FILE, PHOTO, TEXT, VIDEO, VOICENOTE } = MessagesTypes;
+  // is modal open
   const [isModalOpen, setIsModalOpen] = useState(Boolean(responseToMessage));
   // closeModalHandler
   const closeModalHandler = () => {
     setIsModalOpen(false);
-    componentRef.current?.addEventListener(
-      'transitionend',
-      (e: TransitionEvent) => {
-        dispatch(setResponseToMessage(null));
-      },
-    );
+    componentRef.current?.addEventListener('transitionend', () => {
+      dispatch(setResponseToMessage(null));
+    });
   };
   return (
-    <div
+    <Box
       className={`bg-gray-100 p-2 rounded-md relative ${styles.response_to_msg}`}
       is-modal-open={String(isModalOpen)}
       ref={componentRef}
@@ -53,10 +66,21 @@ const ResponseToMessage = () => {
           <BsReply />
           {t('replyTo')}
         </span>
-        {responseToMessage?.sender.name}
+        {sender.name}
       </h3>
-      <p className="text-gray-500">{responseToMessage?.content}</p>
-    </div>
+      <p className="text-gray-500">
+        {/* text message */}
+        {type === TEXT ? content : ''}
+        {/* photo */}
+        {type === PHOTO ? <ImagePreview /> : ''}
+        {/* video  */}
+        {type === VIDEO ? <VideoPreview /> : ''}
+        {/* file */}
+        {type === VOICENOTE ? <VoiceMemoPreview duration={duration} /> : ''}
+        {/* file */}
+        {type === FILE ? <FilePreview fileName={fileName!} /> : ''}
+      </p>
+    </Box>
   );
 };
 

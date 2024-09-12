@@ -5,7 +5,11 @@ import { ChatMessage, MessagesTypes } from '@/interfaces/chat.interface';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { Avatar, Box, Text } from '@chakra-ui/react';
-import { ChatTypes, setResponseToMessage } from '@/redux/chats.slice';
+import {
+  ChatTypes,
+  ResponseToMessageData,
+  setResponseToMessage,
+} from '@/redux/chats.slice';
 import { useRouter } from 'next/router';
 import VoiceMemoPlayer from '../VoiceMemoPlayer';
 import MessageStatusIcon from '../MessageStatus';
@@ -52,15 +56,19 @@ const ChatMassage: React.FC<MessageData> = ({ messageData }) => {
   // check for the the message sender
   const [sendedByMe] = useState(currentUsr?._id === sender._id);
   // doubleClickHandler
-  const doubleClickHandler = (e: React.MouseEvent<HTMLDivElement>) =>
-    dispatch(
-      setResponseToMessage({
-        sender: sender!,
-        content: content!,
-        _id: _id!,
-        type,
-      }),
-    );
+  const doubleClickHandler = () => {
+    // response to message
+    const responseToMessageData: ResponseToMessageData = {
+      sender,
+      voiceNoteDuration,
+      _id,
+      type,
+      content,
+      fileName,
+    };
+    // dispatch
+    dispatch(setResponseToMessage(responseToMessageData));
+  };
   // component mount
   return (
     <div

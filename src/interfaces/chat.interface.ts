@@ -1,4 +1,4 @@
-import { ChatMember } from '@/redux/chats.slice';
+import { ChatMember, ResponseToMessageData } from '@/redux/chats.slice';
 
 export enum MessageStatus {
   'SENT' = 'SENT',
@@ -24,7 +24,7 @@ export interface ChatMessage {
   content: string;
   type: MessagesTypes;
   replyTo: string | null;
-  msgReplyedTo: Pick<ChatMessage, '_id' | 'content' | 'type' | 'sender'> | null;
+  msgReplyedTo: ResponseToMessageData | null;
   sender: ChatMember;
   fileName: string | null;
   fileSize: string | null;
