@@ -21,16 +21,22 @@ const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
   // base url
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   // current loggedIn User
-  const loggedInUser = useSelector((state: RootState) => state.auth.currentUser?._id);
+  const loggedInUser = useSelector(
+    (state: RootState) => state.auth.currentUser?._id,
+  );
   // chat avatar
   const [chatAvatar] = useState(() => {
     // get chat member
-    const chatMember = chat.members.filter((member) => member._id !== loggedInUser)[0];
+    const chatMember = chat.members.filter(
+      (member) => member._id !== loggedInUser,
+    )[0];
     // return
     return `${apiUrl}${chat.type === ChatTypes.GROUP ? chat.avatar : chatMember.avatar}`;
   });
   // chat name
-  const [chatUser] = useState(() => chat.members.filter((member) => member._id !== loggedInUser)[0]);
+  const [chatUser] = useState(
+    () => chat.members.filter((member) => member._id !== loggedInUser)[0],
+  );
   // chatName
   const [chatName] = useState(() => (chat.name ? chat.name : chatUser.name));
   // use dispatch
@@ -40,7 +46,9 @@ const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
   // Messages types
   const { TEXT, VOICENOTE, PHOTO, VIDEO, FILE } = MessagesTypes;
   // get data from store
-  const chatAction = useSelector((state: RootState) => state.chat.isChatUsrDoingAction);
+  const chatAction = useSelector(
+    (state: RootState) => state.chat.isChatUsrDoingAction,
+  );
   // is chat usr doing action
   const [isChatUsrDoingAction, setIsChatUserDoingAction] = useState('false');
   // listen for chat action
@@ -49,7 +57,9 @@ const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
     // check if no chat action
     if (!chatAction) return setIsChatUserDoingAction('false');
     // set isChatUserDoingAction
-    setIsChatUserDoingAction(String(Boolean(chatAction.chatId === chat._id && chatAction.type)));
+    setIsChatUserDoingAction(
+      String(Boolean(chatAction.chatId === chat._id && chatAction.type)),
+    );
   }, [chatAction]);
   // handleCardClick
   const handleCardClick = () => dispatch(setOpenedChat(chat));
@@ -65,10 +75,15 @@ const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
         className={styles.chatCard}
       >
         {/* chat avatar */}
-        <Avatar name='Hosam Alden' src={chatAvatar} />
+        <Avatar name="Hosam Alden" src={chatAvatar} />
         <Box flexGrow={'1'}>
           {/* chat usr name */}
-          <Text fontSize={'md'} marginBottom={'5px'} textColor={'messenger.500'} fontFamily={'"Baloo Bhaijaan 2"'}>
+          <Text
+            fontSize={'md'}
+            marginBottom={'5px'}
+            textColor={'messenger.500'}
+            fontFamily={'"Baloo Bhaijaan 2"'}
+          >
             {chatName}
           </Text>
           {/* usr actions (usr typing, recording voice) */}
@@ -76,19 +91,36 @@ const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
             <ChatUsrActions showAction={true} />
           </Text>
           {/* text message field */}
-          <Text textColor={'gray.500'} display={'flex'} className={styles.msg_text}>
+          <Text
+            textColor={'gray.500'}
+            display={'flex'}
+            className={styles.msg_text}
+          >
             {/* message status icons */}
-            <MessageStatusIcon data={{ msgStatus: chat.lastMessage.status!, senderId: chat.lastMessage!.sender._id }} />
+            <MessageStatusIcon
+              status={chat.lastMessage.status!}
+              senderId={chat.lastMessage!.sender._id}
+            />
             {/* display text msg  */}
-            {chat.lastMessage.type === TEXT ? shrinkMsg(chat.lastMessage.content) : ''}
+            {chat.lastMessage.type === TEXT
+              ? shrinkMsg(chat.lastMessage.content)
+              : ''}
             {/* display voice message details */}
-            {chat.lastMessage.type === VOICENOTE ? <VoiceMemoPreview duration={chat.lastMessage.voiceNoteDuration} /> : ''}
+            {chat.lastMessage.type === VOICENOTE ? (
+              <VoiceMemoPreview duration={chat.lastMessage.voiceNoteDuration} />
+            ) : (
+              ''
+            )}
             {/* photo message */}
             {chat.lastMessage.type === PHOTO ? <ImagePreview /> : ''}
             {/* video message preview*/}
             {chat.lastMessage.type === VIDEO ? <VideoPreview /> : ''}
             {/* file message preview */}
-            {chat.lastMessage.type === FILE ? <FilePreview fileName={chat.lastMessage.fileName!} /> : ''}
+            {chat.lastMessage.type === FILE ? (
+              <FilePreview fileName={chat.lastMessage.fileName!} />
+            ) : (
+              ''
+            )}
           </Text>
         </Box>
         <Box>
