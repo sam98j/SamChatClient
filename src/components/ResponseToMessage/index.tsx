@@ -12,7 +12,7 @@ import ImagePreview from '../ImagePreview';
 import VideoPreview from '../VideoPreview';
 import VoiceMemoPreview from '../VoiceMemoPreview';
 import FilePreview from '../FilePreview';
-import { Box } from 'lucide-react';
+import { Box } from '@chakra-ui/react';
 
 const ResponseToMessage = () => {
   // dispatch
@@ -20,7 +20,7 @@ const ResponseToMessage = () => {
   // translatios
   const { t } = useTranslation('chatScreen');
   // ref
-  const componentRef = useRef<SVGSVGElement>(null);
+  const componentRef = useRef<HTMLDivElement>(null);
   // lang
   const { locale } = useRouter();
   //   redux store
