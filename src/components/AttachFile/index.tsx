@@ -62,7 +62,7 @@ const AttachFile = () => {
         content: rowFile as string,
         type: changeEvent.target.name as MessagesTypes,
         voiceNoteDuration: '',
-        replyTo: responseToMessage!._id,
+        replyTo: responseToMessage?._id,
         msgReplyedTo: responseToMessage,
       };
       //   // dispatch a message

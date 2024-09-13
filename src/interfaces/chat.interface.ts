@@ -23,7 +23,7 @@ export interface ChatMessage {
   _id: string;
   content: string;
   type: MessagesTypes;
-  replyTo: string | null;
+  replyTo: string | null | undefined;
   msgReplyedTo: ResponseToMessageData | null;
   sender: ChatMember;
   fileName: string | null;
