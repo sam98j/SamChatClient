@@ -181,6 +181,9 @@ function App({ Component, ...pageProps }: AppProps) {
     socketClient?.removeAllListeners('message');
     // listen for new message
     socketClient?.on('message', (message: ChatMessage) => {
+      const notification = new Notification('notification', {
+        body: 'notfication body',
+      });
       // place last updated chat to the top
       dispatch(placeLastUpdatedChatToTheTop({ chatId: message.receiverId }));
       // set chat's last message
