@@ -48,10 +48,10 @@ self.addEventListener('activate', async () => {
 self.addEventListener('push', (e) => {
   console.log('push');
   const { senderImg, senderName, msgText } = e.data.json();
-  // self.registration.showNotification(senderName, {
-  //   body: msgText,
-  //   icon: `${NEXT_PUBLIC_API_URL}${senderImg}`,
-  // });
+  self.registration.showNotification(senderName, {
+    body: msgText,
+    icon: `${NEXT_PUBLIC_API_URL}${senderImg}`,
+  });
 });
 
 self.addEventListener('message', async (e) => {
