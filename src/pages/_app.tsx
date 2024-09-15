@@ -181,9 +181,17 @@ function App({ Component, ...pageProps }: AppProps) {
     socketClient?.removeAllListeners('message');
     // listen for new message
     socketClient?.on('message', (message: ChatMessage) => {
-      new Notification('notification', {
-        body: 'notfication body',
-      });
+      if ('Notification' in window) {
+        Notification.requestPermission().then((perm) => {
+          if (perm === 'granted') {
+            new Notification('notification', {
+              body: 'notfication body',
+            });
+          }
+        });
+      } else {
+        alert('notification no supported');
+      }
       // place last updated chat to the top
       dispatch(placeLastUpdatedChatToTheTop({ chatId: message.receiverId }));
       // set chat's last message
