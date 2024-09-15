@@ -6,5 +6,15 @@
   "insertFile": "Insert File",
   "insertSoundFile": "Insert Sound File",
   "you": "You",
-  "replyTo": "Reply to"
+  "replyTo": "Reply to",
+  "mediaViewer": {
+    "optionsMenu": {
+      "downloadLink": "Download",
+      "forwardBtn": "Forward",
+      "editBtn": "Edit",
+      "ReplyBtn": "Reply",
+      "ShareBtn": "Share",
+      "MakeAsBtn": "Make as"
+    }
+  }
 }

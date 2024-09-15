@@ -1,0 +1,28 @@
+.menu_container {
+  background-color: rgba(255, 255, 255, 0.8);
+  overflow: hidden;
+  visibility: hidden;
+  right: 10px;
+  transform: translateY(-100%);
+  transition: all 0.2s ease-in-out;
+  ul li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    svg {
+      color: blue;
+      height: 1.3rem;
+    }
+  }
+}
+
+.menu_container[is-open='true'] {
+  backdrop-filter: blur(100rem);
+  visibility: visible;
+  transform: translateY(50px);
+}
+
+.menu_container[pref-lang='ar'] {
+  right: unset;
+  left: 10px !important;
+}

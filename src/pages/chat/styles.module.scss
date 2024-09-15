@@ -4,6 +4,7 @@
   padding: 60px $main-padding;
   height: calc(100dvh - 50px);
   overflow-y: scroll;
+  scroll-behavior: smooth;
   // spinner
   .spinner {
     color: dodgerblue;
