@@ -1,6 +1,6 @@
 // const NEXT_PUBLIC_API_URL = 'https://api.chat.samapps.xyz';
-const NEXT_PUBLIC_API_URL = 'http://192.168.231.78:2000';
-// const NEXT_PUBLIC_API_URL = 'https://samchat.onrender.com';
+// const NEXT_PUBLIC_API_URL = 'http://192.168.231.78:2000';
+const NEXT_PUBLIC_API_URL = 'https://samchat.onrender.com';
 // url
 const API_URl = NEXT_PUBLIC_API_URL;
 // listen to service worker install event
