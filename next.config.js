@@ -1,5 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires, no-undef
 const nextTranslate = require('next-translate-plugin');
+const packageJson = require('./package.json');
 
 // eslint-disable-next-line no-undef
 module.exports = nextTranslate({
@@ -28,5 +29,8 @@ module.exports = nextTranslate({
         pathname: '/**',
       },
     ],
+  },
+  env: {
+    NEXT_PUBLIC_APP_VERSION: packageJson.version,
   },
 });
