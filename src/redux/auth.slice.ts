@@ -1,5 +1,6 @@
 import { loginUser, signUpApi } from '@/apis/auth.api';
 import { getUserChats } from '@/apis/chats.api';
+import { deleteSubscription } from '@/apis/pushNotifications';
 import { createSlice } from '@reduxjs/toolkit';
 
 // loging success shape
@@ -14,7 +15,10 @@ export interface LoggedInUserData {
 }
 // state slice shape
 export interface AuthState {
-  currentUser: Pick<LoggedInUserData, '_id' | 'avatar' | 'name'> | null | undefined;
+  currentUser:
+    | Pick<LoggedInUserData, '_id' | 'avatar' | 'name'>
+    | null
+    | undefined;
   apiResponse: { err: boolean; msg: string } | null;
   isOAuthActive: boolean;
 }
@@ -36,20 +40,26 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     logout: (state) => {
+      // delete push sub
+      deleteSubscription();
       localStorage.removeItem('access_token');
       state.currentUser = undefined;
       // clear chat from local storage
       localStorage.removeItem('chats');
+      // clear notification perm
+      localStorage.removeItem('push_notification_state');
     },
     resetAuthApiRes: (state) => {
       state.apiResponse = null;
     },
     setCurrentUser: (state, action) => (state.currentUser = action.payload),
-    setOAuthActivationStatus: (state, action) => (state.isOAuthActive = action.payload),
+    setOAuthActivationStatus: (state, action) =>
+      (state.isOAuthActive = action.payload),
   },
   extraReducers: (builder) => {
     builder.addCase(loginUser.fulfilled, (state, action) => {
-      const { access_token, loggedInUser } = action.payload as LogUserInSuccData;
+      const { access_token, loggedInUser } =
+        action.payload as LogUserInSuccData;
       // store the user access token in the localstorage
       localStorage.setItem('access_token', `Bearer ${access_token}`);
       state.currentUser = loggedInUser;
@@ -57,7 +67,10 @@ export const authSlice = createSlice({
     });
     builder.addCase(loginUser.rejected, (state) => {
       state.currentUser = undefined;
-      state.apiResponse = { err: true, msg: 'Some thing Went Wrong, Check You email or password' };
+      state.apiResponse = {
+        err: true,
+        msg: 'Some thing Went Wrong, Check You email or password',
+      };
     });
     builder.addCase(getUserChats.fulfilled, (state, action) => {
       state.currentUser = action.payload.loggedInUser;
@@ -71,12 +84,20 @@ export const authSlice = createSlice({
         return;
       }
       state.currentUser = action.payload.loggedInUser._id;
-      localStorage.setItem('access_token', `Bearer ${action.payload.access_token}`);
+      localStorage.setItem(
+        'access_token',
+        `Bearer ${action.payload.access_token}`,
+      );
       state.apiResponse = { err: false, msg: 'You Successfyl singed In ...' };
     });
   },
 });
 
-export const { logout, resetAuthApiRes, setCurrentUser, setOAuthActivationStatus } = authSlice.actions;
+export const {
+  logout,
+  resetAuthApiRes,
+  setCurrentUser,
+  setOAuthActivationStatus,
+} = authSlice.actions;
 // export the reducer function
 export default authSlice.reducer;

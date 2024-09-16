@@ -6,5 +6,15 @@
   "insertFile": "إدراج ملف",
   "insertSoundFile": "مقطع صوتي",
   "you": "أنت",
-  "replyTo": "الرد على"
+  "replyTo": "الرد على",
+  "mediaViewer": {
+    "optionsMenu": {
+      "downloadLink": "حفظ الى الجهاز",
+      "forwardBtn": "إعادة توجيه",
+      "editBtn": "تعديل",
+      "ReplyBtn": "الرد",
+      "ShareBtn": "مشاركة",
+      "MakeAsBtn": "تعين كـ"
+    }
+  }
 }

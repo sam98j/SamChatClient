@@ -54,6 +54,7 @@ function App({ Component, ...pageProps }: AppProps) {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   // socket instance
   const [socketClient, setSocket] = useState<Socket | null>(null);
+  // use notificatio
   // multichunk msg
   const { sendChatMessage } = useChatMessagesSender(socketClient!);
   // use push notifications
@@ -225,6 +226,9 @@ function App({ Component, ...pageProps }: AppProps) {
     if (currentUser && pathname === '/') push('/chats');
     // go back to home page when usr looged out
     if (currentUser === undefined) push('/');
+    // if user is logged In
+    // subscripe for push notifications and regester service worker
+    if (currentUser && pathname === '/chats') enablePushNotification();
   }, [currentUser, apiResponse]);
   // authentecate the user
   useEffect(() => {
@@ -232,8 +236,6 @@ function App({ Component, ...pageProps }: AppProps) {
     const userToken = localStorage.getItem('access_token');
     // get usr chats
     dispatch(getUserChats(userToken) as unknown as AnyAction);
-    // subscripe for push notifications and regester service worker
-    enablePushNotification();
   }, []);
   return (
     <>
