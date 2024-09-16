@@ -54,6 +54,7 @@ function App({ Component, ...pageProps }: AppProps) {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   // socket instance
   const [socketClient, setSocket] = useState<Socket | null>(null);
+  // use notificatio
   // multichunk msg
   const { sendChatMessage } = useChatMessagesSender(socketClient!);
   // use push notifications

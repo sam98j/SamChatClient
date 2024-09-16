@@ -51,6 +51,7 @@ self.addEventListener('push', (e) => {
   self.registration.showNotification(senderName, {
     body: msgText,
     icon: `${NEXT_PUBLIC_API_URL}${senderImg}`,
+    badge: '/favicon/android-chrome-512x512.png',
   });
 });
 
