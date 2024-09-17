@@ -20,8 +20,8 @@ const MessageReplyedTo: FC<{ msgData: MsgData }> = ({ msgData }) => {
     voiceNoteDuration: duration,
   } = msgData;
   return (
-    <div className="bg-gray-50 p-2 rounded-md">
-      <h4 className="text-blue-400">{sender.name}</h4>
+    <div className="bg-gray-50 p-1 rounded-[10px] text-sm">
+      <h6 className="text-blue-400">{sender.name}</h6>
       <p className="text-gray-500">
         {/* text message */}
         {type === TEXT ? content : ''}

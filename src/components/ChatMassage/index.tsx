@@ -4,7 +4,7 @@ import styles from './styles.module.scss';
 import { ChatMessage, MessagesTypes } from '@/interfaces/chat.interface';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { Avatar, Box, Text } from '@chakra-ui/react';
+import { Avatar } from '@chakra-ui/react';
 import {
   ChatTypes,
   ResponseToMessageData,
@@ -77,10 +77,8 @@ const ChatMassage: React.FC<MessageData> = ({ messageData }) => {
       onDoubleClick={doubleClickHandler}
     >
       {/* avatar */}
-      {opendChatType === ChatTypes.GROUP && !sendedByMe ? (
+      {opendChatType === ChatTypes.GROUP && !sendedByMe && (
         <Avatar size={'sm'} src={`${apiUrl}${sender.avatar}`} />
-      ) : (
-        ''
       )}
       {/* message bubble */}
       <div
@@ -90,58 +88,39 @@ const ChatMassage: React.FC<MessageData> = ({ messageData }) => {
         pref-lang={locale}
       >
         {/* chat text  */}
-        <Text>
+        <div>
           {/* chat sender name */}
-          {opendChatType === ChatTypes.GROUP && !sendedByMe ? (
-            <Text color={'gray'} fontSize={'sm'} borderBottom={'10px'}>
-              {sender.name}
-            </Text>
-          ) : (
-            ''
+          {opendChatType === ChatTypes.GROUP && !sendedByMe && (
+            <p className="text-gray-500">{sender.name}</p>
           )}
           {/* replyedToMsg */}
-          {msgReplyedTo ? <MessageReplyedTo msgData={msgReplyedTo} /> : ''}
+          {msgReplyedTo && <MessageReplyedTo msgData={msgReplyedTo} />}
           {/* text message */}
-          {type === TEXT ? content : ''}
+          {type === TEXT && content}
           {/* voice message */}
-          {type === VOICENOTE ? (
+          {type === VOICENOTE && (
             <VoiceMemoPlayer data={{ voiceNoteDuration, content, sender }} />
-          ) : (
-            ''
           )}
           {/* message type photo */}
-          {type === PHOTO ? (
+          {type === PHOTO && (
             <ImageMsgViewer data={{ sender, date, content, _id }} />
-          ) : (
-            ''
           )}
           {/* message type file */}
-          {type === FILE ? (
+          {type === FILE && (
             <FileMsgViewer data={{ fileName, fileSize, content }} />
-          ) : (
-            ''
           )}
           {/* message type video */}
-          {type === VIDEO ? (
+          {type === VIDEO && (
             <VideoMsgPlayer data={{ content, date, sender, _id }} />
-          ) : (
-            ''
           )}
-        </Text>
+        </div>
         {/* msg footer appear  in all messages types*/}
-        <Box
-          display={'flex'}
-          justifyContent={'flex-end'}
-          marginTop={'2px'}
-          alignItems={'center'}
-        >
+        <div className="flex gap-1">
           {/* message time */}
-          <Text className={styles.msg_time} fontSize={'sm'}>
-            {msgTime}
-          </Text>
+          <span className="text-sm text-gray-500">{msgTime}</span>
           {/* when status is null show clock icon */}
           <MessageStatusIcon senderId={sender._id!} status={status!} />
-        </Box>
+        </div>
       </div>
     </div>
   );

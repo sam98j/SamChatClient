@@ -1,11 +1,10 @@
 .msg_status_icon {
-    line-height: 0;
-    &[msg-sended-by-me="false"] {
-        display: none !important;
+  &[msg-sended-by-me='false'] {
+    display: none !important;
+  }
+  &[message-status='READED'] {
+    svg {
+      color: dodgerblue;
     }
-    &[message-status="READED"] {
-        svg {
-          color: dodgerblue;
-        }
-    }
+  }
 }
