@@ -23,23 +23,43 @@ self.addEventListener('push', (e) => {
   });
 });
 
-self.addEventListener('notificationclick', (e) => {
+self.addEventListener('notificationclick', async (e) => {
   e.notification.close();
-  e.waitUntil(
-    clients
-      .matchAll({ type: 'window', includeUncontrolled: true })
-      .then(function (clientList) {
-        // Check if the PWA is already open and focus it
-        for (var i = 0; i < clientList.length; i++) {
-          var client = clientList[i];
-          if (client.url === '/chats' && 'focus' in client) {
-            return client.focus();
-          }
-        }
-        // If the PWA is not open, open a new window
-        if (clients.openWindow) {
-          return clients.openWindow('/chat?id=' + e.notification.data);
-        }
-      }),
-  );
+  // e.waitUntil(
+  const clientsList = await clients.matchAll({
+    type: 'window',
+    includeUncontrolled: true,
+  });
+  // loop throw clients List
+  clientsList.map((client) => {
+    console.log(client);
+    if (
+      client.url.includes('/chats') ||
+      (client.url.includes('/ar/chats') && 'focus' in client)
+    ) {
+      return client.focus();
+    }
+    if (clients.openWindow) {
+      return clients.openWindow('/chat?id=' + e.notification.data);
+    }
+  });
+  console.log(clientsList);
+  // .then((clientList) => {
+  //   console.log(clientList);
+  //   // Check if the PWA is already open and focus it
+  //   for (var i = 0; i < clientList.length; i++) {
+  //     var client = clientList[i];
+  //     if (
+  //       client.url.includes('/chats') ||
+  //       (client.url.includes('/ar/chats') && 'focus' in client)
+  //     ) {
+  //       return client.focus();
+  //     }
+  //   }
+  //   // If the PWA is not open, open a new window
+  //   if (clients.openWindow) {
+  //     return clients.openWindow('/chat?id=' + e.notification.data);
+  //   }
+  // });
+  // );
 });
