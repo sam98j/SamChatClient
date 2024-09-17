@@ -9,7 +9,7 @@ const usePushNotifications = () => {
     const notificationPermission = await Notification.requestPermission();
     // handle notification permission not granted
     if (notificationPermission !== 'granted')
-      return alert('permition not granted'); //
+      return alert('notifications permition not granted'); //
     // check for service worker support
     if (!('serviceWorker' in navigator))
       return alert('service worker is not supported'); //
