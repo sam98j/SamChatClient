@@ -15,51 +15,35 @@ self.addEventListener('push', (e) => {
   const chatMessage = e.data.json();
   // channel.postMessage(chatMessage);
   self.registration.showNotification(chatMessage.sender.name, {
-    tag: chatMessage._id,
-    body: chatMessage.type === 'TEXT' ? chatMessage.content : 'رسالة صوتية',
+    tag: 'notification-tag',
+    body: chatMessage.content,
     icon: `${NEXT_PUBLIC_API_URL}${chatMessage.sender.avatar}`,
     badge: '/favicon/android-chrome-512x512.png',
     data: chatMessage.receiverId,
   });
 });
-
+// listen for notification click
 self.addEventListener('notificationclick', async (e) => {
   e.notification.close();
-  // e.waitUntil(
-  const clientsList = await clients.matchAll({
-    type: 'window',
-    includeUncontrolled: true,
-  });
-  // loop throw clients List
-  clientsList.map((client) => {
-    console.log(client);
-    if (
-      client.url.includes('/chats') ||
-      (client.url.includes('/ar/chats') && 'focus' in client)
-    ) {
-      return client.focus();
-    }
-    if (clients.openWindow) {
-      return clients.openWindow('/chat?id=' + e.notification.data);
-    }
-  });
-  console.log(clientsList);
-  // .then((clientList) => {
-  //   console.log(clientList);
-  //   // Check if the PWA is already open and focus it
-  //   for (var i = 0; i < clientList.length; i++) {
-  //     var client = clientList[i];
-  //     if (
-  //       client.url.includes('/chats') ||
-  //       (client.url.includes('/ar/chats') && 'focus' in client)
-  //     ) {
-  //       return client.focus();
-  //     }
-  //   }
-  //   // If the PWA is not open, open a new window
-  //   if (clients.openWindow) {
-  //     return clients.openWindow('/chat?id=' + e.notification.data);
-  //   }
-  // });
-  // );
+  e.waitUntil(
+    clients
+      .matchAll({
+        type: 'window',
+        includeUncontrolled: true,
+      })
+      .then((clientsList) => {
+        clientsList.map((client) => {
+          console.log(client);
+          if (
+            client.url.includes('/chat?id=' + e.notification.data) &&
+            'focus' in client
+          ) {
+            return client.focus();
+          }
+          console.log(client);
+          client.navigate('/chat?id=' + e.notification.data);
+          return client.focus();
+        });
+      }),
+  );
 });
