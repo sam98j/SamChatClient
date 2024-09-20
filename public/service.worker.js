@@ -4,7 +4,6 @@ const NEXT_PUBLIC_API_URL = 'https://samchat.onrender.com';
 // url
 const API_URl = NEXT_PUBLIC_API_URL;
 
-const channel = new BroadcastChannel('worker');
 // listen to service worker install event
 self.addEventListener('install', () => {});
 // listen for activate event
