@@ -32,15 +32,15 @@ self.addEventListener('notificationclick', async (e) => {
         includeUncontrolled: true,
       })
       .then((clientsList) => {
+        if (!clientsList.length)
+          return clients.openWindow('/chat?id=' + e.notification.data);
         clientsList.map((client) => {
-          console.log(client);
           if (
             client.url.includes('/chat?id=' + e.notification.data) &&
             'focus' in client
           ) {
             return client.focus();
           }
-          console.log(client);
           client.navigate('/chat?id=' + e.notification.data);
           return client.focus();
         });
