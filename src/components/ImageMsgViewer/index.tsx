@@ -3,7 +3,7 @@ import Image from 'next/image';
 import React, { FC, useState } from 'react';
 import styles from './styles.module.scss';
 import { useRouter } from 'next/router';
-import { Box, Text } from '@chakra-ui/react';
+import { Box, Text, chakra } from '@chakra-ui/react';
 import {
   IoShareOutline,
   IoReturnUpForward,
@@ -17,10 +17,14 @@ import { TimeUnits, getTime } from '@/utils/time';
 import { ChatMessage } from '@/interfaces/chat.interface';
 import FileMsgUploadIndicator from '../FileMsgUploadIndicator';
 import MediaViewerOptionsMenu from '../MediaViewerOptionsMenu';
+import { useDispatch } from 'react-redux';
+import { setSystemNotification } from '@/redux/system.slice';
 
 type Props = Pick<ChatMessage, 'content' | 'sender' | 'date' | '_id'>;
 
 const ImageMsgViewer: FC<{ data: Props }> = ({ data }) => {
+  // redux dispatch functinon
+  const dispatch = useDispatch();
   // api url
   const apiHost = process.env.NEXT_PUBLIC_API_URL;
   // destruct props
@@ -64,7 +68,18 @@ const ImageMsgViewer: FC<{ data: Props }> = ({ data }) => {
     setIsMenuOptionsOpen(!isMenuOptionsOpen);
   };
   // handle share btn
-  const shareMediaHandler = () => {};
+  const shareMediaHandler = () => {
+    try {
+      // terminate if it's can't share
+      navigator.share({
+        text: 'SamChat Share Media',
+        title: 'Greeting',
+        url: apiHost + content,
+      });
+    } catch (err) {
+      dispatch(setSystemNotification({ err: true, msg: 'You can not share' }));
+    }
+  };
   return (
     <div
       className={styles.imageMsgViewer}
@@ -104,12 +119,15 @@ const ImageMsgViewer: FC<{ data: Props }> = ({ data }) => {
           justifyContent={'flex-end'}
           gap={5}
         >
+          {/* share media btn */}
           <Box cursor={'pointer'} onClick={shareMediaHandler}>
             <IoShareOutline size={'1.5rem'} color="white" />
           </Box>
+          {/* forward message btn */}
           <Box>
             <IoReturnUpForward size={'1.5rem'} color="white" />
           </Box>
+          {/* options menu */}
           <Box
             onClick={optionsMenuClickHandler}
             position={'relative'}
