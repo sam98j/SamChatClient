@@ -3,6 +3,9 @@
     &[sended-by-me='false'] {
       margin-right: auto;
     }
+    .forward_icon {
+      transform: scaleX(-1);
+    }
   }
 }
 .messageContainer {

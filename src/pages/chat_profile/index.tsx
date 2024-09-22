@@ -23,13 +23,18 @@ const ChatProfile = () => {
   // api url
   const apiHost = process.env.NEXT_PUBLIC_API_URL;
   // data from redux store
-  const { openedChat, chatMessages } = useSelector((state: RootState) => state.chat);
+  const { openedChat, chatMessages } = useSelector(
+    (state: RootState) => state.chat,
+  );
   // get loggedInUser
   const currentUser = useSelector((state: RootState) => state.auth.currentUser);
   // chat name
-  const chatUser = openedChat && openedChat!.members.filter((member) => member._id !== currentUser?._id)[0];
+  const chatUser =
+    openedChat &&
+    openedChat!.members.filter((member) => member._id !== currentUser?._id)[0];
   // chatName
-  const chatName = chatUser && (openedChat!.name ? openedChat!.name : chatUser!.name);
+  const chatName =
+    chatUser && (openedChat!.name ? openedChat!.name : chatUser!.name);
   // chat avatar
   const [avatar_url, setAvataUrl] = useState('');
   // destruct messages  types
@@ -49,7 +54,10 @@ const ChatProfile = () => {
     // break if no opened chat
     if (!openedChat) return;
     // chatAvatarUrl
-    const chatAvatarUrl = openedChat?.type === ChatTypes.GROUP ? openedChat.avatar : chatUser!.avatar;
+    const chatAvatarUrl =
+      openedChat?.type === ChatTypes.GROUP
+        ? openedChat.avatar
+        : chatUser!.avatar;
     // if no avatar
     if (!chatAvatarUrl) return;
     // set avatar url
@@ -60,11 +68,15 @@ const ChatProfile = () => {
     // set current route
     dispatch(setCurrentRoute('chatProfile'));
     // dispatch an async action
-    dispatch(getChatProfile(params.get('id') as string) as unknown as AnyAction);
+    dispatch(
+      getChatProfile(params.get('id') as string) as unknown as AnyAction,
+    );
     // terminate if no chatMessages
     if (!chatMessages) return;
     // filter chat messages based on message type
-    const chatMessagesTypeBased = chatMessages.filter((msg) => msg.type === PHOTO);
+    const chatMessagesTypeBased = chatMessages.filter(
+      (msg) => msg.type === PHOTO,
+    );
     // set content list
     setContentList(chatMessagesTypeBased);
   }, []);
@@ -75,7 +87,9 @@ const ChatProfile = () => {
     // list content type
     const listContentType = e.currentTarget.id as MessagesTypes;
     // filter chat messages based on message type
-    const chatMessagesTypeBased = chatMessages.filter((msg) => msg.type === listContentType);
+    const chatMessagesTypeBased = chatMessages.filter(
+      (msg) => msg.type === listContentType,
+    );
     // set content list
     setContentList(chatMessagesTypeBased);
     // set what kind of messages are displaing now
@@ -96,7 +110,11 @@ const ChatProfile = () => {
         {/* chat calls */}
         <ChatCalls />
         {/* group members list */}
-        {openedChat?.type === ChatTypes.GROUP ? <GroupMembersList members={openedChat.members} /> : ''}
+        {openedChat?.type === ChatTypes.GROUP ? (
+          <GroupMembersList members={openedChat.members} />
+        ) : (
+          ''
+        )}
         {/* media links and docs */}
         <List className={styles.list_content_type_container}>
           {/* Content Type media photos, videos */}
@@ -141,17 +159,39 @@ const ChatProfile = () => {
           {/* loop throwght content list it maybe PHOTS, FILE, Video */}
           {contentList.map((msg) => {
             // destruct message
-            const { content, sender, date, voiceNoteDuration, fileSize, fileName, _id } = msg;
+            const {
+              content,
+              sender,
+              date,
+              voiceNoteDuration,
+              fileSize,
+              fileName,
+              _id,
+            } = msg;
             return (
               <Box className={styles.list_content_item} key={_id}>
                 {/* display images */}
-                {displayedMsgsTypes === PHOTO ? <ImageMsgViewer data={{ content, sender, date, _id }} /> : ''}
+                {displayedMsgsTypes === PHOTO && <ImageMsgViewer data={msg} />}
                 {/* display video */}
-                {displayedMsgsTypes === VIDEO ? <VideoMsgPlayer data={{ content, sender, date, _id }} /> : ''}
+                {displayedMsgsTypes === VIDEO ? (
+                  <VideoMsgPlayer data={{ content, sender, date, _id }} />
+                ) : (
+                  ''
+                )}
                 {/* display voice notes */}
-                {displayedMsgsTypes === VOICENOTE ? <VoiceMemoPlayer data={{ content, sender, voiceNoteDuration }} /> : ''}
+                {displayedMsgsTypes === VOICENOTE ? (
+                  <VoiceMemoPlayer
+                    data={{ content, sender, voiceNoteDuration }}
+                  />
+                ) : (
+                  ''
+                )}
                 {/* display flie */}
-                {displayedMsgsTypes === FILE ? <FileMsgViewer data={{ content, fileName, fileSize }} /> : ''}
+                {displayedMsgsTypes === FILE ? (
+                  <FileMsgViewer data={{ content, fileName, fileSize }} />
+                ) : (
+                  ''
+                )}
               </Box>
             );
           })}

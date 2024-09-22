@@ -1,0 +1,8 @@
+#forward_menu {
+  // ar lang
+  &[pref-lang='ar'] {
+    .back_arrow_icon {
+      transform: scaleX(-1);
+    }
+  }
+}

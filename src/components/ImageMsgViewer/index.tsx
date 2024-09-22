@@ -3,7 +3,7 @@ import Image from 'next/image';
 import React, { FC, useState } from 'react';
 import styles from './styles.module.scss';
 import { useRouter } from 'next/router';
-import { Box, Text, chakra } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 import {
   IoShareOutline,
   IoReturnUpForward,
@@ -19,8 +19,12 @@ import FileMsgUploadIndicator from '../FileMsgUploadIndicator';
 import MediaViewerOptionsMenu from '../MediaViewerOptionsMenu';
 import { useDispatch } from 'react-redux';
 import { setSystemNotification } from '@/redux/system.slice';
+import {
+  MessagesToBeForwarded,
+  setMessagesToBeForwared,
+} from '@/redux/chats.slice';
 
-type Props = Pick<ChatMessage, 'content' | 'sender' | 'date' | '_id'>;
+type Props = ChatMessage;
 
 const ImageMsgViewer: FC<{ data: Props }> = ({ data }) => {
   // redux dispatch functinon
@@ -80,6 +84,14 @@ const ImageMsgViewer: FC<{ data: Props }> = ({ data }) => {
       dispatch(setSystemNotification({ err: true, msg: 'You can not share' }));
     }
   };
+  // handleForwardMsg
+  const handleForwardMsg = () => {
+    const messagesToBeForwared: MessagesToBeForwarded = {
+      messages: [data._id],
+      chats: [],
+    };
+    dispatch(setMessagesToBeForwared(messagesToBeForwared));
+  };
   return (
     <div
       className={styles.imageMsgViewer}
@@ -124,7 +136,7 @@ const ImageMsgViewer: FC<{ data: Props }> = ({ data }) => {
             <IoShareOutline size={'1.5rem'} color="white" />
           </Box>
           {/* forward message btn */}
-          <Box>
+          <Box cursor={'pointer'} onClick={handleForwardMsg}>
             <IoReturnUpForward size={'1.5rem'} color="white" />
           </Box>
           {/* options menu */}

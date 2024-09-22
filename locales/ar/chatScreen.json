@@ -16,5 +16,14 @@
       "ShareBtn": "مشاركة",
       "MakeAsBtn": "تعين كـ"
     }
+  },
+  "chatMessage": {
+    "forwardedMessage": "مُعاد توجيهها"
+  },
+  "forwardMessageMenu": {
+    "forwardTo": "إعادة توجيه الى ...",
+    "selectChatsToForward": "حدد محادثة لاعادة التوجيه اليها",
+    "submitBtn": "إعادة توجيه",
+    "forwardDoneAlert": "تم أعادة التوجيه"
   }
 }

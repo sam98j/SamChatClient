@@ -16,5 +16,14 @@
       "ShareBtn": "Share",
       "MakeAsBtn": "Make as"
     }
+  },
+  "chatMessage": {
+    "forwardedMessage": "Forwarded"
+  },
+  "forwardMessageMenu": {
+    "forwardTo": "Forward to ...",
+    "selectChatsToForward": "Select Chats to Forward",
+    "submitBtn": "Forward",
+    "forwardDoneAlert": "Messages Forwarded Successfuly"
   }
 }

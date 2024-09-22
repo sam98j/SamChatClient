@@ -45,7 +45,10 @@ export const systemSlice = createSlice({
       state.attchFileMenuOpen = action.payload;
     },
     // show / hide notification
-    setSystemNotification(state, action: PayloadAction<{ err: boolean; msg: string } | null>) {
+    setSystemNotification(
+      state,
+      action: PayloadAction<{ err: boolean; msg: string } | null>,
+    ) {
       state.notifications = action.payload;
     },
     // CreateChatGroupMenu

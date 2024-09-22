@@ -36,6 +36,7 @@ import {
   setChatLastMessage,
   ChatCard,
   setChatUnReadedMessagesCount,
+  setMessagesToBeForwared,
 } from '@/redux/chats.slice';
 import { usePathname } from 'next/navigation';
 import { io, Socket } from 'socket.io-client';
@@ -44,6 +45,7 @@ import SystemNotifications from '@/components/SystemNotifications/SystemNotifica
 import usePushNotifications from '@/Hooks/usePushNotifications';
 import { SessionProvider } from 'next-auth/react';
 import CreateChatGroupMenu from '@/components/CreateChatGroupMenu';
+import ForwardMsgMenu from '@/components/ForwardMsgMenu';
 
 function App({ Component, ...pageProps }: AppProps) {
   // chakra theme
@@ -81,6 +83,7 @@ function App({ Component, ...pageProps }: AppProps) {
   const {
     openedChat,
     isCurrentUsrDoingAction,
+    messagesToBeForwared,
     messageToBeMarketAsReaded,
     chatMessages,
   } = useSelector((state: RootState) => state.chat);
@@ -217,6 +220,10 @@ function App({ Component, ...pageProps }: AppProps) {
       // play recive message sound
       playReceiveMessageSound();
     });
+    socketClient?.removeAllListeners('forward_messages_done');
+    socketClient?.on('forward_messages_done', () => {
+      dispatch(setMessagesToBeForwared(null));
+    });
   }, [socketClient, openedChat]);
   // usr auth observer
   useEffect(() => {
@@ -230,6 +237,13 @@ function App({ Component, ...pageProps }: AppProps) {
     // subscripe for push notifications and regester service worker
     if (currentUser && pathname === '/chats') enablePushNotification();
   }, [currentUser, apiResponse]);
+  // listen for forwarded messages
+  useEffect(() => {
+    // terminate if no chats to forwarded to them
+    if (!messagesToBeForwared || !messagesToBeForwared.chats.length) return;
+    // send socket
+    socketClient?.emit('forward_messages', messagesToBeForwared);
+  }, [socketClient, messagesToBeForwared]);
   // authentecate the user
   useEffect(() => {
     // get usr auth token from local storage
@@ -261,11 +275,11 @@ function App({ Component, ...pageProps }: AppProps) {
               {currentUser === null ? <AppLogo /> : ''}
               <CreateChat />
               {/* CreateChatGroupMenu */}
-              {isCreateChatGroupMenuOpen ? (
+              {isCreateChatGroupMenuOpen && (
                 <CreateChatGroupMenu forCreation={Boolean(!openedChat)} />
-              ) : (
-                ''
               )}
+              {/* forward msg menu */}
+              {messagesToBeForwared && <ForwardMsgMenu />}
             </div>
           </Provider>
         </SessionProvider>

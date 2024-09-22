@@ -19,16 +19,23 @@ import FileMsgViewer from '../FileMsgViewer';
 import VideoMsgPlayer from '../VideoMsgPlayer';
 import { useDispatch } from 'react-redux';
 import MessageReplyedTo from '../MessageReplyedTo';
+import { useSearchParams } from 'next/navigation';
+import { ForwardIcon } from 'lucide-react';
+import useTranslation from 'next-translate/useTranslation';
 
 type MessageData = { messageData: ChatMessage };
 
 const ChatMassage: React.FC<MessageData> = ({ messageData }) => {
   // back end api
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  // local method
+  const { t } = useTranslation('chatScreen');
   // messages types
   const { TEXT, VOICENOTE, PHOTO, FILE, VIDEO } = MessagesTypes;
   // current app lang
   const { locale } = useRouter();
+  // get chat id
+  const chatId = useSearchParams().get('id');
   // dispatch
   const dispatch = useDispatch();
   // redux dispatch function
@@ -37,12 +44,14 @@ const ChatMassage: React.FC<MessageData> = ({ messageData }) => {
     content,
     sender,
     status,
+    forwardedTo,
     date,
     type,
     voiceNoteDuration,
     fileName,
     fileSize,
     _id,
+    receiverId,
     msgReplyedTo,
   } = messageData;
   // msg time
@@ -53,6 +62,7 @@ const ChatMassage: React.FC<MessageData> = ({ messageData }) => {
   const opendChatType = useSelector(
     (state: RootState) => state.chat.openedChat?.type,
   );
+  const isForwordedToMe = receiverId !== chatId;
   // check for the the message sender
   const [sendedByMe] = useState(currentUsr?._id === sender._id);
   // doubleClickHandler
@@ -89,6 +99,13 @@ const ChatMassage: React.FC<MessageData> = ({ messageData }) => {
       >
         {/* chat text  */}
         <div>
+          {/* forwarded message */}
+          {isForwordedToMe && (
+            <div className="flex items-center gap-2 text-gray-500 px-2">
+              <ForwardIcon size={'1.25rem'} className={styles.forward_icon} />
+              <span>{t('chatMessage.forwardedMessage')}</span>
+            </div>
+          )}
           {/* chat sender name */}
           {opendChatType === ChatTypes.GROUP && !sendedByMe && (
             <p className="text-gray-500">{sender.name}</p>
@@ -102,9 +119,7 @@ const ChatMassage: React.FC<MessageData> = ({ messageData }) => {
             <VoiceMemoPlayer data={{ voiceNoteDuration, content, sender }} />
           )}
           {/* message type photo */}
-          {type === PHOTO && (
-            <ImageMsgViewer data={{ sender, date, content, _id }} />
-          )}
+          {type === PHOTO && <ImageMsgViewer data={messageData} />}
           {/* message type file */}
           {type === FILE && (
             <FileMsgViewer data={{ fileName, fileSize, content }} />

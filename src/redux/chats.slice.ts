@@ -54,6 +54,10 @@ export type ResponseToMessageData = Pick<
   ChatMessage,
   'sender' | 'content' | 'type' | '_id' | 'voiceNoteDuration' | 'fileName'
 >;
+export type MessagesToBeForwarded = {
+  messages: string[];
+  chats: string[];
+};
 // state slice shape
 export interface ChatState {
   chats: ChatCard[] | null | undefined;
@@ -70,10 +74,12 @@ export interface ChatState {
   fileMessageUploadIndicator: number | null;
   addChatMembersRes: boolean | null;
   responseToMessage: ResponseToMessageData | null;
+  messagesToBeForwared: MessagesToBeForwarded | null;
 }
 // inital state
 const initialState: ChatState = {
   fileMessageUploadIndicator: null,
+  messagesToBeForwared: null,
   isLastChatMessagesBatch: null,
   addChatMembersRes: null,
   responseToMessage: null,
@@ -286,6 +292,13 @@ export const chatSlice = createSlice({
     ) => {
       state.responseToMessage = action.payload;
     },
+    // forwardMsgMenu
+    setMessagesToBeForwared(
+      state,
+      action: PayloadAction<MessagesToBeForwarded | null>,
+    ) {
+      state.messagesToBeForwared = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getUserChats.fulfilled, (state, action) => {
@@ -344,6 +357,7 @@ export const {
   clearChatMessages,
   setChatUnReadedMessagesCount,
   setChatLastMessage,
+  setMessagesToBeForwared,
   setMessageStatus,
   setResponseToMessage,
   clearAggreUnReadedMsg,

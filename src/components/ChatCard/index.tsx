@@ -16,8 +16,14 @@ import { shrinkMsg } from '@/utils/chat.util';
 import ImagePreview from '../ImagePreview';
 import VideoPreview from '../VideoPreview';
 import FilePreview from '../FilePreview';
+import { FaCheckCircle } from 'react-icons/fa';
 
-const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
+type Props = {
+  chat: ChatCard;
+  selectChat?: React.Dispatch<React.SetStateAction<string[]>>;
+};
+
+const ChatCard: React.FC<Props> = ({ chat, selectChat }) => {
   // base url
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   // current loggedIn User
@@ -33,6 +39,8 @@ const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
     // return
     return `${apiUrl}${chat.type === ChatTypes.GROUP ? chat.avatar : chatMember.avatar}`;
   });
+  // is chat selected for forwarding
+  const [isChatSelected, setIsChatSelected] = useState(false);
   // chat name
   const [chatUser] = useState(
     () => chat.members.filter((member) => member._id !== loggedInUser)[0],
@@ -46,9 +54,11 @@ const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
   // Messages types
   const { TEXT, VOICENOTE, PHOTO, VIDEO, FILE } = MessagesTypes;
   // get data from store
-  const chatAction = useSelector(
-    (state: RootState) => state.chat.isChatUsrDoingAction,
-  );
+  const { chatAction } = useSelector((state: RootState) => {
+    return {
+      chatAction: state.chat.isChatUsrDoingAction,
+    };
+  });
   // is chat usr doing action
   const [isChatUsrDoingAction, setIsChatUserDoingAction] = useState('false');
   // listen for chat action
@@ -62,20 +72,41 @@ const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
     );
   }, [chatAction]);
   // handleCardClick
-  const handleCardClick = () => dispatch(setOpenedChat(chat));
+  const handleCardClick = () => {
+    // check if forward message is opened
+    if (selectChat) {
+      setIsChatSelected(!isChatSelected);
+      selectChat((prevState) => {
+        if (isChatSelected) {
+          const filterChats = prevState.filter((chatId) => chatId !== chat._id);
+          return filterChats;
+        }
+        return [...prevState, chat._id];
+      });
+      return;
+    }
+    // otherwize open chat
+    dispatch(setOpenedChat(chat));
+  };
   // componet did mount
   return (
     <Link href={`/chat?id=${chat._id}`} onClick={handleCardClick}>
       <Box
         display={'flex'}
         gap={'3'}
-        padding={'1.25rem 1.25rem 0rem 1.25rem'}
+        padding={'.50rem 1.25rem'}
         pref-lang={locale}
+        bgColor={isChatSelected ? 'green.100' : ''}
         chat-usr-doing-actions={isChatUsrDoingAction}
         className={styles.chatCard}
       >
         {/* chat avatar */}
-        <Avatar name="Hosam Alden" src={chatAvatar} />
+        <div className="relative">
+          {isChatSelected && (
+            <FaCheckCircle className="absolute z-10 bottom-2 right-0 text-green-600" />
+          )}
+          <Avatar name={chatName} src={chatAvatar} />
+        </div>
         <Box flexGrow={'1'}>
           {/* chat usr name */}
           <Text
@@ -102,24 +133,19 @@ const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
               senderId={chat.lastMessage!.sender._id}
             />
             {/* display text msg  */}
-            {chat.lastMessage.type === TEXT
-              ? shrinkMsg(chat.lastMessage.content)
-              : ''}
+            {chat.lastMessage.type === TEXT &&
+              shrinkMsg(chat.lastMessage.content)}
             {/* display voice message details */}
-            {chat.lastMessage.type === VOICENOTE ? (
+            {chat.lastMessage.type === VOICENOTE && (
               <VoiceMemoPreview duration={chat.lastMessage.voiceNoteDuration} />
-            ) : (
-              ''
             )}
             {/* photo message */}
             {chat.lastMessage.type === PHOTO ? <ImagePreview /> : ''}
             {/* video message preview*/}
             {chat.lastMessage.type === VIDEO ? <VideoPreview /> : ''}
             {/* file message preview */}
-            {chat.lastMessage.type === FILE ? (
+            {chat.lastMessage.type === FILE && (
               <FilePreview fileName={chat.lastMessage.fileName!} />
-            ) : (
-              ''
             )}
           </Text>
         </Box>
@@ -129,7 +155,7 @@ const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
             {getTime(chat.lastMessage.date, TimeUnits.time)}
           </Text>
           {/* un readed messages */}
-          {chat.unReadedMsgs !== 0 ? (
+          {chat.unReadedMsgs !== 0 && (
             <Text
               bgColor={'messenger.500'}
               textColor={'white'}
@@ -141,8 +167,6 @@ const ChatCard: React.FC<{ chat: ChatCard }> = ({ chat }) => {
             >
               {chat.unReadedMsgs}
             </Text>
-          ) : (
-            ''
           )}
         </Box>
       </Box>
