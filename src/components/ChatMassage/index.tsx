@@ -44,7 +44,6 @@ const ChatMassage: React.FC<MessageData> = ({ messageData }) => {
     content,
     sender,
     status,
-    forwardedTo,
     date,
     type,
     voiceNoteDuration,

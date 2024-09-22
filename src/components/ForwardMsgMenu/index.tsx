@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unknown-property */
+
 import { RootState } from '@/redux/store';
 import { ChevronLeft } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
