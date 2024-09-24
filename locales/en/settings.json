@@ -7,5 +7,6 @@
   "notifications": "Notifications",
   "notification__btn__on": "On",
   "notification__btn__off": "Off",
-  "push_notifications": "Push Notification"
+  "push_notifications": "Push Notification",
+  "app_version": "App version"
 }

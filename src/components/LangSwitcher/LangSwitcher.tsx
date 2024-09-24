@@ -4,12 +4,15 @@ import React from 'react';
 
 const LanguageSwitcher: React.FC<{ path: string }> = ({ path }) => {
   const { locale } = useRouter();
+  // get usr pref lang from local storage
   const localPath = locale === 'en' ? 'ar' : 'en';
+  const clickHandler = () => localStorage.setItem('pref-lang', localPath);
   return (
     <div>
       <Link
         href={`/${path}`}
         locale={localPath}
+        onClick={clickHandler}
         style={{ textAlign: 'center', marginTop: '10px' }}
       >
         {locale === 'en' ? 'عربي' : 'English'}

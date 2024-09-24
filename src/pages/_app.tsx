@@ -227,10 +227,12 @@ function App({ Component, ...pageProps }: AppProps) {
   }, [socketClient, openedChat]);
   // usr auth observer
   useEffect(() => {
+    // pref-lang
+    const prefLang = localStorage.getItem('pref-lang') || 'en';
     // redirect the usr to chats after logged in
-    if (currentUser && apiResponse) push('/chats');
+    if (currentUser && apiResponse) push(prefLang + '/chats');
     // redirect usr to chats if he is loggedin and hit /
-    if (currentUser && pathname === '/') push('/chats');
+    if (currentUser && pathname === '/') push(prefLang + '/chats');
     // go back to home page when usr looged out
     if (currentUser === undefined) push('/');
     // if user is logged In
