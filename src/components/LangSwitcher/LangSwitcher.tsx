@@ -6,7 +6,10 @@ const LanguageSwitcher: React.FC<{ path: string }> = ({ path }) => {
   const { locale } = useRouter();
   // get usr pref lang from local storage
   const localPath = locale === 'en' ? 'ar' : 'en';
-  const clickHandler = () => localStorage.setItem('pref-lang', localPath);
+  const clickHandler = () => {
+    document.cookie = `NEXT_LOCALE=${localPath}; max-age=31536000; path=/`;
+    localStorage.setItem('pref-lang', localPath);
+  };
   return (
     <div>
       <Link
