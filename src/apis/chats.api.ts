@@ -4,23 +4,29 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 // login User Api
-export const getUserChats = createAsyncThunk('getUserChats', async (bearerToken: string | null, thunkAPI) => {
-  // request parmas
-  const requestInit = { method: 'GET', headers: { authorization: bearerToken } } as RequestInit;
-  // fetch request
-  const response = await fetch(`${apiUrl}/chats`, requestInit);
-  // check for internal serval error
-  if (response.status >= 500) {
-    return thunkAPI.rejectWithValue('Internal Server Error');
-  }
-  // if the login failed
-  if (response.status >= 400) {
-    return thunkAPI.rejectWithValue('You Are Not Authente. Yet');
-  }
-  const resp = await response.json();
-  // there is no error
-  return resp;
-});
+export const getUserChats = createAsyncThunk(
+  'getUserChats',
+  async (bearerToken: string | null, thunkAPI) => {
+    // request parmas
+    const requestInit = {
+      method: 'GET',
+      headers: { authorization: bearerToken },
+    } as RequestInit;
+    // fetch request
+    const response = await fetch(`${apiUrl}/chats`, requestInit);
+    // check for internal serval error
+    if (response.status >= 500) {
+      return thunkAPI.rejectWithValue('Internal Server Error');
+    }
+    // if the login failed
+    if (response.status >= 400) {
+      return thunkAPI.rejectWithValue('You Are Not Authente. Yet');
+    }
+    const resp = await response.json();
+    // there is no error
+    return resp;
+  },
+);
 // get chat's messages with specific usr
 export const getChatMessages = createAsyncThunk(
   'getChatMessages',
@@ -28,12 +34,15 @@ export const getChatMessages = createAsyncThunk(
     const { chatId, msgBatch } = data;
     // access token
     const access_token = localStorage.getItem('access_token');
-    const response = await fetch(`${apiUrl}/messages/getchatmessages/${chatId}?msgs_batch=${msgBatch}`, {
-      method: 'GET',
-      headers: {
-        authorization: access_token,
-      },
-    } as RequestInit);
+    const response = await fetch(
+      `${apiUrl}/messages/getchatmessages/${chatId}?msgs_batch=${msgBatch}`,
+      {
+        method: 'GET',
+        headers: {
+          authorization: access_token,
+        },
+      } as RequestInit,
+    );
     // check for internal serval error
     if (response.status >= 500) {
       return thunkAPI.rejectWithValue('Internal Server Error');
@@ -45,102 +54,117 @@ export const getChatMessages = createAsyncThunk(
     const resp = (await response.json()) as GetChatMessagesRes;
     // there is no error
     return resp;
-  }
+  },
 );
 // get usr online status
-export const getUsrOnlineStatus = createAsyncThunk('getUsrOnlineStatus', async (usrId: string, thunkAPI) => {
-  // access token
-  const access_token = localStorage.getItem('access_token');
-  // get request
-  const response = await fetch(`${apiUrl}/users/get_online_status/${usrId}`, {
-    method: 'GET',
-    headers: { authorization: access_token! },
-  });
-  // check for internal serval error
-  if (response.status >= 500) {
-    return thunkAPI.rejectWithValue('Internal Server Error');
-  }
-  // if the clinet err
-  if (response.status >= 400) {
-    return thunkAPI.rejectWithValue('You Are Not Authente. Yet');
-  }
-  const resp = (await response.text()) as string;
-  // there is no error
-  return resp;
-});
+export const getUsrOnlineStatus = createAsyncThunk(
+  'getUsrOnlineStatus',
+  async (usrId: string, thunkAPI) => {
+    // access token
+    const access_token = localStorage.getItem('access_token');
+    // get request
+    const response = await fetch(`${apiUrl}/users/get_online_status/${usrId}`, {
+      method: 'GET',
+      headers: { authorization: access_token! },
+    });
+    // check for internal serval error
+    if (response.status >= 500) {
+      return thunkAPI.rejectWithValue('Internal Server Error');
+    }
+    // if the clinet err
+    if (response.status >= 400) {
+      return thunkAPI.rejectWithValue('You Are Not Authente. Yet');
+    }
+    const resp = (await response.text()) as string;
+    // there is no error
+    return resp;
+  },
+);
 // get chat profile
-export const getChatProfile = createAsyncThunk('getChatProfile', async (chatId: string, thunkAPI) => {
-  // access token
-  const access_token = localStorage.getItem('access_token');
-  // get request
-  const response = await fetch(`${apiUrl}/chats/${chatId}`, {
-    method: 'GET',
-    headers: { authorization: access_token! },
-  });
-  // check for internal serval error
-  if (response.status >= 500) {
-    return thunkAPI.rejectWithValue('Internal Server Error');
-  }
-  // if the clinet err
-  if (response.status >= 400) {
-    return thunkAPI.rejectWithValue('You Are Not Authente. Yet');
-  }
-  const resp = (await response.json()) as SingleChat;
-  // there is no error
-  return resp;
-});
+export const getChatProfile = createAsyncThunk(
+  'getChatProfile',
+  async (chatId: string, thunkAPI) => {
+    // access token
+    const access_token = localStorage.getItem('access_token');
+    // get request
+    const response = await fetch(`${apiUrl}/chats/${chatId}`, {
+      method: 'GET',
+      headers: { authorization: access_token! },
+    });
+    // check for internal serval error
+    if (response.status >= 500) {
+      return thunkAPI.rejectWithValue('Internal Server Error');
+    }
+    // if the clinet err
+    if (response.status >= 400) {
+      return thunkAPI.rejectWithValue('You Are Not Authente. Yet');
+    }
+    const resp = (await response.json()) as SingleChat;
+    // there is no error
+    return resp;
+  },
+);
 // get chat profile
-export const createChat = createAsyncThunk('createChat', async (chatData: { chat: SingleChat; avatar?: File }, thunkAPI) => {
-  // access token
-  const access_token = localStorage.getItem('access_token');
-  // formData
-  const formData = new FormData();
-  // append chat
-  formData.append('chat', JSON.stringify(chatData.chat));
-  formData.append('avatar', chatData.avatar!);
-  // get request
-  const response = await fetch(`${apiUrl}/chats/create_chat`, {
-    method: 'POST',
-    headers: { authorization: access_token! },
-    body: formData,
-  });
-  // check for internal serval error
-  if (response.status >= 500) {
-    return thunkAPI.rejectWithValue('Internal Server Error');
-  }
-  // if the clinet err
-  if (response.status >= 400) {
-    return thunkAPI.rejectWithValue('You Are Not Authente. Yet');
-  }
-  const resp = (await response.json()) as ChatProfile;
-  // there is no error
-  return resp;
-});
+export const createChat = createAsyncThunk(
+  'createChat',
+  async (chatData: { chat: SingleChat; avatar?: File }, thunkAPI) => {
+    // access token
+    const access_token = localStorage.getItem('access_token');
+    // formData
+    const formData = new FormData();
+    // append chat
+    formData.append('chat', JSON.stringify(chatData.chat));
+    formData.append('avatar', chatData.avatar!);
+    // get request
+    const response = await fetch(`${apiUrl}/chats/create_chat`, {
+      method: 'POST',
+      headers: { authorization: access_token! },
+      body: formData,
+    });
+    // check for internal serval error
+    if (response.status >= 500) {
+      return thunkAPI.rejectWithValue('Internal Server Error');
+    }
+    // if the clinet err
+    if (response.status >= 400) {
+      return thunkAPI.rejectWithValue('You Are Not Authente. Yet');
+    }
+    const resp = (await response.json()) as boolean;
+    // there is no error
+    return resp;
+  },
+);
 // delete chat
-export const deleteChat = createAsyncThunk('deleteChat', async (_id: string, thunkAPI) => {
-  // access token
-  const access_token = localStorage.getItem('access_token');
-  // get request
-  const response = await fetch(`${apiUrl}/chats/${_id}`, {
-    method: 'Delete',
-    headers: { authorization: access_token! },
-  });
-  // check for internal serval error
-  if (response.status >= 500) {
-    return thunkAPI.rejectWithValue('Internal Server Error');
-  }
-  // if the clinet err
-  if (response.status >= 400) {
-    return thunkAPI.rejectWithValue('You Are Not Authente. Yet');
-  }
-  const resp = (await response.json()) as ChatProfile;
-  // there is no error
-  return resp;
-});
+export const deleteChat = createAsyncThunk(
+  'deleteChat',
+  async (_id: string, thunkAPI) => {
+    // access token
+    const access_token = localStorage.getItem('access_token');
+    // get request
+    const response = await fetch(`${apiUrl}/chats/${_id}`, {
+      method: 'Delete',
+      headers: { authorization: access_token! },
+    });
+    // check for internal serval error
+    if (response.status >= 500) {
+      return thunkAPI.rejectWithValue('Internal Server Error');
+    }
+    // if the clinet err
+    if (response.status >= 400) {
+      return thunkAPI.rejectWithValue('You Are Not Authente. Yet');
+    }
+    const resp = (await response.json()) as ChatProfile;
+    // there is no error
+    return resp;
+  },
+);
 // add chat members
 export const addChatMembers = createAsyncThunk(
   'addChatMembers',
-  async (addMembersDTO: { members: ChatMember[]; chatId: string }, thunkAPI) => {
+  async (
+    addMembersDTO: { members: ChatMember[]; chatId: string },
+    thunkAPI,
+  ) => {
     // adding members data
     const { chatId, members } = addMembersDTO;
     // access token
@@ -148,7 +172,10 @@ export const addChatMembers = createAsyncThunk(
     // get request
     const response = await fetch(`${apiUrl}/chats/addmembers/${chatId}`, {
       method: 'POST',
-      headers: { authorization: access_token!, 'Content-type': 'application/json' },
+      headers: {
+        authorization: access_token!,
+        'Content-type': 'application/json',
+      },
       body: JSON.stringify(members),
     });
     // check for internal serval error
@@ -161,5 +188,5 @@ export const addChatMembers = createAsyncThunk(
     }
     // there is no error
     return true;
-  }
+  },
 );

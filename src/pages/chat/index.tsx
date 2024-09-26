@@ -12,20 +12,32 @@ import { useSearchParams } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import {
   ChatTypes,
+  addMessageToChat,
   clearAggreUnReadedMsg,
   setChatMessagesBatchNo,
   setChatUsrStatus,
   setMessageToBeMarketAsReaded,
   setOpenedChat,
 } from '@/redux/chats.slice';
-import { deleteChat, getChatMessages, getUsrOnlineStatus } from '@/apis/chats.api';
+import {
+  deleteChat,
+  getChatMessages,
+  getUsrOnlineStatus,
+} from '@/apis/chats.api';
 import { setAttchFileMenuOpen, setCurrentRoute } from '@/redux/system.slice';
 import { AnyAction } from '@reduxjs/toolkit';
 import ChatInput from '@/components/ChatInput/ChatInput';
 import { groupChatMessagesByDate } from '@/utils/chat.util';
-import { ChangeMessageStatusDTO, ChatMessage, MessageStatus } from '@/interfaces/chat.interface';
+import {
+  ChangeMessageStatusDTO,
+  ActionMessagesTypes,
+  ChatMessage,
+  MessageStatus,
+  MessagesTypes,
+} from '@/interfaces/chat.interface';
 import { useRouter } from 'next/router';
 import ChatMessagesLoader from '@/components/ChatMessagesLoader';
+import { v4 } from 'uuid';
 
 const Chat = () => {
   // get local
@@ -37,22 +49,41 @@ const Chat = () => {
   // use ref
   const chatRef = useRef<HTMLDivElement>(null); // chat usr id
   // loggedInUser
-  const loggedInUser = useSelector((state: RootState) => state.auth.currentUser?._id);
-  // data from the store
-  const { chatMessages, screenName, openedChat, chats, messagesBatchNo, isLastChatMessagesBatch, isAttachFileMenuOpened } =
-    useSelector((state: RootState) => {
+  const { loggedInUser, loggedInUserName, loggedInUserAvatar } = useSelector(
+    (state: RootState) => {
       return {
-        openedChat: state.chat.openedChat,
-        chatMessages: state.chat.chatMessages,
-        screenName: state.system.currentRoute,
-        chats: state.chat.chats,
-        messagesBatchNo: state.chat.chatMessagesBatchNo,
-        isLastChatMessagesBatch: state.chat.isLastChatMessagesBatch,
-        isAttachFileMenuOpened: state.system.attchFileMenuOpen,
+        loggedInUserName: state.auth.currentUser?.name,
+        loggedInUser: state.auth.currentUser?._id,
+        loggedInUserAvatar: state.auth.currentUser?.avatar,
       };
-    });
+    },
+  );
+  // data from the store
+  const {
+    chatMessages,
+    screenName,
+    openedChat,
+    chats,
+    createChatAPIres,
+    messagesBatchNo,
+    isLastChatMessagesBatch,
+    isAttachFileMenuOpened,
+  } = useSelector((state: RootState) => {
+    return {
+      openedChat: state.chat.openedChat,
+      chatMessages: state.chat.chatMessages,
+      screenName: state.system.currentRoute,
+      chats: state.chat.chats,
+      messagesBatchNo: state.chat.chatMessagesBatchNo,
+      isLastChatMessagesBatch: state.chat.isLastChatMessagesBatch,
+      isAttachFileMenuOpened: state.system.attchFileMenuOpen,
+      createChatAPIres: state.chat.createChatAPIres,
+    };
+  });
   // chat name
-  const chatUser = openedChat?.members.filter((member) => member._id !== loggedInUser)[0];
+  const chatUser = openedChat?.members.filter(
+    (member) => member._id !== loggedInUser,
+  )[0];
   // chatName
   const chatName = openedChat?.name ? openedChat.name : chatUser?.name;
   // chatId
@@ -65,7 +96,12 @@ const Chat = () => {
       // terminate if it's last batch of chat messages
       console.log('fetching new messages', isLastChatMessagesBatch);
       // get chat messages based on page no
-      dispatch(getChatMessages({ chatId: chatId!, msgBatch: messagesBatchNo + 1 }) as unknown as AnyAction);
+      dispatch(
+        getChatMessages({
+          chatId: chatId!,
+          msgBatch: messagesBatchNo + 1,
+        }) as unknown as AnyAction,
+      );
       dispatch(setChatMessagesBatchNo(messagesBatchNo + 1));
     }
   });
@@ -78,20 +114,33 @@ const Chat = () => {
     console.log('chat clicked');
   });
   // split chat messages with dates
-  const messages = groupChatMessagesByDate(chatMessages as ChatMessage[], locale as never)!;
+  const messages = groupChatMessagesByDate(
+    chatMessages as ChatMessage[],
+    locale as never,
+  )!;
   // open chat state
-  const [cachedOpenedChat] = useState(() => chats?.filter((chat) => chat._id === (parmas.get('id') as string))[0]);
+  const [cachedOpenedChat] = useState(
+    () => chats?.filter((chat) => chat._id === (parmas.get('id') as string))[0],
+  );
   // scroll to the bottom of the view
   useEffect(() => {
     // if there is chat messages
     if (chatMessages && chatMessages.length) {
       // messages to be market as readed
       const messagesToBeMarketAsReaded = chatMessages
-        .filter((message) => message.status !== MessageStatus.READED && message.sender._id !== loggedInUser)
+        .filter(
+          (message) =>
+            message.status !== MessageStatus.READED &&
+            message.sender._id !== loggedInUser,
+        )
         .map((message) => message._id);
       // messages senders
       const messagesSendersIDs = chatMessages
-        .filter((message) => message.status !== MessageStatus.READED && message.sender._id !== loggedInUser)
+        .filter(
+          (message) =>
+            message.status !== MessageStatus.READED &&
+            message.sender._id !== loggedInUser,
+        )
         .map((message) => message.sender._id);
       // terminate if message is sended by current user
       if (!messagesToBeMarketAsReaded.length) return;
@@ -104,6 +153,30 @@ const Chat = () => {
       };
       // set messages to market as readed
       dispatch(setMessageToBeMarketAsReaded(changeMessageStatusData));
+    }
+    // check for chat creattion
+    if (createChatAPIres && chatMessages?.length === 0) {
+      // create chat action
+      const actionMessage: ChatMessage = {
+        _id: v4(),
+        receiverId: openedChat!._id,
+        status: null,
+        sender: {
+          _id: loggedInUser!,
+          name: loggedInUserName!,
+          avatar: loggedInUserAvatar!,
+        },
+        content: 'Chat Action Message',
+        date: new Date().toString(),
+        fileName: null,
+        fileSize: null,
+        msgReplyedTo: null,
+        replyTo: undefined,
+        type: MessagesTypes.ACTION,
+        voiceNoteDuration: '',
+        actionMsgType: 'CREATION',
+      };
+      dispatch(addMessageToChat(actionMessage));
     }
     if (messagesBatchNo > 1) return;
     chatRef.current?.scrollTo(0, chatRef.current.scrollHeight);
@@ -128,15 +201,22 @@ const Chat = () => {
   useEffect(() => {
     if (!openedChat) return;
     // get usr online status
-    if (openedChat?.type === ChatTypes.INDIVISUAL) dispatch(getUsrOnlineStatus(chatUser!._id) as unknown as AnyAction);
+    if (openedChat?.type === ChatTypes.INDIVISUAL)
+      dispatch(getUsrOnlineStatus(chatUser!._id) as unknown as AnyAction);
     // get usr online status
-    if (openedChat?.type === ChatTypes.GROUP) dispatch(setChatUsrStatus(undefined));
+    if (openedChat?.type === ChatTypes.GROUP)
+      dispatch(setChatUsrStatus(undefined));
     // set route name
     dispatch(setCurrentRoute(chatName!));
     // terminate if there is chat messages
     if (chatMessages?.length) return;
     // get chats messages
-    dispatch(getChatMessages({ chatId: chatId!, msgBatch: messagesBatchNo }) as unknown as AnyAction);
+    dispatch(
+      getChatMessages({
+        chatId: chatId!,
+        msgBatch: messagesBatchNo,
+      }) as unknown as AnyAction,
+    );
   }, [openedChat]);
   // dummy messages
   return (
@@ -151,7 +231,7 @@ const Chat = () => {
         {chatMessages !== null && chatMessages?.length === 0 ? (
           // no messages avatar
           <Box className={styles.imgContainer}>
-            <NextImage src={NoMessageDrow} alt='' />
+            <NextImage src={NoMessageDrow} alt="" />
             <Text textColor={'gray'} fontSize={'1.5rem'}>
               No Messages Yet
             </Text>
@@ -160,7 +240,7 @@ const Chat = () => {
           ''
         )}
         {/* load chat messages */}
-        {messages !== undefined ? <ChatMessagesLoader messages={messages} /> : ''}
+        {messages !== undefined && <ChatMessagesLoader messages={messages} />}
         {/* chat footer */}
         <ChatInput />
       </div>

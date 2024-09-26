@@ -75,11 +75,13 @@ export interface ChatState {
   addChatMembersRes: boolean | null;
   responseToMessage: ResponseToMessageData | null;
   messagesToBeForwared: MessagesToBeForwarded | null;
+  createChatAPIres: null | boolean;
 }
 // inital state
 const initialState: ChatState = {
   fileMessageUploadIndicator: null,
   messagesToBeForwared: null,
+  createChatAPIres: null,
   isLastChatMessagesBatch: null,
   addChatMembersRes: null,
   responseToMessage: null,
@@ -341,6 +343,7 @@ export const chatSlice = createSlice({
     // create chat group
     builder.addCase(createChat.fulfilled, (state, action) => {
       const res = action.payload;
+      state.createChatAPIres = res;
       console.log(res);
     });
     // adding members to a groub chat

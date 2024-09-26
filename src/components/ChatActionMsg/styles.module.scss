@@ -1,0 +1,9 @@
+#chat_action_message[is-chat-open='false'] {
+  margin: initial !important;
+  p {
+    padding: initial !important;
+    box-shadow: none !important;
+    font-size: initial;
+  }
+}
+// TODO: adjust font size when chat is closed

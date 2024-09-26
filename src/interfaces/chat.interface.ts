@@ -17,12 +17,16 @@ export enum MessagesTypes {
   PHOTO = 'PHOTO',
   FILE = 'FILE',
   VOICENOTE = 'VOICENOTE',
+  ACTION = 'ACTION',
 }
+// chat Actions
+export type ActionMessagesTypes = 'CREATION' | 'MEMBER_ADITION';
 // chat Message interface
 export interface ChatMessage {
   _id: string;
   content: string;
   type: MessagesTypes;
+  actionMsgType?: ActionMessagesTypes;
   replyTo: string | null | undefined;
   msgReplyedTo: ResponseToMessageData | null;
   sender: ChatMember;

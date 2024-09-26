@@ -17,6 +17,7 @@ import ImagePreview from '../ImagePreview';
 import VideoPreview from '../VideoPreview';
 import FilePreview from '../FilePreview';
 import { FaCheckCircle } from 'react-icons/fa';
+import ChatActionMsg from '../ChatActionMsg';
 
 type Props = {
   chat: ChatCard;
@@ -52,7 +53,7 @@ const ChatCard: React.FC<Props> = ({ chat, selectChat }) => {
   // localize lang
   const { locale } = useRouter();
   // Messages types
-  const { TEXT, VOICENOTE, PHOTO, VIDEO, FILE } = MessagesTypes;
+  const { TEXT, VOICENOTE, PHOTO, VIDEO, FILE, ACTION } = MessagesTypes;
   // get data from store
   const { chatAction } = useSelector((state: RootState) => {
     return {
@@ -146,6 +147,16 @@ const ChatCard: React.FC<Props> = ({ chat, selectChat }) => {
             {/* file message preview */}
             {chat.lastMessage.type === FILE && (
               <FilePreview fileName={chat.lastMessage.fileName!} />
+            )}
+            {/* action type */}
+            {chat.lastMessage.type === ACTION && (
+              <ChatActionMsg
+                data={{
+                  sender: chat.lastMessage.sender,
+                  actionMsgType: chat.lastMessage.actionMsgType,
+                  groupName: chat.name,
+                }}
+              />
             )}
           </Text>
         </Box>

@@ -62,12 +62,17 @@ const useChatMessagesSender = (socket: Socket) => {
       ...chatMessage,
       content: chunks[chunkIndex],
     } as ChatMessage;
+    console.log('multi chunks', message);
     // fire an socket event
     socket.emit('multi_chunks_message', { data: message, isLastChunk });
     // increment chunk index
     setChunkIndex(chunkIndex + 1);
     // check for invalid case
-    if (chatMessage!.type === MessagesTypes.TEXT) return;
+    if (
+      chatMessage!.type === MessagesTypes.TEXT ||
+      chatMessage!.type === MessagesTypes.ACTION
+    )
+      return;
     // send chatMessage chunks lenght to the redux store
     dispatch(
       setFileMessageUploadIndicator(((chunkIndex + 1) / chunks?.length) * 100),

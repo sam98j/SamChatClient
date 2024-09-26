@@ -25,5 +25,12 @@
     "selectChatsToForward": "حدد محادثة لاعادة التوجيه اليها",
     "submitBtn": "إعادة توجيه",
     "forwardDoneAlert": "تم أعادة التوجيه"
+  },
+  "chatActionsMessages": {
+    "creation": {
+      "youPronoun": "أنت",
+      "created": "أنشأ",
+      "theGroup": "المجموعة"
+    }
   }
 }

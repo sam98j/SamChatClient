@@ -25,5 +25,12 @@
     "selectChatsToForward": "Select Chats to Forward",
     "submitBtn": "Forward",
     "forwardDoneAlert": "Messages Forwarded Successfuly"
+  },
+  "chatActionsMessages": {
+    "creation": {
+      "youPronoun": "You",
+      "created": "Created",
+      "theGroup": "The Group"
+    }
   }
 }

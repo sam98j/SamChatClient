@@ -1,11 +1,14 @@
 import { Text } from '@chakra-ui/react';
 import React, { FC } from 'react';
 import ChatMassage from '../ChatMassage';
-import { ChatMessage } from '@/interfaces/chat.interface';
+import { ChatMessage, MessagesTypes } from '@/interfaces/chat.interface';
 import { MessagesGroubedByDate } from '@/utils/chat.util';
+import ChatActionMsg from '../ChatActionMsg';
 
-const ChatMessagesLoader: FC<{ messages: MessagesGroubedByDate }> = ({ messages }) => {
-  //   console.log(messages);
+// component props
+type Props = { messages: MessagesGroubedByDate };
+
+const ChatMessagesLoader: FC<Props> = ({ messages }) => {
   return (
     <>
       {messages.dates?.map((date, i) => {
@@ -25,9 +28,21 @@ const ChatMessagesLoader: FC<{ messages: MessagesGroubedByDate }> = ({ messages 
             >
               {date}
             </Text>
-            {messages.messages[i].map((msg: ChatMessage) => (
-              <ChatMassage messageData={msg} key={msg._id} />
-            ))}
+            {messages.messages[i].map((msg: ChatMessage) => {
+              // destruct
+              const { sender, actionMsgType } = msg;
+              // check for chat action message
+              if (msg.type === MessagesTypes.ACTION) {
+                return (
+                  <ChatActionMsg
+                    data={{ sender, actionMsgType }}
+                    key={msg._id}
+                  />
+                );
+              }
+              // if it's a regular chat message
+              return <ChatMassage messageData={msg} key={msg._id} />;
+            })}
           </>
         );
       })}
