@@ -30,7 +30,6 @@ import ChatInput from '@/components/ChatInput/ChatInput';
 import { groupChatMessagesByDate } from '@/utils/chat.util';
 import {
   ChangeMessageStatusDTO,
-  ActionMessagesTypes,
   ChatMessage,
   MessageStatus,
   MessagesTypes,

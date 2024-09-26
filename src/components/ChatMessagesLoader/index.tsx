@@ -4,11 +4,17 @@ import ChatMassage from '../ChatMassage';
 import { ChatMessage, MessagesTypes } from '@/interfaces/chat.interface';
 import { MessagesGroubedByDate } from '@/utils/chat.util';
 import ChatActionMsg from '../ChatActionMsg';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 // component props
 type Props = { messages: MessagesGroubedByDate };
 
 const ChatMessagesLoader: FC<Props> = ({ messages }) => {
+  // get opened chat name
+  const groupName = useSelector(
+    (state: RootState) => state.chat.openedChat?.name,
+  )!;
   return (
     <>
       {messages.dates?.map((date, i) => {
@@ -35,7 +41,7 @@ const ChatMessagesLoader: FC<Props> = ({ messages }) => {
               if (msg.type === MessagesTypes.ACTION) {
                 return (
                   <ChatActionMsg
-                    data={{ sender, actionMsgType }}
+                    data={{ sender, actionMsgType, groupName }}
                     key={msg._id}
                   />
                 );

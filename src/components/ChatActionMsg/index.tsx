@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 import { ChatMessage } from '@/interfaces/chat.interface';
 import { RootState } from '@/redux/store';
 import useTranslation from 'next-translate/useTranslation';
