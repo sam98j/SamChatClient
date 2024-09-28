@@ -68,9 +68,13 @@ function App({ Component, ...pageProps }: AppProps) {
   // store dispatch func
   const dispatch = useDispatch();
   // system state
-  const { isCreateChatGroupMenuOpen } = useSelector(
+  const { isCreateChatGroupMenuOpen, isNewChatScreenOpen } = useSelector(
     (state: RootState) => state.system,
   );
+  // isAnyModalOpen
+  const isAnyModalOpen = isCreateChatGroupMenuOpen || isNewChatScreenOpen;
+  // app tob bar color scheme
+  const colorSchemeMetaTag = isAnyModalOpen ? '#000' : '#ffffff';
   // auth state
   const { apiResponse, currentUser } = useSelector(
     (state: RootState) => state.auth,
@@ -259,11 +263,12 @@ function App({ Component, ...pageProps }: AppProps) {
     <>
       <Head>
         <link rel="shortcut icon" href="/favicon.ico" />
+        <meta name="theme-color" content={colorSchemeMetaTag} />
       </Head>
       <ChakraProvider theme={theme}>
         <SessionProvider>
           <Provider store={store}>
-            <div className={styles.app}>
+            <div className={styles.app} is-modal-open={String(isAnyModalOpen)}>
               {/* system notifications */}
               {systemNotifications && (
                 <SystemNotifications

@@ -1,5 +1,9 @@
 @import '../styles/variables';
 
+html:has(.app[is-modal-open='true']) {
+  background-color: #000;
+}
+
 .app {
   height: 100dvh;
   overflow: hidden;
