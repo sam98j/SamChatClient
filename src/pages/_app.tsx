@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unknown-property */
+
 import { RootState, store, wrapper } from '@/redux/store';
 import React, { useState } from 'react';
 import '@/styles/globals.css';
