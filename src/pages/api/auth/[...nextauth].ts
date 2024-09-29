@@ -25,17 +25,22 @@ export const authOptions: AuthOptions = {
     async jwt({ token, account }) {
       // Persist the OAuth access_token to the token right after signin
       if (account) {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup_with_google`, {
+        // api url
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/auth/signup_with_google`;
+        // fetch api url
+        const res = await fetch(apiUrl, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${account?.id_token}`,
           },
         });
         const resParsed = await res.json();
+        console.log(resParsed);
         token = Object.assign({}, token, {
           id_token: account.id_token,
         });
         token = Object.assign({}, token, {
+          loggedInUser: resParsed.loggedInUser,
           myToken: resParsed.access_token,
         });
       }
@@ -47,6 +52,7 @@ export const authOptions: AuthOptions = {
           id_token: token.id_token,
         });
         session = Object.assign({}, session, {
+          loggedInUser: token.loggedInUser,
           authToken: token.myToken,
         });
       }

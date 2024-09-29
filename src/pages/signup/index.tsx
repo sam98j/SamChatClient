@@ -1,8 +1,18 @@
+/* eslint-disable react/no-unknown-property */
+
 import React, { useEffect, useState } from 'react';
 import styles from './styles.module.scss';
 import Head from 'next/head';
-import { Box, Button, FormControl, Icon, Input, InputGroup, InputLeftElement, Text } from '@chakra-ui/react';
-import AppLogo from '@/components/AppLogo';
+import {
+  Box,
+  Button,
+  FormControl,
+  Icon,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Text,
+} from '@chakra-ui/react';
 import { HiOutlineCamera, HiOutlineKey, HiOutlineMail } from 'react-icons/hi';
 import { BsPersonCircle, BsGoogle } from 'react-icons/bs';
 import { GoogleSignInSession, SignUpDto } from '@/interfaces/auth.interface';
@@ -12,32 +22,27 @@ import { AnyAction } from '@reduxjs/toolkit';
 import { useRouter } from 'next/router';
 import LanguageSwitcher from '@/components/LangSwitcher/LangSwitcher';
 import useTranslation from 'next-translate/useTranslation';
+import Logo from '../../../assets/vectors/chat-round-check-svgrepo-com.svg';
 import Link from 'next/link';
 import { signIn, useSession, signOut } from 'next-auth/react';
+import Image from 'next/image';
 
 const SignUp = () => {
   // dispatch store function
   const dispatch = useDispatch();
   // google sign up session
   const { data: session } = useSession();
-  // signUp With Google Handler
-  const googleSignUpHandler = () => {
-    // session with authToken
-    const { authToken } = { ...session } as GoogleSignInSession;
-    // store token in local storage
-    localStorage.setItem('access_token', `Bearer ${authToken}`);
-    // terminate if no access token
-    if (!authToken) return;
-    // set Oauth Activation status
-    // dispatch(setOAuthActivationStatus(true));
-    // redirect the usr to chats screen
-    push('/chats');
-  };
   // localization method
   const { t } = useTranslation('signUp');
+  // router
   const { push, locale } = useRouter();
+  // submit btn state
   const [isLoading, setIsLoading] = useState(false);
+  // is loading
+  const [isOauthWitGoogleLoading, setOauthWitGoogleLoading] = useState(false);
+  // user image
   const [selectedUserImage, seTselectedUserImage] = useState('');
+  // state
   const [state, setState] = useState<SignUpDto>({
     email: '',
     usrname: '',
@@ -45,6 +50,17 @@ const SignUp = () => {
     avatar: null,
     name: '',
   });
+  // signUp With Google Handler
+  const googleSignUpHandler = () => {
+    // session with authToken
+    const { authToken } = { ...session } as GoogleSignInSession;
+    // terminate if no access token
+    if (!authToken) return;
+    // store token in local storage
+    localStorage.setItem('access_token', `Bearer ${authToken}`);
+    // redirect the usr to chats screen
+    push('/chats');
+  };
   // handleInputChange
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // set component state
@@ -71,6 +87,11 @@ const SignUp = () => {
     dispatch(signUpApi(state) as unknown as AnyAction);
     setIsLoading(true);
   };
+  // googleOauthBtnHandler
+  const googleOauthBtnHandler = () => {
+    setOauthWitGoogleLoading(true);
+    signIn('google');
+  };
   // google sign in session observer
   useEffect(() => {
     // terminate the proccess if no usr
@@ -84,38 +105,46 @@ const SignUp = () => {
         <title>{t('pageName')}</title>
       </Head>
       {/* body */}
-      <Box
-        display={'flex'}
-        flexDirection={'column'}
-        alignItems={'center'}
-        padding={'40px'}
-        gap={5}
+      <div
+        className="flex flex-col gap-2 p-9"
         pref-lang={locale}
-        className={styles.signup}
+        id={styles.signup}
       >
-        <AppLogo />
-        <Text fontWeight={'bold'} fontSize={'x-large'}>
-          {t('greeting')}
-        </Text>
+        {/* App Logo */}
+        <div className="flex items-center justify-center" id={styles.app_logo}>
+          <Image src={Logo} alt="logo" />
+          <Text fontWeight={'bold'}>{t('appName')}</Text>
+        </div>
+        {/* text */}
+        <p className="text-center">{t('loginWithOauth')}</p>
         {/* social media auth providers */}
-        <Box
-          width={'100%'}
-          display={'flex'}
-          alignItems={'center'}
-          justifyContent={'center'}
-          borderRadius={'5px'}
-          padding={'.5rem 0'}
-          backgroundColor={'blue.100'}
-          gap={'20px'}
-        >
-          <BsGoogle />
-          <button onClick={async () => await signIn('google')} className={styles.signup_with_google_btn}>
+        <Box width={'full'}>
+          <Button
+            display={'flex'}
+            alignItems={'center'}
+            width={'full'}
+            fontWeight={'normal'}
+            backgroundColor={'transparent'}
+            isDisabled={isOauthWitGoogleLoading}
+            border={'1px solid gray'}
+            justifyContent={'center'}
+            gap={'20px'}
+            onClick={googleOauthBtnHandler}
+            className={styles.signup_with_google_btn}
+          >
+            <BsGoogle />
             {t('signUpWithSocialMedia.signUpWithGoogle')}
-          </button>
+          </Button>
         </Box>
-        <Text fontSize={'lg'}>{t('createYourAccountText')}</Text>
         {/* form */}
-        <form onSubmit={handleSubmition} id='form'>
+        <form onSubmit={handleSubmition} id="form">
+          {/* or seperator */}
+          <p
+            className="text-center text-gray-500 mt-5"
+            id={styles.or_seperator}
+          >
+            {t('or_seperator')}
+          </p>
           {/* email */}
           <InputGroup>
             <FormControl>
@@ -124,8 +153,10 @@ const SignUp = () => {
               </InputLeftElement>
               <Input
                 placeholder={t('emailPlaceholder')}
-                type='email'
-                name='email'
+                type="email"
+                variant={'filled'}
+                bg={'blackAlpha.200'}
+                name="email"
                 value={state.email}
                 onChange={handleInputChange}
               />
@@ -139,8 +170,10 @@ const SignUp = () => {
               </InputLeftElement>
               <Input
                 placeholder={t('namePlaceholder')}
-                type='text'
-                name='name'
+                type="text"
+                name="name"
+                variant={'filled'}
+                bg={'blackAlpha.200'}
                 value={state.name}
                 onChange={handleInputChange}
               />
@@ -154,8 +187,10 @@ const SignUp = () => {
               </InputLeftElement>
               <Input
                 placeholder={t('passwordPlaceholder')}
-                type='password'
-                name='password'
+                type="password"
+                variant={'filled'}
+                bg={'blackAlpha.200'}
+                name="password"
                 value={state.password}
                 onChange={handleInputChange}
               />
@@ -169,8 +204,10 @@ const SignUp = () => {
               </InputLeftElement>
               <Input
                 placeholder={t('re-enterPasswordPlaceholder')}
-                type='password'
-                name='password'
+                type="password"
+                name="password"
+                variant={'filled'}
+                bg={'blackAlpha.200'}
                 value={state.password}
                 onChange={handleInputChange}
               />
@@ -184,8 +221,10 @@ const SignUp = () => {
               </InputLeftElement>
               <Input
                 placeholder={t('usernamePlaceholder')}
-                type='text'
-                name='usrname'
+                type="text"
+                name="usrname"
+                variant={'filled'}
+                bg={'blackAlpha.200'}
                 value={state.usrname}
                 onChange={handleInputChange}
               />
@@ -198,32 +237,42 @@ const SignUp = () => {
                 <Icon as={HiOutlineCamera} />
               </InputLeftElement>
               <Input
-                type='file'
-                accept='image/png, image/jpeg'
-                id='profile_img'
-                name='profile_img'
-                selected-file-name={selectedUserImage ? selectedUserImage : t('chosenImageText')}
+                type="file"
+                accept="image/png, image/jpeg"
+                id="profile_img"
+                name="profile_img"
+                selected-file-name={
+                  selectedUserImage ? selectedUserImage : t('chosenImageText')
+                }
                 input-placeholder={t('choseImageInputPlaceholder')}
                 onChange={handleInputChange}
               />
             </FormControl>
           </InputGroup>
+          {/* submit btn */}
           <Button
-            colorScheme='messenger'
+            colorScheme="blackAlpha"
+            backgroundColor={'black'}
             width={'fit-content'}
             marginTop={'20px'}
             marginBottom={'20px'}
-            type='submit'
+            type="submit"
             isDisabled={isLoading}
           >
             {t('signUpBtnText')}
           </Button>
-          <Text>
-            {t('loginText')} <Link href={'/login'}>{t('loginLinkText')}</Link>
-          </Text>
-          <LanguageSwitcher path='signup' />
         </form>
-      </Box>
+        {/* login link */}
+        <div>
+          <Text>
+            {t('loginText')}{' '}
+            <Link className="text-blue-500" href={'/login'}>
+              {t('loginLinkText')}
+            </Link>
+          </Text>
+          <LanguageSwitcher path="signup" />
+        </div>
+      </div>
     </>
   );
 };

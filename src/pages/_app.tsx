@@ -242,7 +242,12 @@ function App({ Component, ...pageProps }: AppProps) {
     // redirect usr to chats if he is loggedin and hit /
     if (currentUser && pathname === '/') push(prefLang + '/chats');
     // go back to home page when usr looged out
-    if (currentUser === undefined) push('/');
+    if (
+      currentUser === undefined &&
+      pathname !== '/login' &&
+      pathname !== '/signup'
+    )
+      push('/');
     // if user is logged In
     // subscripe for push notifications and regester service worker
     if (currentUser && pathname === '/chats') enablePushNotification();

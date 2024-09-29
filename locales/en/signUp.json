@@ -1,5 +1,8 @@
 {
   "pageName": "SamChat | SignUp",
+  "appName": "SamChat",
+  "loginWithOauth": "Select the method to Sign Up",
+  "or_seperator": "or sign up with email and password",
   "greeting": "Welcome To SamChat",
   "emailPlaceholder": "Email",
   "namePlaceholder": "Full Name",

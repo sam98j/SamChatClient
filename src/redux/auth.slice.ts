@@ -66,6 +66,7 @@ export const authSlice = createSlice({
       state.apiResponse = { err: false, msg: 'You Successfyl Logged In ...' };
     });
     builder.addCase(loginUser.rejected, (state) => {
+      // error massage
       state.currentUser = undefined;
       state.apiResponse = {
         err: true,

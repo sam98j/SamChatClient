@@ -1,11 +1,12 @@
-import { SignUpDto } from '@/interfaces/auth.interface';
+import { LoginDTO, SignUpDto } from '@/interfaces/auth.interface';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 // login User Api
 export const loginUser = createAsyncThunk(
   'loginUser',
-  async (userCred: { email: string; password: string }, thunkAPI) => {
+  async (userCred: LoginDTO, thunkAPI) => {
+    // fetch request
     const response = await fetch(`${apiUrl}/auth/login`, {
       method: 'POST',
       headers: {
@@ -23,7 +24,7 @@ export const loginUser = createAsyncThunk(
     }
     // there is no error
     return (await response).json();
-  }
+  },
 );
 
 export const signUpApi = createAsyncThunk(
@@ -50,5 +51,5 @@ export const signUpApi = createAsyncThunk(
       return thunkAPI.rejectWithValue('client err');
     }
     return await res.json();
-  }
+  },
 );

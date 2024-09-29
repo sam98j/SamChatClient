@@ -1,7 +1,6 @@
 @import './stylesmobile';
 
 .login {
-  // background: linear-gradient(to bottom, dodgerblue, blue);
   height: 100vh !important;
   display: flex;
   &[pref-lang='ar'] {
@@ -14,10 +13,9 @@
     width: 40%;
   }
   .form_container .formHeader {
-    padding: 20px 90px;
     // app name
     h1 {
-      border-bottom: 50px;
+      border-bottom: 30px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -32,19 +30,35 @@
     }
     // login to your account
     h2 {
-      font-size: 1.5rem;
-      font-weight: bolder;
-      text-align: center;
+      font-weight: bold;
     }
     p {
       text-align: center;
+      margin-top: 15px;
+      margin-bottom: 10px;
     }
   }
   // styling the login form
   .form_container form {
-    border: 1px solid white;
-    background-color: white;
-    height: 100%;
+    // or_seperator
+    #or_seperator {
+      position: relative;
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        height: 2px;
+        width: 20px;
+        background-color: gray;
+        top: 50%;
+      }
+      &::after {
+        right: 0;
+      }
+      &::before {
+        left: 0;
+      }
+    }
     padding: 90px;
     display: flex;
     flex-direction: column;

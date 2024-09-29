@@ -1,5 +1,8 @@
 {
   "pageName": "سام شات | انشاء حساب",
+  "appName": "سام شات",
+  "loginWithOauth": "قم باختيار طريقة التسجيل",
+  "or_seperator": "او قم بالتسجيل باستخدام الايميل و كلمة السر",
   "greeting": "مرحبا بك في سام شات",
   "emailPlaceholder": "البريد الاكتروني",
   "namePlaceholder": "الإسم الكامل",

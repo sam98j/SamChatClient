@@ -2,6 +2,7 @@
   "app_name": "SamChat",
   "welcome_text": "Welcome To SamChat",
   "login_with_oauth": "Select the method to login",
+  "or_seperator": "or login with email and password",
   "email_input_msg": "We'll never share your email.",
   "remember_me_btn_text": "Remember Me",
   "forget_password_link_text": "Forget Your Password ?",
