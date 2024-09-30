@@ -3,6 +3,7 @@
 .login {
   height: 100vh !important;
   display: flex;
+  align-items: center;
   &[pref-lang='ar'] {
     form .inputIcon {
       left: initial;

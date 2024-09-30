@@ -106,7 +106,7 @@ const SignUp = () => {
       </Head>
       {/* body */}
       <div
-        className="flex flex-col gap-2 p-9"
+        className="flex flex-col gap-2 px-9 justify-center h-[100dvh]"
         pref-lang={locale}
         id={styles.signup}
       >

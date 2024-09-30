@@ -29,9 +29,7 @@
         left: 0;
       }
     }
-    a {
-      color: dodgerblue;
-    }
+    // choose profile photo
     input[type='file'] {
       color: transparent;
       &::-webkit-file-upload-button {
@@ -59,6 +57,7 @@
         transform: translateY(50%);
       }
     }
+    // input icons
     svg {
       color: gray;
     }
@@ -66,6 +65,7 @@
       padding: 0 30px;
     }
   }
+  // arabic lang styles
   &[pref-lang='ar'] {
     .inputIcon {
       left: initial;
