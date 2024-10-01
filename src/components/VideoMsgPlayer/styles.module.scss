@@ -29,7 +29,7 @@
     left: 0;
     width: 100vw;
     z-index: 1;
-    height: 100vh;
+    height: 100dvh;
     background-color: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(20px);
     display: flex;
@@ -58,7 +58,7 @@
       color: white;
       //   timeLine
       .timeLine {
-        height: 5px;
+        height: 3px;
         background-color: white;
         flex-grow: 1;
         width: 100%;
@@ -68,7 +68,7 @@
         span {
           border-radius: 5px;
           display: inline-block;
-          height: 5px;
+          height: 3px;
           background-color: dodgerblue;
         }
       }

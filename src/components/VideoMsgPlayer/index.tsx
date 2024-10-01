@@ -6,15 +6,25 @@ import useTranslation from 'next-translate/useTranslation';
 import { RootState } from '@/redux/store';
 import { useRouter } from 'next/router';
 import { Box, Text } from '@chakra-ui/react';
-import { IoArrowBack, IoReturnUpForward, IoShareOutline, IoVolumeHighOutline } from 'react-icons/io5';
+import {
+  IoArrowBack,
+  IoReturnUpForward,
+  IoShareOutline,
+  IoVolumeHighOutline,
+} from 'react-icons/io5';
 import { TimeUnits, getTime } from '@/utils/time';
 import { CiMenuKebab, CiSettings } from 'react-icons/ci';
-import { BsFullscreen, BsPlay } from 'react-icons/bs';
-import { TbPictureInPicture, TbRewindBackward10, TbRewindForward10 } from 'react-icons/tb';
+import { BsFullscreen, BsPauseFill, BsPlay, BsPlayFill } from 'react-icons/bs';
+import {
+  TbPictureInPicture,
+  TbRewindBackward10,
+  TbRewindForward10,
+} from 'react-icons/tb';
 import { secondsToDurationConverter } from '@/utils/time';
 import { ChatMessage } from '@/interfaces/chat.interface';
 import FileMsgUploadIndicator from '../FileMsgUploadIndicator';
-// import { secondsToDurationConverter } from '@/utils/voiceMemoRec';
+import { Rewind } from 'lucide-react';
+import { MdOutlineForward10, MdOutlineReplay10 } from 'react-icons/md';
 
 // props
 type Props = Pick<ChatMessage, 'content' | 'sender' | 'date' | '_id'>;
@@ -25,27 +35,21 @@ const VideoMsgPlayer: FC<{ data: Props }> = ({ data }) => {
   // destruct props
   const { content, date, sender, _id } = data;
   // get data from redux store
-  const { currentUsr } = useSelector((state: RootState) => ({
-    currentUsr: state.auth.currentUser,
-  }));
+  const currentUser = useSelector((state: RootState) => state.auth.currentUser);
   // is video is sended by the current loggedIn usr
-  const sendedByMe = currentUsr?._id === sender._id;
+  const sendedByMe = currentUser?._id === sender._id;
   // video sender name
   const videoSenderName = data.sender.name;
   // vido url
-  const [videoUrl] = useState(() => {
-    // check for content is data url or link
-    // check if content contain http
-    if (content.includes('data:')) return content;
-    // otherwize
-    return `${apiHost}${content}`;
-  });
+  const videoUrl = content.includes('data:') ? content : `${apiHost}${content}`;
   // state
   const [isOpen, setIsOpen] = useState(false);
   // localiztion method
   const { t } = useTranslation('chatScreen');
   // video current time
   const [videoCurrentTime, setVideoCurrentTime] = useState('00:00');
+  // is video played or paused
+  const [videoPlayingStatus, setVideoPlayingStatus] = useState(false);
   // video ref
   const videoRef = useRef<HTMLVideoElement>(null);
   // timeLine ref
@@ -53,43 +57,74 @@ const VideoMsgPlayer: FC<{ data: Props }> = ({ data }) => {
   // app lang
   const { locale } = useRouter();
   // handle onclick
-  const handleClick = () => {
-    if (isOpen) return;
-    setIsOpen(true);
-  };
+  const handleClick = () => !isOpen && setIsOpen(true);
+  // close video handler
   const handleClose = () => setIsOpen(false);
-  // handleVidePlayPause
+  // video element
   const videoElement = videoRef.current!;
-  // load video
   // time line element
   const timeLineElement = timeLineRef.current;
+  // video play/pause icon
+  const VideoPlayPauseIcon = videoPlayingStatus ? BsPauseFill : BsPlayFill;
+  // video time update handler
+  const videoTimeUpdateHandler = () => {
+    // video current time
+    const vidCurrentTime = secondsToDurationConverter(videoElement.currentTime);
+    // set video current time
+    setVideoCurrentTime(vidCurrentTime);
+    // set time line styles
+    const timeLineProgress = `${(Math.round(videoElement.currentTime) / Math.round(videoElement.duration)) * 100}%`;
+    // set video time line width
+    timeLineElement!.style.width = timeLineProgress;
+    // set video timeline transition
+    timeLineElement!.style.transition = 'width 1s linear';
+  };
   // on play
   videoElement &&
-    videoElement.addEventListener('timeupdate', () => {
-      setVideoCurrentTime(secondsToDurationConverter(videoElement.currentTime));
-      timeLineElement?.setAttribute(
-        'style',
-        `width: ${(Math.round(videoElement.currentTime) / Math.round(videoElement.duration)) * 100}%`
-      );
+    videoElement.addEventListener('ended', () => {
+      timeLineElement!.addEventListener('transitionend', () => {
+        // set video time line width
+        timeLineElement!.setAttribute('style', 'width: 0%; transition: none');
+        setVideoPlayingStatus(false);
+      });
     });
+  // on play
+  videoElement &&
+    videoElement.addEventListener('timeupdate', videoTimeUpdateHandler);
   // handle video play and pause
   const handleVidePlayPause = () => {
+    // play video
     if (videoElement.paused) {
       videoElement.play();
+      setVideoPlayingStatus(true);
       return;
     }
+    // pause video
     videoElement.pause();
+    setVideoPlayingStatus(false);
   };
   // handleShare
   const handleShare = () => {};
+
   return (
-    <div className={styles.videoMsgViewer} is-open={String(isOpen)} pref-lang={locale}>
+    <div
+      className={styles.videoMsgViewer}
+      is-open={String(isOpen)}
+      pref-lang={locale}
+    >
       {/* video upload indicator */}
       <FileMsgUploadIndicator _id={_id} />
       {/* viewer header */}
       <div className={styles.viewerHeader}>
         {/* back arrow */}
-        <Box onClick={handleClose} display={'flex'} alignItems={'center'} gap={2} color={'white'} cursor={'pointer'}>
+        <Box
+          onClick={handleClose}
+          display={'flex'}
+          alignItems={'center'}
+          gap={2}
+          color={'white'}
+          cursor={'pointer'}
+        >
           {/* go back arrow */}
           <IoArrowBack size={'1.5rem'} />
           {/* message sender */}
@@ -97,14 +132,22 @@ const VideoMsgPlayer: FC<{ data: Props }> = ({ data }) => {
             {/* message sender */}
             <Text>{sendedByMe ? t('you') : videoSenderName}</Text>
             {/* message date and time */}
-            <Text fontSize={'.8rem'}>{getTime(date, TimeUnits.fullTime, locale as never)}</Text>
+            <Text fontSize={'.8rem'}>
+              {getTime(date, TimeUnits.fullTime, locale as never)}
+            </Text>
           </Box>
         </Box>
         {/* options (share, forward, menu) */}
-        <Box display={'flex'} alignItems={'center'} flexGrow={1} justifyContent={'flex-end'} gap={5}>
-          <IoShareOutline size={'1.5rem'} color='white' onClick={handleShare} />
-          <IoReturnUpForward size={'1.5rem'} color='white' />
-          <CiMenuKebab size={'1.5rem'} color='white' />
+        <Box
+          display={'flex'}
+          alignItems={'center'}
+          flexGrow={1}
+          justifyContent={'flex-end'}
+          gap={5}
+        >
+          <IoShareOutline size={'1.5rem'} color="white" onClick={handleShare} />
+          <IoReturnUpForward size={'1.5rem'} color="white" />
+          <CiMenuKebab size={'1.5rem'} color="white" />
         </Box>
       </div>
       {/* viewer body */}
@@ -123,12 +166,12 @@ const VideoMsgPlayer: FC<{ data: Props }> = ({ data }) => {
         <Box display={'flex'}>
           {/* video play pause rewind */}
           <Box display={'flex'} alignItems={'center'} gap={3}>
-            <TbRewindForward10 size={'1.2rem'} />
-            <BsPlay size={'1.2rem'} onClick={handleVidePlayPause} />
-            <TbRewindBackward10 size={'1.2rem'} />
+            <MdOutlineReplay10 size={'1.2rem'} />
+            <VideoPlayPauseIcon size={'1.3rem'} onClick={handleVidePlayPause} />
+            <MdOutlineForward10 size={'1.2rem'} />
           </Box>
           {/* video options (time, fullscreen, pip etc. ) */}
-          <Box display={'flex'} flexGrow={1} alignItems={'center'} gap={3} justifyContent={'flex-end'}>
+          <div className="flex flex-grow items-center justify-end gap-3">
             <BsFullscreen size={'.8rem'} />
             <TbPictureInPicture size={'1.2rem'} />
             <CiSettings size={'1.2rem'} />
@@ -136,7 +179,7 @@ const VideoMsgPlayer: FC<{ data: Props }> = ({ data }) => {
             <Text marginBottom={'-5px'} className={styles.videoCurrentTime}>
               {videoCurrentTime}
             </Text>
-          </Box>
+          </div>
         </Box>
       </div>
     </div>
