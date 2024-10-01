@@ -4,6 +4,7 @@ import authReducer from './auth.slice';
 import systemReducer from './system.slice';
 import chatReducer from './chats.slice';
 import profieReducer from './profile.slice';
+import settingsSlice from './settings.slice';
 
 // create and configure redux store
 export const store = configureStore({
@@ -12,6 +13,7 @@ export const store = configureStore({
     system: systemReducer,
     chat: chatReducer,
     usrProfile: profieReducer,
+    settings: settingsSlice,
   },
 });
 
