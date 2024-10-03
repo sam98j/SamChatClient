@@ -14,16 +14,11 @@ import {
 } from 'react-icons/io5';
 import { TimeUnits, getTime } from '@/utils/time';
 import { CiMenuKebab, CiSettings } from 'react-icons/ci';
-import { BsFullscreen, BsPauseFill, BsPlay, BsPlayFill } from 'react-icons/bs';
-import {
-  TbPictureInPicture,
-  TbRewindBackward10,
-  TbRewindForward10,
-} from 'react-icons/tb';
+import { BsFullscreen, BsPauseFill, BsPlayFill } from 'react-icons/bs';
+import { TbPictureInPicture } from 'react-icons/tb';
 import { secondsToDurationConverter } from '@/utils/time';
 import { ChatMessage } from '@/interfaces/chat.interface';
 import FileMsgUploadIndicator from '../FileMsgUploadIndicator';
-import { Rewind } from 'lucide-react';
 import { MdOutlineForward10, MdOutlineReplay10 } from 'react-icons/md';
 
 // props

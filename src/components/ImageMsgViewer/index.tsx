@@ -23,6 +23,7 @@ import {
   MessagesToBeForwarded,
   setMessagesToBeForwared,
 } from '@/redux/chats.slice';
+import MediaViewerHeader from '../MediaViewerHeader';
 
 type Props = ChatMessage;
 
@@ -34,44 +35,33 @@ const ImageMsgViewer: FC<{ data: Props }> = ({ data }) => {
   // destruct props
   const { content, date, sender, _id } = data;
   // redux store
-  const { loggedInUsr } = useSelector((state: RootState) => ({
-    loggedInUsr: state.auth.currentUser,
-  }));
+  const loggedInUser = useSelector(
+    (state: RootState) => state.auth.currentUser,
+  );
   // is Message sended by the current usr
-  const sendedByMe = loggedInUsr?._id === sender._id;
+  const sendedByMe = loggedInUser?._id === sender._id;
   // photo's sender name
   const photoSenderName = data.sender.name;
   // image url
-  const [imgUrl] = useState(() => {
-    // check if content contain http
-    if (content.includes('data:')) return content;
-    // otherwize
-    return `${apiHost}${content}`;
-  });
+  const imgUrl = content.includes('data:') ? content : `${apiHost}${content}`;
   // state
   const [isOpen, setIsOpen] = useState(false);
+  console.log(isOpen);
   // is menu options is opened
-  const [isMenuOptionsOpen, setIsMenuOptionsOpen] = useState(false);
+  const [isMenuOptionsOpen, setIsMenuOptionsOpen] = useState(false); //TODO:
   // localiztion method
   const { t } = useTranslation('chatScreen');
   // app lang
   const { locale } = useRouter();
   // handle onclick
-  const handleClick = () => {
-    if (isOpen) return;
-    setIsOpen(true);
-  };
-  const handleClose = () => {
-    if (isMenuOptionsOpen) return setIsMenuOptionsOpen(false);
-    // close screen
-    setIsOpen(false);
-    // close options menu
-  };
-  // optionsMenuClickHandler
-  const optionsMenuClickHandler = () => {
+  const handleClick = () => !isOpen && setIsOpen(true);
+  // handle close TODO:
+  const handleClose = () =>
+    isMenuOptionsOpen ? setIsMenuOptionsOpen(false) : setIsOpen(false);
+  // optionsMenuClickHandler TODO:
+  const optionsMenuClickHandler = () =>
     setIsMenuOptionsOpen(!isMenuOptionsOpen);
-  };
-  // handle share btn
+  // handle share btn TODO:
   const shareMediaHandler = () => {
     try {
       // terminate if it's can't share
@@ -84,7 +74,7 @@ const ImageMsgViewer: FC<{ data: Props }> = ({ data }) => {
       dispatch(setSystemNotification({ err: true, msg: 'You can not share' }));
     }
   };
-  // handleForwardMsg
+  // handleForwardMsg // TODO:
   const handleForwardMsg = () => {
     const messagesToBeForwared: MessagesToBeForwarded = {
       messages: [data._id],
@@ -104,51 +94,7 @@ const ImageMsgViewer: FC<{ data: Props }> = ({ data }) => {
       {/* menu */}
       <MediaViewerOptionsMenu mediaUrl={content} isOpen={isMenuOptionsOpen} />
       {/* viewer header */}
-      <div className={styles.viewerHeader}>
-        {/* back arrow */}
-        <Box
-          onClick={handleClose}
-          display={'flex'}
-          alignItems={'center'}
-          gap={2}
-          color={'white'}
-          cursor={'pointer'}
-        >
-          <IoArrowBack size={'1.5rem'} />
-          {/* message sender */}
-          <Box>
-            <Text>{sendedByMe ? t('you') : photoSenderName}</Text>
-            <Text fontSize={'.8rem'}>
-              {getTime(date, TimeUnits.fullTime, locale as never)}
-            </Text>
-          </Box>
-        </Box>
-        {/* options */}
-        <Box
-          display={'flex'}
-          alignItems={'center'}
-          flexGrow={1}
-          justifyContent={'flex-end'}
-          gap={5}
-        >
-          {/* share media btn */}
-          <Box cursor={'pointer'} onClick={shareMediaHandler}>
-            <IoShareOutline size={'1.5rem'} color="white" />
-          </Box>
-          {/* forward message btn */}
-          <Box cursor={'pointer'} onClick={handleForwardMsg}>
-            <IoReturnUpForward size={'1.5rem'} color="white" />
-          </Box>
-          {/* options menu */}
-          <Box
-            onClick={optionsMenuClickHandler}
-            position={'relative'}
-            cursor={'pointer'}
-          >
-            <CiMenuKebab size={'1.5rem'} color="white" />
-          </Box>
-        </Box>
-      </div>
+      <MediaViewerHeader msg={data} setIsOpen={setIsOpen} isOpen={isOpen} />
       {/* viewer body */}
       <div className={styles.viewerBody}>
         <Image
