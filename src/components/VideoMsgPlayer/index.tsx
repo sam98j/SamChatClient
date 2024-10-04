@@ -1,44 +1,34 @@
 /* eslint-disable react/no-unknown-property */
 import React, { FC, useRef, useState } from 'react';
 import styles from './styles.module.scss';
-import { useSelector } from 'react-redux';
 import useTranslation from 'next-translate/useTranslation';
-import { RootState } from '@/redux/store';
 import { useRouter } from 'next/router';
 import { Box, Text } from '@chakra-ui/react';
-import {
-  IoArrowBack,
-  IoReturnUpForward,
-  IoShareOutline,
-  IoVolumeHighOutline,
-} from 'react-icons/io5';
-import { TimeUnits, getTime } from '@/utils/time';
-import { CiMenuKebab, CiSettings } from 'react-icons/ci';
+import { IoVolumeHighOutline } from 'react-icons/io5';
+import { CiSettings } from 'react-icons/ci';
 import { BsFullscreen, BsPauseFill, BsPlayFill } from 'react-icons/bs';
 import { TbPictureInPicture } from 'react-icons/tb';
 import { secondsToDurationConverter } from '@/utils/time';
 import { ChatMessage } from '@/interfaces/chat.interface';
 import FileMsgUploadIndicator from '../FileMsgUploadIndicator';
 import { MdOutlineForward10, MdOutlineReplay10 } from 'react-icons/md';
+import MediaViewerHeader from '../MediaViewerHeader';
+import MediaViewerOptionsMenu from '../MediaViewerOptionsMenu';
 
 // props
-type Props = Pick<ChatMessage, 'content' | 'sender' | 'date' | '_id'>;
+type Props = ChatMessage;
 
 const VideoMsgPlayer: FC<{ data: Props }> = ({ data }) => {
   // api url
   const apiHost = process.env.NEXT_PUBLIC_API_URL;
   // destruct props
-  const { content, date, sender, _id } = data;
-  // get data from redux store
-  const currentUser = useSelector((state: RootState) => state.auth.currentUser);
-  // is video is sended by the current loggedIn usr
-  const sendedByMe = currentUser?._id === sender._id;
-  // video sender name
-  const videoSenderName = data.sender.name;
+  const { content, _id } = data;
   // vido url
   const videoUrl = content.includes('data:') ? content : `${apiHost}${content}`;
   // state
   const [isOpen, setIsOpen] = useState(false);
+  // is menu options is opened
+  const [isMenuOptionsOpen, setIsMenuOptionsOpen] = useState(false);
   // localiztion method
   const { t } = useTranslation('chatScreen');
   // video current time
@@ -53,8 +43,6 @@ const VideoMsgPlayer: FC<{ data: Props }> = ({ data }) => {
   const { locale } = useRouter();
   // handle onclick
   const handleClick = () => !isOpen && setIsOpen(true);
-  // close video handler
-  const handleClose = () => setIsOpen(false);
   // video element
   const videoElement = videoRef.current!;
   // time line element
@@ -98,9 +86,6 @@ const VideoMsgPlayer: FC<{ data: Props }> = ({ data }) => {
     videoElement.pause();
     setVideoPlayingStatus(false);
   };
-  // handleShare
-  const handleShare = () => {};
-
   return (
     <div
       className={styles.videoMsgViewer}
@@ -109,42 +94,18 @@ const VideoMsgPlayer: FC<{ data: Props }> = ({ data }) => {
     >
       {/* video upload indicator */}
       <FileMsgUploadIndicator _id={_id} />
+      {/* menu */}
+      <MediaViewerOptionsMenu mediaUrl={content} isOpen={isMenuOptionsOpen} />
       {/* viewer header */}
-      <div className={styles.viewerHeader}>
-        {/* back arrow */}
-        <Box
-          onClick={handleClose}
-          display={'flex'}
-          alignItems={'center'}
-          gap={2}
-          color={'white'}
-          cursor={'pointer'}
-        >
-          {/* go back arrow */}
-          <IoArrowBack size={'1.5rem'} />
-          {/* message sender */}
-          <Box>
-            {/* message sender */}
-            <Text>{sendedByMe ? t('you') : videoSenderName}</Text>
-            {/* message date and time */}
-            <Text fontSize={'.8rem'}>
-              {getTime(date, TimeUnits.fullTime, locale as never)}
-            </Text>
-          </Box>
-        </Box>
-        {/* options (share, forward, menu) */}
-        <Box
-          display={'flex'}
-          alignItems={'center'}
-          flexGrow={1}
-          justifyContent={'flex-end'}
-          gap={5}
-        >
-          <IoShareOutline size={'1.5rem'} color="white" onClick={handleShare} />
-          <IoReturnUpForward size={'1.5rem'} color="white" />
-          <CiMenuKebab size={'1.5rem'} color="white" />
-        </Box>
-      </div>
+      <MediaViewerHeader
+        data={{
+          msg: data,
+          isMenuOptionsOpen,
+          setIsMenuOptionsOpen,
+          isOpen,
+          setIsOpen,
+        }}
+      />
       {/* viewer body */}
       <div className={styles.viewerBody}>
         <video onClick={handleClick} ref={videoRef}>

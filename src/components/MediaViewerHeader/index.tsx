@@ -22,18 +22,23 @@ import { ChatMessage } from '@/interfaces/chat.interface';
 
 // props
 type Props = {
-  msg: ChatMessage;
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  data: {
+    msg: ChatMessage;
+    isMenuOptionsOpen: boolean;
+    setIsMenuOptionsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    isOpen: boolean;
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  };
 };
 
-const MediaViewerHeader = ({ msg, setIsOpen, isOpen }: Props) => {
+const MediaViewerHeader = ({ data }: Props) => {
+  // destruct props
+  const { msg, setIsOpen, isOpen, isMenuOptionsOpen, setIsMenuOptionsOpen } =
+    data;
   // redux dispatch functinon
   const dispatch = useDispatch();
   // api url
   const apiHost = process.env.NEXT_PUBLIC_API_URL;
-  // is menu options is opened
-  const [isMenuOptionsOpen, setIsMenuOptionsOpen] = useState(false);
   // redux store
   const loggedInUser = useSelector(
     (state: RootState) => state.auth.currentUser,
