@@ -19,34 +19,34 @@ import {
   setMessagesToBeForwared,
 } from '@/redux/chats.slice';
 import { ChatMessage } from '@/interfaces/chat.interface';
+import MediaViewerOptionsMenu from '../MediaViewerOptionsMenu';
 
 // props
 type Props = {
-  data: {
-    msg: ChatMessage;
-    isMenuOptionsOpen: boolean;
-    setIsMenuOptionsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    isOpen: boolean;
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  };
+  msg: ChatMessage;
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const MediaViewerHeader = ({ data }: Props) => {
+const MediaViewerHeader = (props: Props) => {
   // destruct props
-  const { msg, setIsOpen, isOpen, isMenuOptionsOpen, setIsMenuOptionsOpen } =
-    data;
+  const { msg, setIsOpen, isOpen } = props;
+  // destruct chat message
+  const { content, date, sender, _id } = msg;
   // redux dispatch functinon
   const dispatch = useDispatch();
   // api url
   const apiHost = process.env.NEXT_PUBLIC_API_URL;
+  // is menu options is opened
+  const [isMenuOptionsOpen, setIsMenuOptionsOpen] = useState(false);
   // redux store
   const loggedInUser = useSelector(
     (state: RootState) => state.auth.currentUser,
   );
   // is Message sended by the current usr
-  const sendedByMe = loggedInUser?._id === msg.sender._id;
+  const sendedByMe = loggedInUser?._id === sender._id;
   // photo's sender name
-  const photoSenderName = msg.sender.name;
+  const photoSenderName = sender.name;
   // app lang
   const { locale } = useRouter();
   // localiztion method
@@ -64,7 +64,7 @@ const MediaViewerHeader = ({ data }: Props) => {
       navigator.share({
         text: 'SamChat Share Media',
         title: 'Greeting',
-        url: apiHost + msg.content,
+        url: apiHost + content,
       });
     } catch (err) {
       dispatch(setSystemNotification({ err: true, msg: 'You can not share' }));
@@ -73,13 +73,15 @@ const MediaViewerHeader = ({ data }: Props) => {
   // handleForwardMsg //
   const handleForwardMsg = () => {
     const messagesToBeForwared: MessagesToBeForwarded = {
-      messages: [msg._id],
+      messages: [_id],
       chats: [],
     };
     dispatch(setMessagesToBeForwared(messagesToBeForwared));
   };
   return (
-    <div className={styles.viewerHeader} is-viewer-open={String(isOpen)}>
+    <div className={styles.viewerHeader} data-is-viewer-open={String(isOpen)}>
+      {/* menu */}
+      <MediaViewerOptionsMenu mediaUrl={content} isOpen={isMenuOptionsOpen} />
       {/* container */}
       <div className="flex items-center text-white gap-2" onClick={handleClose}>
         {/* back arrow */}
@@ -90,7 +92,7 @@ const MediaViewerHeader = ({ data }: Props) => {
           <Text>{sendedByMe ? t('you') : photoSenderName}</Text>
           {/* message date */}
           <Text fontSize={'.8rem'}>
-            {getTime(msg.date, TimeUnits.fullTime, locale as never)}
+            {getTime(date, TimeUnits.fullTime, locale as never)}
           </Text>
         </div>
       </div>

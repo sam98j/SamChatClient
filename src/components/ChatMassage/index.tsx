@@ -124,9 +124,7 @@ const ChatMassage: React.FC<MessageData> = ({ messageData }) => {
             <FileMsgViewer data={{ fileName, fileSize, content }} />
           )}
           {/* message type video */}
-          {type === VIDEO && (
-            <VideoMsgPlayer data={{ content, date, sender, _id }} />
-          )}
+          {type === VIDEO && <VideoMsgPlayer data={messageData} />}
         </div>
         {/* msg footer appear  in all messages types*/}
         <div className="flex gap-1">

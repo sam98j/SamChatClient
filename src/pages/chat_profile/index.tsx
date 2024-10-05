@@ -162,7 +162,6 @@ const ChatProfile = () => {
             const {
               content,
               sender,
-              date,
               voiceNoteDuration,
               fileSize,
               fileName,
@@ -173,11 +172,7 @@ const ChatProfile = () => {
                 {/* display images */}
                 {displayedMsgsTypes === PHOTO && <ImageMsgViewer data={msg} />}
                 {/* display video */}
-                {displayedMsgsTypes === VIDEO ? (
-                  <VideoMsgPlayer data={{ content, sender, date, _id }} />
-                ) : (
-                  ''
-                )}
+                {displayedMsgsTypes === VIDEO && <VideoMsgPlayer data={msg} />}
                 {/* display voice notes */}
                 {displayedMsgsTypes === VOICENOTE ? (
                   <VoiceMemoPlayer

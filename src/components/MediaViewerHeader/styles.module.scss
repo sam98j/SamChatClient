@@ -1,10 +1,10 @@
 .viewerHeader {
   display: none;
-  &[is-viewer-open='true'] {
+  &[data-is-viewer-open='true'] {
     display: flex;
     position: absolute;
-    height: 40px;
-    padding: 10px;
+    // height: 40px;
+    padding: 5px 10px;
     top: 0;
     left: 0;
     width: 100%;

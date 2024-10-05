@@ -22,61 +22,53 @@ const VoiceMemoPlayer: React.FC<{ data: Props }> = ({ data }) => {
   const audioUrl = content.includes('data:') ? content : `${apiHost}${content}`;
   // is audio playing
   const [isAudioPlaying, setAudioPlaying] = useState(false);
-  // audio timer
-  let [timer, setTimer] = useState(0);
   // play and pause icon
   const PlayPauseIcon = isAudioPlaying ? BsFillPauseFill : BsFillPlayFill;
   // audio ref
   const audioRef = useRef<HTMLAudioElement>(null);
   // timeline ref
   const timeLineRef = useRef<HTMLSpanElement>(null);
+  // timeline
+  const timeline = timeLineRef.current!;
   // component mount, load audio element
   useEffect(() => audioRef.current?.load(), []);
-  // interval
-  let [interval, resetInterval] = useState<NodeJS.Timer>(null!);
+  // transitionend event listener handler
+  const transitionEndHandler = () => {
+    // set video time line width
+    timeline!.style.width = '0%';
+    // set video timeline transition
+    timeline!.style.transition = 'none';
+    setAudioPlaying(false);
+  };
+  // listen for audo ref
+  audioRef.current?.addEventListener('timeupdate', () => {
+    // audio element
+    const audioElement = audioRef.current!;
+    // set time line styles
+    const timeLineProgress = `${(Math.round(audioElement.currentTime) / Math.round(Number(duration))) * 100}%`;
+    // set video time line width
+    timeline!.style.width = timeLineProgress;
+    // set video timeline transition
+    timeline!.style.transition = 'width 1s linear';
+    // check if audio is completed
+    timeline.removeEventListener('transitionend', transitionEndHandler);
+  });
+  // on play
+  audioRef.current?.addEventListener('ended', () => {
+    // listener
+    timeline!.addEventListener('transitionend', transitionEndHandler);
+  });
   // handle play audio
   const audioPlayHandler = () => {
-    // audio playing status
-    const audioPlayingStatus = !isAudioPlaying;
-    // set audio play status
-    setAudioPlaying(audioPlayingStatus);
-    // timeline
-    const timeline = timeLineRef.current!;
-    // if audio is stopped
-    if (!audioPlayingStatus) {
-      clearInterval(interval);
-      audioRef.current?.pause();
+    // play audio
+    if (audioRef.current?.paused) {
+      audioRef.current?.play();
+      setAudioPlaying(true);
       return;
     }
-    // play audio
-    audioRef.current?.play();
-    // repeate every 1 seconds
-    const setinterval = setInterval(() => {
-      // inc timer
-      setTimer(timer++);
-      // current timeline width
-      const timeLineProgress = (timer / Number(duration)) * 100;
-      // set time line progress
-      timeline.setAttribute(
-        'style',
-        `width:${timeLineProgress}%; transition: all 1s linear`,
-      );
-      // when audo playing is completed
-      if (timer !== Number(duration)) return;
-      // clear interval
-      clearInterval(setinterval);
-      // wait until transition end
-      timeline.addEventListener('transitionend', () => {
-        // reset styles
-        timeline.setAttribute('style', 'transition: none; width: 0%');
-        // set timer
-        setTimer(0);
-        // audio is stopped
-        setAudioPlaying(false);
-      });
-    }, 1000);
-    // make timer global
-    resetInterval(setinterval);
+    // pause video
+    audioRef.current?.pause();
+    setAudioPlaying(false);
   };
   return (
     <div className={styles.voice_memo_rec} sended-by-me={String(sendedByMe)}>
@@ -89,7 +81,7 @@ const VoiceMemoPlayer: React.FC<{ data: Props }> = ({ data }) => {
           <span ref={timeLineRef} className={styles.time_line_filler}></span>
         </div>
         {/* timer */}
-        <span className="text-sm bg-gray-200 px-1 rounded-lg">
+        <span className="text-sm px-1 rounded-lg">
           {secondsToDurationConverter(Number(duration))}
         </span>
       </div>

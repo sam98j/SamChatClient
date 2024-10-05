@@ -1,7 +1,6 @@
 /* eslint-disable react/no-unknown-property */
 import React, { FC, useRef, useState } from 'react';
 import styles from './styles.module.scss';
-import useTranslation from 'next-translate/useTranslation';
 import { useRouter } from 'next/router';
 import { Box, Text } from '@chakra-ui/react';
 import { IoVolumeHighOutline } from 'react-icons/io5';
@@ -13,7 +12,6 @@ import { ChatMessage } from '@/interfaces/chat.interface';
 import FileMsgUploadIndicator from '../FileMsgUploadIndicator';
 import { MdOutlineForward10, MdOutlineReplay10 } from 'react-icons/md';
 import MediaViewerHeader from '../MediaViewerHeader';
-import MediaViewerOptionsMenu from '../MediaViewerOptionsMenu';
 
 // props
 type Props = ChatMessage;
@@ -27,28 +25,32 @@ const VideoMsgPlayer: FC<{ data: Props }> = ({ data }) => {
   const videoUrl = content.includes('data:') ? content : `${apiHost}${content}`;
   // state
   const [isOpen, setIsOpen] = useState(false);
-  // is menu options is opened
-  const [isMenuOptionsOpen, setIsMenuOptionsOpen] = useState(false);
-  // localiztion method
-  const { t } = useTranslation('chatScreen');
   // video current time
   const [videoCurrentTime, setVideoCurrentTime] = useState('00:00');
   // is video played or paused
   const [videoPlayingStatus, setVideoPlayingStatus] = useState(false);
-  // video ref
-  const videoRef = useRef<HTMLVideoElement>(null);
-  // timeLine ref
-  const timeLineRef = useRef<HTMLSpanElement>(null);
   // app lang
   const { locale } = useRouter();
   // handle onclick
   const handleClick = () => !isOpen && setIsOpen(true);
+  // video ref
+  const videoRef = useRef<HTMLVideoElement>(null);
+  // timeLine ref
+  const timeLineRef = useRef<HTMLSpanElement>(null);
   // video element
   const videoElement = videoRef.current!;
   // time line element
   const timeLineElement = timeLineRef.current;
   // video play/pause icon
   const VideoPlayPauseIcon = videoPlayingStatus ? BsPauseFill : BsPlayFill;
+  // transitionend event listener handler
+  const transitionEndHandler = () => {
+    // set video time line width
+    timeLineElement!.style.width = '0%';
+    // set video timeline transition
+    timeLineElement!.style.transition = 'none';
+    setVideoPlayingStatus(false);
+  };
   // video time update handler
   const videoTimeUpdateHandler = () => {
     // video current time
@@ -61,19 +63,15 @@ const VideoMsgPlayer: FC<{ data: Props }> = ({ data }) => {
     timeLineElement!.style.width = timeLineProgress;
     // set video timeline transition
     timeLineElement!.style.transition = 'width 1s linear';
+    //remove listener
+    timeLineElement!.removeEventListener('transitionend', transitionEndHandler);
   };
+  // on end
+  videoRef.current?.addEventListener('ended', () => {
+    timeLineElement!.addEventListener('transitionend', transitionEndHandler);
+  });
   // on play
-  videoElement &&
-    videoElement.addEventListener('ended', () => {
-      timeLineElement!.addEventListener('transitionend', () => {
-        // set video time line width
-        timeLineElement!.setAttribute('style', 'width: 0%; transition: none');
-        setVideoPlayingStatus(false);
-      });
-    });
-  // on play
-  videoElement &&
-    videoElement.addEventListener('timeupdate', videoTimeUpdateHandler);
+  videoRef.current?.addEventListener('timeupdate', videoTimeUpdateHandler);
   // handle video play and pause
   const handleVidePlayPause = () => {
     // play video
@@ -94,18 +92,8 @@ const VideoMsgPlayer: FC<{ data: Props }> = ({ data }) => {
     >
       {/* video upload indicator */}
       <FileMsgUploadIndicator _id={_id} />
-      {/* menu */}
-      <MediaViewerOptionsMenu mediaUrl={content} isOpen={isMenuOptionsOpen} />
       {/* viewer header */}
-      <MediaViewerHeader
-        data={{
-          msg: data,
-          isMenuOptionsOpen,
-          setIsMenuOptionsOpen,
-          isOpen,
-          setIsOpen,
-        }}
-      />
+      <MediaViewerHeader isOpen={isOpen} msg={data} setIsOpen={setIsOpen} />
       {/* viewer body */}
       <div className={styles.viewerBody}>
         <video onClick={handleClick} ref={videoRef}>
@@ -113,13 +101,13 @@ const VideoMsgPlayer: FC<{ data: Props }> = ({ data }) => {
         </video>
       </div>
       {/* viewer footer */}
-      <div className={styles.viewerFooter}>
+      <div className={`${styles.viewerFooter}`}>
         {/* time line */}
         <div className={styles.timeLine}>
           <span ref={timeLineRef}></span>
         </div>
         {/*video controls */}
-        <Box display={'flex'}>
+        <div className="bg-black bg-opacity-10 p-1 rounded-b-lg flex">
           {/* video play pause rewind */}
           <Box display={'flex'} alignItems={'center'} gap={3}>
             <MdOutlineReplay10 size={'1.2rem'} />
@@ -136,7 +124,7 @@ const VideoMsgPlayer: FC<{ data: Props }> = ({ data }) => {
               {videoCurrentTime}
             </Text>
           </div>
-        </Box>
+        </div>
       </div>
     </div>
   );
