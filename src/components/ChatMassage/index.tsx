@@ -48,7 +48,6 @@ const ChatMassage: React.FC<MessageData> = ({ messageData }) => {
     type,
     voiceNoteDuration,
     fileName,
-    fileSize,
     _id,
     receiverId,
     msgReplyedTo,
@@ -114,15 +113,11 @@ const ChatMassage: React.FC<MessageData> = ({ messageData }) => {
           {/* text message */}
           {type === TEXT && content}
           {/* voice message */}
-          {type === VOICENOTE && (
-            <VoiceMemoPlayer data={{ voiceNoteDuration, content, sender }} />
-          )}
+          {type === VOICENOTE && <VoiceMemoPlayer data={messageData} />}
           {/* message type photo */}
           {type === PHOTO && <ImageMsgViewer data={messageData} />}
           {/* message type file */}
-          {type === FILE && (
-            <FileMsgViewer data={{ fileName, fileSize, content }} />
-          )}
+          {type === FILE && <FileMsgViewer data={messageData} />}
           {/* message type video */}
           {type === VIDEO && <VideoMsgPlayer data={messageData} />}
         </div>

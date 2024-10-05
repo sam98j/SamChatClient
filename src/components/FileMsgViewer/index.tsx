@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { ChatMessage } from '@/interfaces/chat.interface';
 
 // Props
-type Props = Pick<ChatMessage, 'content' | 'fileName' | 'fileSize'>;
+type Props = ChatMessage;
 
 const FileMsgViewer: React.FC<{ data: Props }> = ({ data }) => {
   // api url
@@ -35,7 +35,7 @@ const FileMsgViewer: React.FC<{ data: Props }> = ({ data }) => {
         {/* file data */}
         <Box>
           <Text display={'flex'} alignItems={'center'}>
-            <BsFilePdf size={'1.5rem'} color='orange' />
+            <BsFilePdf size={'1.5rem'} color="orange" />
             {fileName} - <span>{fileSize} كيلو بايت</span>
           </Text>
         </Box>

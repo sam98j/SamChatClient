@@ -110,10 +110,8 @@ const ChatProfile = () => {
         {/* chat calls */}
         <ChatCalls />
         {/* group members list */}
-        {openedChat?.type === ChatTypes.GROUP ? (
+        {openedChat?.type === ChatTypes.GROUP && (
           <GroupMembersList members={openedChat.members} />
-        ) : (
-          ''
         )}
         {/* media links and docs */}
         <List className={styles.list_content_type_container}>
@@ -158,35 +156,18 @@ const ChatProfile = () => {
         <Box className={styles.list_content} msgs-type={displayedMsgsTypes}>
           {/* loop throwght content list it maybe PHOTS, FILE, Video */}
           {contentList.map((msg) => {
-            // destruct message
-            const {
-              content,
-              sender,
-              voiceNoteDuration,
-              fileSize,
-              fileName,
-              _id,
-            } = msg;
             return (
-              <Box className={styles.list_content_item} key={_id}>
+              <Box className={styles.list_content_item} key={msg._id}>
                 {/* display images */}
                 {displayedMsgsTypes === PHOTO && <ImageMsgViewer data={msg} />}
                 {/* display video */}
                 {displayedMsgsTypes === VIDEO && <VideoMsgPlayer data={msg} />}
                 {/* display voice notes */}
-                {displayedMsgsTypes === VOICENOTE ? (
-                  <VoiceMemoPlayer
-                    data={{ content, sender, voiceNoteDuration }}
-                  />
-                ) : (
-                  ''
+                {displayedMsgsTypes === VOICENOTE && (
+                  <VoiceMemoPlayer data={msg} />
                 )}
                 {/* display flie */}
-                {displayedMsgsTypes === FILE ? (
-                  <FileMsgViewer data={{ content, fileName, fileSize }} />
-                ) : (
-                  ''
-                )}
+                {displayedMsgsTypes === FILE && <FileMsgViewer data={msg} />}
               </Box>
             );
           })}

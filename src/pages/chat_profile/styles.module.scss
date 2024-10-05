@@ -27,7 +27,8 @@
   // list content container
   .list_content {
     display: flex;
-    gap: 5%;
+    gap: 10px;
+    row-gap: 10px;
     width: 100%;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -35,10 +36,12 @@
     padding-bottom: 20px;
     // list item
     .list_content_item {
+      display: flex;
+      align-items: center;
       max-width: 30%;
       aspect-ratio: 1 / 1;
       flex-grow: 1;
-      background-color: gainsboro;
+      background-color: rgba(0, 0, 0, 0.5);
       border-radius: 5px;
       overflow: hidden;
     }

@@ -19,13 +19,16 @@ const ImageMsgViewer: FC<{ data: Props }> = ({ data }) => {
   // state
   const [isOpen, setIsOpen] = useState(false);
   // app lang
-  const { locale } = useRouter();
+  const { locale, pathname } = useRouter();
+  // is chat profile open
+  const isChatScreenOpen = String(pathname !== '/chat');
   // handle onclick
   const handleClick = () => !isOpen && setIsOpen(true);
   return (
     <div
       className={styles.imageMsgViewer}
       key={_id}
+      data-is-chat-screen-open={isChatScreenOpen}
       is-open={String(isOpen)}
       pref-lang={locale}
     >

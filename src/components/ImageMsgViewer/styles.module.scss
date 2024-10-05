@@ -9,7 +9,13 @@
       transform: scaleX(-1);
     }
   }
-
+  // data-is-chat-screen-open
+  &[data-is-chat-screen-open='true'] {
+    // image styles
+    .viewerBody img {
+      border-radius: 0;
+    }
+  }
   &[is-open='true'] {
     &,
     & img {

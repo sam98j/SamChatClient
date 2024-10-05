@@ -7,7 +7,7 @@ import { ChatMessage } from '@/interfaces/chat.interface';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 
-type Props = Pick<ChatMessage, 'sender' | 'voiceNoteDuration' | 'content'>;
+type Props = ChatMessage;
 
 const VoiceMemoPlayer: React.FC<{ data: Props }> = ({ data }) => {
   // api url
