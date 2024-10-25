@@ -39,13 +39,18 @@ const Settings = () => {
     // change notification state
     setNotificationEnabled(notificationState);
     // check for false
-    if (!notificationState) {
+    if (notificationState === false) {
       // set local storage
       localStorage.removeItem('push_notification_state');
+      // make notification disabled as a user pref
+      localStorage.setItem('dis-notification', 'true');
+      // delete notification sub
       deleteSubscription();
       // return
       return;
     }
+    // make notification disabled as a user pref
+    localStorage.removeItem('dis-notification');
     // enable push notificatinos
     enablePushNotification();
   };
@@ -79,6 +84,7 @@ const Settings = () => {
             </Button>
           </Box>
         </Box>
+        {/* notification */}
         <Box>
           <Text textColor={'gray'}>{tSettings('notifications')}</Text>
           <Box bgColor={'blackAlpha.50'} padding={2} borderRadius={10}>
@@ -96,6 +102,7 @@ const Settings = () => {
             </FormControl>
           </Box>
         </Box>
+        {/* app ver */}
         <Text color={'gray'}>
           {tSettings('app_version')} {process.env.NEXT_PUBLIC_APP_VERSION}
         </Text>

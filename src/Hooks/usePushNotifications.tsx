@@ -16,6 +16,11 @@ const usePushNotifications = () => {
     // regester a service worker
     const serviceWorkerRegesteration =
       await navigator.serviceWorker.register('/service.worker.js');
+    // push notification user prefernce
+    const disPushNotificationUserPref =
+      localStorage.getItem('dis-notification');
+    // check if user do not want to be notified
+    if (disPushNotificationUserPref) return;
     // push notification permission state
     const pushNotificationState = localStorage.getItem(
       'push_notification_state',
