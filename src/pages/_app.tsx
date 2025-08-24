@@ -103,8 +103,6 @@ function App({ Component, ...pageProps }: AppProps) {
     );
     // terminate if there is no message waiting for send
     if (!messagesToSent[0]) return;
-    console.log(messagesToSent);
-
     // send
     sendChatMessage(messagesToSent[0]);
   }, [chatMessages]);

@@ -65,7 +65,7 @@ const CreateChat = () => {
       loading: false,
     });
   };
-  // createGroupChatBtnHandler
+  // createGroupChatBtnHandler5
   const createGroupChatBtnHandler = () => {
     dispatch(setVisablityOfCreateChatGroupMenu(true));
     dispatch(changeNewChatScrStatus(false));
@@ -77,7 +77,7 @@ const CreateChat = () => {
     >
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 bg-black/40" />
-        <Drawer.Content className="bg-gray-100 h-[95dvh] fixed bottom-0 left-0 right-0 outline-none rounded-t-xl">
+        <Drawer.Content className="bg-transparent h-[95dvh] fixed bottom-0 left-0 right-0 outline-none rounded-t-xl">
           <div className="p-4 bg-white h-full rounded-t-xl flex flex-col gap-2">
             <Drawer.Handle />
             <SearchInput
